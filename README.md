@@ -1,4 +1,4 @@
-Bread Tunes Vision Statement
+# Bread Tunes Vision Statement
 
 Bread Tunes is a music manager and player for Android devices. This music player will be able to play music files in the device's internal and external memory (such as an SD card). People will be able to browse their music library and perform several actions on their music including: finding and playing songs, seeing information about what's playing, creating their own playlists, and adding songs to a queue. Bread Tunes will also feature a Parental Control that enables parents to hide flagged songs from children.
 
