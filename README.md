@@ -15,5 +15,5 @@ To stand out from the competition, Bread Tunes will provide a great user experie
 The success criteria for Bread Tunes are based on the following:
 
 - Our target users should be able to choose and play a song 15% faster than with a comparable music player.
-- Our target users should rate the interface as cleaner and more intuitive than a comparable music player.
-- Parents should be able to indicate that the music flagging and parental control interface is not difficult to use and is sufficient for what they require.
+- 75% of our target users should rate the interface as cleaner and more intuitive than a comparable music player.
+- 75% of parents should indicate that the music flagging and parental control interface is not difficult to use and is sufficient for what they require.
