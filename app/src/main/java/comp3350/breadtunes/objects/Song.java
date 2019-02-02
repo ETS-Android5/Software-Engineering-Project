@@ -1,5 +1,7 @@
 package comp3350.breadtunes.objects;
 
+import java.io.File;
+
 public class Song {
     private String name;
     private int year = Integer.MIN_VALUE;
@@ -7,13 +9,24 @@ public class Song {
     private SongDuration duration;
     private Artist artist;
     private Album album;
+    private File songFile;
 
-    public Song(String name, int trackNumber, SongDuration duration, Artist artist, Album album) {
+    public Song(String name, int trackNumber, SongDuration duration, Artist artist, Album album, File songFile) {
         this.name = name;
         this.trackNumber = trackNumber;
         this.duration = duration;
         this.artist = artist;
         this.album = album;
+        this.songFile = songFile;
+    }
+
+    public Song(String name, int trackNumber, SongDuration duration, Artist artist, Album album, String songPath) {
+        this.name = name;
+        this.trackNumber = trackNumber;
+        this.duration = duration;
+        this.artist = artist;
+        this.album = album;
+        this.songFile = new File(songPath);
     }
 
     public String getName() { return name; }
