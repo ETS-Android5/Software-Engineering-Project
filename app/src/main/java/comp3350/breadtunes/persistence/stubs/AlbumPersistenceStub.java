@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
+import comp3350.breadtunes.exception.RecordDoesNotExistException;
 import comp3350.breadtunes.objects.Album;
 import comp3350.breadtunes.objects.Song;
 import comp3350.breadtunes.persistence.AlbumPersistence;
@@ -27,15 +28,32 @@ public class AlbumPersistenceStub implements AlbumPersistence {
 
     @Override
     public Album insert(Album insertAlbum) {
-        return null;
+        // Not checking for duplicates
+        albums.add(insertAlbum);
+        return insertAlbum;
     }
 
     @Override
     public Album update(Album updateAlbum) {
-        return null;
+        int index = albums.indexOf(updateAlbum);
+
+        if (index < 0) {
+            throw new RecordDoesNotExistException(String.format("Trying to update nonexistent album (name: %s).", updateAlbum.getName()));
+        }
+
+        albums.set(index, updateAlbum);
+
+        return updateAlbum;
     }
 
     @Override
     public void delete(Album deleteAlbum) {
+        int index = albums.indexOf(deleteAlbum);
+
+        if (index < 0) {
+            throw new RecordDoesNotExistException(String.format("Tying to delete nonexistent album (name: %s)", deleteAlbum.getName()));
+        }
+
+        albums.remove(index);
     }
 }
