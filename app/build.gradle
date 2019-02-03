@@ -5,7 +5,7 @@ android {
     buildToolsVersion '28.0.3'
 
     defaultConfig {
-        applicationId "comp3350.srsys"
+        applicationId "comp3350.breadtunes"
         minSdkVersion 19
         targetSdkVersion 23
         versionCode 1
@@ -16,6 +16,9 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
+        debug {
+            testCoverageEnabled false
+        }
     }
 }
 
@@ -24,5 +27,6 @@ dependencies {
     testImplementation 'junit:junit:4.12'
     implementation 'com.android.support:appcompat-v7:23.3.0'
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
-    implementation files('lib/mp3agic-0.9.1.jar')
+    implementation files('lib/mp3agic-0.9.0.jar')
+    implementation files('lib/commons-io-2.6.jar')
 }
