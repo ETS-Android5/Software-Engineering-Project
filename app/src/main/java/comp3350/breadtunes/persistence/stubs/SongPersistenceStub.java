@@ -32,19 +32,19 @@ public class SongPersistenceStub implements SongPersistence {
     }
 
     @Override
-    public List<Song> getAllSongs() {
+    public List<Song> getAll() {
         return Collections.unmodifiableList(songs);
     }
 
     @Override
-    public Song insertSong(Song newSong) {
+    public Song insert(Song newSong) {
         // Not checking for duplicates
         songs.add(newSong);
         return newSong;
     }
 
     @Override
-    public Song updateSong(Song updateSong) {
+    public Song update(Song updateSong) {
         int index = songs.indexOf(updateSong);
 
         if (index < 0) {
@@ -57,7 +57,7 @@ public class SongPersistenceStub implements SongPersistence {
     }
 
     @Override
-    public void deleteSong(Song deleteSong) {
+    public void delete(Song deleteSong) {
         int index = songs.indexOf(deleteSong);
 
         if (index < 0) {
