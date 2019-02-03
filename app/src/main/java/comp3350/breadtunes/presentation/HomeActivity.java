@@ -4,9 +4,13 @@ import comp3350.breadtunes.R;
 
 import android.app.Activity;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.Button;
+import android.widget.Toast;
 
 public class HomeActivity extends Activity {
 
@@ -25,6 +29,8 @@ public class HomeActivity extends Activity {
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_home, menu);
+
+
         return true;
     }
 
@@ -36,6 +42,14 @@ public class HomeActivity extends Activity {
         int id = item.getItemId();
 
         return super.onOptionsItemSelected(item);
+    }
+
+
+    public void playSong(View view){
+        Toast.makeText(HomeActivity.this, "play music clicked!", Toast.LENGTH_SHORT).show();
+        MediaPlayer mediaPlayer = MediaPlayer.create(HomeActivity.this, R.raw.nocturne);
+        mediaPlayer.start();
+
     }
 
     /*
