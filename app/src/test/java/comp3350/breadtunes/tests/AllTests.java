@@ -3,19 +3,14 @@ package comp3350.breadtunes.tests;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-import comp3350.breadtunes.tests.objects.CourseTest;
-import comp3350.breadtunes.tests.objects.SCTest;
-import comp3350.breadtunes.tests.objects.StudentTest;
-import comp3350.breadtunes.tests.business.CalculateGPATest;
+import comp3350.breadtunes.tests.objects.*;
 
 @RunWith(Suite.class)
 @Suite.SuiteClasses({
-        StudentTest.class,
-        CourseTest.class,
-        SCTest.class,
-        CalculateGPATest.class
+        AlbumTest.class,
+        ArtistTest.class,
+        GenreTest.class,
+        SongDurationTest.class,
+        SongTest.class
 })
-public class AllTests
-{
-
-}
+public class AllTests { }
