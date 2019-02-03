@@ -2,7 +2,7 @@ package comp3350.breadtunes.objects;
 
 import java.util.Collection;
 
-class Album {
+public class Album {
     private String name;
     private Collection<Song> songs;
     private Genre genre = null;
@@ -10,7 +10,6 @@ class Album {
     public Album(String name, Collection<Song> songs) {
         this.name = name;
         this.songs = songs;
-        this.genre = new UnknownGenre();
     }
 
     public Album(String name, Collection<Song> songs, Genre genre) {

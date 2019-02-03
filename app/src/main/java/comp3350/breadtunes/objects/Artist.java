@@ -2,7 +2,7 @@ package comp3350.breadtunes.objects;
 
 import java.util.Collection;
 
-class Artist {
+public class Artist {
     private String name;
     private Collection<Album> albums;
 
