@@ -3,14 +3,6 @@ package comp3350.breadtunes.presentation;
 import java.io.InputStreamReader;
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.util.Locale;
-
-import comp3350.breadtunes.business.AccessStudents;
-import comp3350.breadtunes.business.AccessCourses;
-import comp3350.breadtunes.business.AccessSC;
-import comp3350.breadtunes.objects.Student;
-import comp3350.breadtunes.objects.Course;
-import comp3350.breadtunes.objects.SC;
 
 public class CLI  // command-line interface
 {

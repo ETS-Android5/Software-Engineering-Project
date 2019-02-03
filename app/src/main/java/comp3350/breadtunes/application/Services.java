@@ -1,43 +1,41 @@
 package comp3350.breadtunes.application;
 
-import comp3350.breadtunes.persistence.CoursePersistence;
-import comp3350.breadtunes.persistence.SCPersistence;
-import comp3350.breadtunes.persistence.StudentPersistence;
-import comp3350.breadtunes.persistence.stubs.CoursePersistenceStub;
-import comp3350.breadtunes.persistence.stubs.SCPersistenceStub;
-import comp3350.breadtunes.persistence.stubs.StudentPersistenceStub;
+import comp3350.breadtunes.persistence.*;
+import comp3350.breadtunes.persistence.stubs.*;
 
 public class Services
 {
-	private static StudentPersistence studentPersistence = null;
-	private static CoursePersistence coursePersistence = null;
-	private static SCPersistence scPersistence = null;
+	private static SongPersistence songPersistence = null;
+    private static AlbumPersistence albumPersistence = null;
+    private static ArtistPersistence artistPersistence = null;
 
-	public static synchronized StudentPersistence getStudentPersistence()
+    public static synchronized SongPersistence getSongPersistence()
     {
-		if (studentPersistence == null)
-		{
-		    studentPersistence = new StudentPersistenceStub();
-        }
-
-        return studentPersistence;
-	}
-
-    public static synchronized CoursePersistence getCoursePersistence()
-    {
-        if (coursePersistence == null)
+        if (songPersistence == null)
         {
-            coursePersistence = new CoursePersistenceStub();
+            songPersistence = new SongPersistenceStub();
         }
 
-        return coursePersistence;
+        return songPersistence;
     }
 
-	public static synchronized SCPersistence getScPersistence() {
-        if (scPersistence == null) {
-            scPersistence = new SCPersistenceStub();
+    public static synchronized AlbumPersistence getAlbumPersistence()
+    {
+        if (albumPersistence == null)
+        {
+            albumPersistence = new AlbumPersistenceStub();
         }
 
-        return scPersistence;
+        return albumPersistence;
+    }
+
+    public static synchronized ArtistPersistence getArtistPersistence()
+    {
+        if (artistPersistence == null)
+        {
+            artistPersistence = new ArtistPersistenceStub();
+        }
+
+        return artistPersistence;
     }
 }
