@@ -47,6 +47,8 @@ public class HomeActivity extends Activity {
 
     public void playSong(View view){
         Toast.makeText(HomeActivity.this, "play music clicked!", Toast.LENGTH_SHORT).show();
+        MediaPlayer mediaPlayer = MediaPlayer.create(HomeActivity.this, R.raw.nocturne);
+        mediaPlayer.start();
 
     }
 
