@@ -12,7 +12,7 @@ public class ArtistPersistenceStub implements ArtistPersistence {
     private List<Artist> artists;
 
     public ArtistPersistenceStub() {
-        artists = new ArrayList<Artist>();
+        artists = new ArrayList<>();
 
         artists.add(new Artist("Artist 1", new ArrayList<Album>()));
         artists.add(new Artist("Artist 2", new ArrayList<Album>()));

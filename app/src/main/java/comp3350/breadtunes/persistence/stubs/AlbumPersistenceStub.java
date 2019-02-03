@@ -12,7 +12,7 @@ public class AlbumPersistenceStub implements AlbumPersistence {
     private List<Album> albums;
 
     public AlbumPersistenceStub() {
-        albums = new ArrayList<Album>();
+        albums = new ArrayList<>();
 
         albums.add(new Album("Album 1", new ArrayList<Song>()));
         albums.add(new Album("Album 2", new ArrayList<Song>()));
