@@ -3,6 +3,7 @@ package comp3350.breadtunes.tests;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
+import comp3350.breadtunes.tests.business.*;
 import comp3350.breadtunes.tests.objects.*;
 
 @RunWith(Suite.class)
@@ -11,6 +12,7 @@ import comp3350.breadtunes.tests.objects.*;
         ArtistTest.class,
         GenreTest.class,
         SongDurationTest.class,
-        SongTest.class
+        SongTest.class,
+        SongInfoReaderTest.class,
 })
 public class AllTests { }

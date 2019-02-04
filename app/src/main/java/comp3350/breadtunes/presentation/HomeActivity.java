@@ -1,13 +1,9 @@
 package comp3350.breadtunes.presentation;
 
 import comp3350.breadtunes.R;
-import comp3350.breadtunes.application.Services;
-import comp3350.breadtunes.business.SongInfoReader;
-import comp3350.breadtunes.persistence.SongPersistence;
 
 import android.app.Activity;
 import android.content.Intent;
-import android.content.res.AssetManager;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.Menu;
@@ -16,45 +12,12 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.Toast;
 
-import com.mpatric.mp3agic.ID3v1;
-import com.mpatric.mp3agic.ID3v2;
-
-import java.io.File;
-import java.io.InputStream;
-
-import org.apache.commons.io.FileUtils;
-
 public class HomeActivity extends Activity {
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-
-        // TODO: Remove
-        try {
-            // Open mp3 asset and create a temporary file for it
-            AssetManager assetManager = getAssets();
-            InputStream mp3FilePerth = assetManager.open("perth.mp3");
-            File tempFile = File.createTempFile("perth", ".mp3");
-            tempFile.deleteOnExit();
-            FileUtils.copyToFile(mp3FilePerth, tempFile);
-
-            // Try to get tags
-            ID3v1 id3v1Tag = SongInfoReader.getID3v1Tag(tempFile);
-
-            if (id3v1Tag == null) {
-                ID3v2 id3v2Tag = SongInfoReader.getID3v2Tag(tempFile);
-
-                String artist = id3v2Tag.getArtist();
-                String track = id3v2Tag.getTrack();
-                String name = id3v2Tag.getTitle();
-                int i = 0;
-            }
-
-        } catch (Exception e) { }
-        // TODO: End Remove
-
     }
 
     @Override
