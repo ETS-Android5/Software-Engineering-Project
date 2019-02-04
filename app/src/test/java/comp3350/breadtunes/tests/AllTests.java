@@ -11,6 +11,7 @@ import comp3350.breadtunes.tests.objects.*;
         ArtistTest.class,
         GenreTest.class,
         SongDurationTest.class,
-        SongTest.class
+        SongTest.class,
+        QueueTest.class
 })
 public class AllTests { }
