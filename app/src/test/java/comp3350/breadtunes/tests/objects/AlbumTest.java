@@ -5,6 +5,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 
 import comp3350.breadtunes.objects.Album;
+import comp3350.breadtunes.objects.Genre;
 import comp3350.breadtunes.objects.Song;
 
 import static org.junit.Assert.*;
@@ -12,22 +13,42 @@ import static org.junit.Assert.*;
 public class AlbumTest
 {
 	@Test
-	public void testAlbum()
+	public void testAlbumConstructor1()
 	{
-		// Arrange
-		Album album;
-		ArrayList<Song> songList = new ArrayList<Song>();
+		System.out.println("\nStarting testAlbumConstructor1");
 
-		System.out.println("\nStarting testAlbum");
+		// Arrange
+		ArrayList<Song> songList = new ArrayList<>();
 
 		// Act
-		album = new Album("Album 1", songList);
+		Album album = new Album("Album 1", songList);
 
 		// Assert
 		assertNotNull(album);
 		assertTrue(album.getName().equals("Album 1"));
 		assertTrue(album.getSongs().equals(songList));
 
-		System.out.println("Finished testAlbum");
+		System.out.println("Finished testAlbumConstructor1");
 	}
+
+    @Test
+    public void testAlbumConstructor2()
+    {
+        System.out.println("\nStarting testAlbumConstructor2");
+
+        // Arrange
+        ArrayList<Song> songList = new ArrayList<>();
+        Genre genre = new Genre("Test Genre");
+
+        // Act
+        Album album = new Album("Album 2", songList, genre);
+
+        // Assert
+        assertNotNull(album);
+        assertTrue(album.getName().equals("Album 2"));
+        assertTrue(album.getSongs().equals(songList));
+        assertTrue(album.getGenre().equals(genre));
+
+        System.out.println("Finished testAlbumConstructor2");
+    }
 }

@@ -11,9 +11,6 @@ public class Song {
     private Album album;
     private File songFile;
 
-
-    public Song() { } // Default constructor to be used for testing purposes
-
     public Song(String name, int trackNumber, SongDuration duration, Artist artist, Album album, File songFile) {
         this.name = name;
         this.trackNumber = trackNumber;
@@ -49,4 +46,7 @@ public class Song {
 
     public Album getAlbum() { return album; }
     public void setAlbum(Album album) { this.album = album; }
+
+    public File getSongFile() { return songFile; }
+    public void setSongFile(File songFile) {  this.songFile = songFile; }
 }
