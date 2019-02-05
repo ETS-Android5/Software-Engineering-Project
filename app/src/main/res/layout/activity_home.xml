@@ -41,8 +41,7 @@
         android:layout_height="0dp"
         android:background="@color/colorAccent"
         app:layout_constraintTop_toBottomOf="@id/playMusicButton"
-        tools:layout_editor_absoluteX="16dp">
-
-    </ListView>
+        tools:layout_editor_absoluteX="16dp"
+        />
 
 </android.support.constraint.ConstraintLayout>

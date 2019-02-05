@@ -20,15 +20,15 @@ public class SongPersistenceStub implements SongPersistence {
         songs.add(
                 new Song("Bloch Prayer", 1, new SongDuration(0, 0),
                         new Artist("Artist 1", new ArrayList<Album>()),
-                                new Album("Album 1", new ArrayList<Song>()), "res/mp3files/Bloch_Prayer.mp3"));
+                                new Album("Album 1", new ArrayList<Song>()), "res/raw/prayer.mp3"));
         songs.add(
                 new Song("Haydn Adagio", 1, new SongDuration(0, 0),
                         new Artist("Artist 2", new ArrayList<Album>()),
-                        new Album("Album 2", new ArrayList<Song>()), "res/mp3files/Haydn_Adagio.mp3"));
+                        new Album("Album 2", new ArrayList<Song>()), "res/raw/adagio.mp3"));
         songs.add(
                 new Song("Tchaikovsky Nocturne", 1, new SongDuration(0, 0),
                         new Artist("Artist 3", new ArrayList<Album>()),
-                        new Album("Album 3", new ArrayList<Song>()), "res/mp3files/Tchaikovsky_Nocturne__orch.mp3"));
+                        new Album("Album 3", new ArrayList<Song>()), "res/raw/nocturne.mp3"));
     }
 
     @Override

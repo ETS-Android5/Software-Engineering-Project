@@ -13,9 +13,11 @@ import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.List;
@@ -25,6 +27,7 @@ public class HomeActivity extends Activity {
 
     // To view info about the activity lifecycle https://developer.android.com/guide/components/activities/activity-lifecycle
     // Populating lists with custom content https://github.com/codepath/android_guides/wiki/Using-an-ArrayAdapter-with-ListView
+    // PLAY SONGS https://developer.android.com/guide/topics/media/mediaplayer#java
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -43,8 +46,19 @@ public class HomeActivity extends Activity {
 
         //create adapter to populate list items in the listView in the main activity
         ArrayAdapter adapter = new ArrayAdapter<String>(this, R.layout.songlist_element, songNames);
-        ListView activitySongList = (ListView) findViewById(R.id.songList);
+        final ListView activitySongList = (ListView) findViewById(R.id.songList);
         activitySongList.setAdapter(adapter); //populate the items!
+
+
+        //set on item click listener to know which song is being played
+       activitySongList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+           @Override
+           public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
+              String selectedItem = (String) adapterView.getItemAtPosition(i);     //get the name of the song being played
+               Toast.makeText(HomeActivity.this, "Selected "+selectedItem, Toast.LENGTH_SHORT).show();
+                
+           }
+       });
 
     }//on create
 
@@ -58,6 +72,7 @@ public class HomeActivity extends Activity {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_home, menu);
 
+//
 
         return true;
     }
@@ -79,6 +94,13 @@ public class HomeActivity extends Activity {
         mediaPlayer.start();
 
     }
+
+
+//    public void onSongListItemClick(View view){
+//
+//
+//
+//    }
 
     /*
     public void buttonStudentsOnClick(View v) {
