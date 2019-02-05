@@ -1,5 +1,7 @@
 package comp3350.breadtunes.presentation;
 import comp3350.breadtunes.R;
+import comp3350.breadtunes.business.HomeActivityHelper;
+import comp3350.breadtunes.business.MediaPlayerController;
 import comp3350.breadtunes.business.MusicPlayerState;
 import comp3350.breadtunes.objects.Song;
 import android.app.Activity;
@@ -15,27 +17,33 @@ import android.widget.ListView;
 import android.widget.Toast;
 
 
+//==============================
+// HELPFUL DOCUMENTATION
+//    // Media Player class https://developer.android.com/reference/android/media/MediaPlayer
+//    // To view info about the activity lifecycle https://developer.android.com/guide/components/activities/activity-lifecycle
+//    // Populating lists with custom content https://github.com/codepath/android_guides/wiki/Using-an-ArrayAdapter-with-ListView
+//    // PLAY SONGS https://developer.android.com/guide/topics/media/mediaplayer#java
+//==============================
+
+
+
 public class HomeActivity extends Activity {
 
-    // Media Player class https://developer.android.com/reference/android/media/MediaPlayer
-    // To view info about the activity lifecycle https://developer.android.com/guide/components/activities/activity-lifecycle
-    // Populating lists with custom content https://github.com/codepath/android_guides/wiki/Using-an-ArrayAdapter-with-ListView
-    // PLAY SONGS https://developer.android.com/guide/topics/media/mediaplayer#java
 
-    boolean songPlaying = false;
-    boolean songPaused = false;
-    MediaPlayer mediaPlayer;
-
-
-    MusicPlayerState logicLayer = null;
+    MediaPlayerController mediaPlayerController;  //business layer objects that help presentation layer carry out operations
+    MusicPlayerState musicPlayerState ; //business layer object that contains the current state of the music player
+    HomeActivityHelper homeActivityHelper; //populates this activity and provides small utilities such as
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        logicLayer = new MusicPlayerState(); // initialize the music players state
-        String[] songNames = logicLayer.getSongNames();  //get the names of all songs to be displayed in the ListView
+        musicPlayerState = new MusicPlayerState();
+        mediaPlayerController = new MediaPlayerController(HomeActivity.this, musicPlayerState);
+        homeActivityHelper = new HomeActivityHelper();
+
+        String[] songNames = homeActivityHelper.getSongNames();  //get the names of all songs to be displayed in the ListView
 
         //create adapter to populate list items in the listView in the main activity
         ArrayAdapter adapter = new ArrayAdapter<String>(this, R.layout.songlist_element, songNames);
@@ -51,12 +59,12 @@ public class HomeActivity extends Activity {
                Toast.makeText(HomeActivity.this, "Playing "+selectedSongName, Toast.LENGTH_SHORT).show();
 
                //get the song object associated with the songname that was clicked
-               Song selectedSong = logicLayer.getSong(selectedSongName);
+               Song selectedSong = homeActivityHelper.getSong(selectedSongName);
 
                if(selectedSong != null) {
                    int songId = getResources().getIdentifier(selectedSong.getRawName(), "raw", getPackageName());
-                   String playStatus = logicLayer.playSong(selectedSong,HomeActivity.this,songId);
-                   Toast.makeText(HomeActivity.this, playStatus, Toast.LENGTH_LONG).show(); //song not found
+                   String playStatus = mediaPlayerController.playSong(selectedSong, songId);
+                   Toast.makeText(HomeActivity.this, playStatus, Toast.LENGTH_SHORT).show(); //song not found
                }
            }
        });// on item click listener for listview
@@ -65,58 +73,38 @@ public class HomeActivity extends Activity {
 
 
 
-
-
-
-    @Override
     protected void onDestroy() {
-        mediaPlayer.release(); //
+        mediaPlayerController.releaseMediaPlayer();
         super.onDestroy();
     }
 
-    @Override
+
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_home, menu);
-
-//
-
         return true;
     }
 
-    @Override
+
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
-
         return super.onOptionsItemSelected(item);
     }
 
 
     public void onClickPause(View view){
-
-        if(songPlaying){
-            mediaPlayer.pause();
-            songPaused = true;
-        }else{
-            Toast.makeText(HomeActivity.this, "No song playing", Toast.LENGTH_LONG).show();
-        }
-
+        String response = mediaPlayerController.pauseSong();
+        Toast.makeText(HomeActivity.this, response, Toast.LENGTH_SHORT).show();
     }
 
 
 
-    public void onCLickResume(View view){
-
-        if(songPaused){
-            //resume!
-
-            songPlaying = true;
-        }else{
-            Toast.makeText(HomeActivity.this, "Song is not paused", Toast.LENGTH_LONG).show();
-        }
+    public void onClickResume(View view){
+        String response = mediaPlayerController.resumeSong();
+        Toast.makeText(HomeActivity.this, response, Toast.LENGTH_SHORT).show();
     }
 
 
