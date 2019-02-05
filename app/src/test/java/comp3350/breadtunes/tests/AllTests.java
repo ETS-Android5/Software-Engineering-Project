@@ -3,11 +3,8 @@ package comp3350.breadtunes.tests;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-<<<<<<< HEAD
 import comp3350.breadtunes.tests.business.QueueTest;
-=======
 import comp3350.breadtunes.tests.business.LookUpSongsTest;
->>>>>>> UserStory/LookUpSongs
 import comp3350.breadtunes.tests.objects.*;
 
 @RunWith(Suite.class)
