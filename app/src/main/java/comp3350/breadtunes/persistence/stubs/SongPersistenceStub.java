@@ -29,6 +29,10 @@ public class SongPersistenceStub implements SongPersistence {
                 new Song("Tchaikovsky Nocturne", "nocturne",1, new SongDuration(0, 0),
                         new Artist("Artist 3", new ArrayList<Album>()),
                         new Album("Album 3", new ArrayList<Song>()), "res/raw/nocturne.mp3"));
+        songs.add(
+                new Song("Jaraba Tapatio", "jarabe",1, new SongDuration(0, 0),
+                        new Artist("Mariachi", new ArrayList<Album>()),
+                        new Album("Album 3", new ArrayList<Song>()), "res/raw/nocturne.mp3"));
     }
 
     @Override
