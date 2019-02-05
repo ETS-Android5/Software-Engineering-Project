@@ -40,7 +40,7 @@ public class HomeActivity extends Activity {
         setContentView(R.layout.activity_home);
 
         musicPlayerState = new MusicPlayerState();
-        mediaPlayerController = new MediaPlayerController(HomeActivity.this, musicPlayerState);
+        mediaPlayerController = new MediaPlayerController(HomeActivity.this, musicPlayerState); //init logic layer
         homeActivityHelper = new HomeActivityHelper();
 
         String[] songNames = homeActivityHelper.getSongNames();  //get the names of all songs to be displayed in the ListView
@@ -102,11 +102,18 @@ public class HomeActivity extends Activity {
 
 
 
-    public void onClickResume(View view){
-        String response = mediaPlayerController.resumeSong();
-        Toast.makeText(HomeActivity.this, response, Toast.LENGTH_SHORT).show();
-    }
+    public void onClickResume(View view) {
 
+        //make sure a song is actually paused
+        if (musicPlayerState.isSongPaused()) {
+            Song pausedSong = musicPlayerState.getCurrentlyPlayingSong();   //get the current playing song from the app state
+            int resourceId = getResources().getIdentifier(pausedSong.getRawName(), "raw", getPackageName());    //get the resource pointer
+            String response = mediaPlayerController.resumeSong(resourceId);                 // ask  media controller to resume
+            Toast.makeText(HomeActivity.this, response, Toast.LENGTH_SHORT).show(); //display result of operation
+        }else{
+            Toast.makeText(HomeActivity.this, "No song to resume", Toast.LENGTH_SHORT).show();
+        }
+    }
 
 
 

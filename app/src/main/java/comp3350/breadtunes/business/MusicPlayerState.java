@@ -17,6 +17,7 @@ public class MusicPlayerState {
         songPlaying = false;
         songPaused = false;
         currentSong = null;
+        pausedPosition = 0;
 
     }
 
