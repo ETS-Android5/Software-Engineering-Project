@@ -1,16 +1,11 @@
 package comp3350.breadtunes.presentation;
-
 import comp3350.breadtunes.R;
-import comp3350.breadtunes.application.Services;
+import comp3350.breadtunes.business.MusicPlayerState;
 import comp3350.breadtunes.objects.Song;
-import comp3350.breadtunes.persistence.*;
-import comp3350.breadtunes.persistence.stubs.SongPersistenceStub;
-
 import android.app.Activity;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
-import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -19,30 +14,28 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import java.util.List;
 
 public class HomeActivity extends Activity {
 
-
+    // Media Player class https://developer.android.com/reference/android/media/MediaPlayer
     // To view info about the activity lifecycle https://developer.android.com/guide/components/activities/activity-lifecycle
     // Populating lists with custom content https://github.com/codepath/android_guides/wiki/Using-an-ArrayAdapter-with-ListView
     // PLAY SONGS https://developer.android.com/guide/topics/media/mediaplayer#java
+
+    boolean songPlaying = false;
+    boolean songPaused = false;
+    MediaPlayer mediaPlayer;
+
+
+    MusicPlayerState logicLayer = null;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        //Get the list of songs from application services
-        Services services = new Services();
-        final SongPersistenceStub songPersistenceStub = (SongPersistenceStub) services.getSongPersistence(); //get interface for getting songs from persistance
-
-        final List<Song> songList = songPersistenceStub.getAll(); //get all songs in persistance
-        String[] songNames = new String[songList.size()]; //array where all song names will be stored
-
-        for(int i= 0; i<songList.size(); i++){
-            songNames[i] = songList.get(i).getName();
-        }
+        logicLayer = new MusicPlayerState(); // initialize the music players state
+        String[] songNames = logicLayer.getSongNames();  //get the names of all songs to be displayed in the ListView
 
         //create adapter to populate list items in the listView in the main activity
         ArrayAdapter adapter = new ArrayAdapter<String>(this, R.layout.songlist_element, songNames);
@@ -50,34 +43,34 @@ public class HomeActivity extends Activity {
         activitySongList.setAdapter(adapter); //populate the items!
 
 
-        //set on item click listener to know which song is being played
-       activitySongList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-           @Override
+        //set on item click listener to react to list clicks
+        activitySongList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+
            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
               String selectedSongName = (String) adapterView.getItemAtPosition(i);     //get the name of the song being played
                Toast.makeText(HomeActivity.this, "Playing "+selectedSongName, Toast.LENGTH_SHORT).show();
 
                //get the song object associated with the songname that was clicked
-               Song selectedSong = songPersistenceStub.getSong(selectedSongName);
+               Song selectedSong = logicLayer.getSong(selectedSongName);
 
                if(selectedSong != null) {
-                   String songRawName = selectedSong.getRawName();// get the rawName of the song in order to find its Id
-                   Toast.makeText(HomeActivity.this, "RawName is "+songRawName, Toast.LENGTH_LONG).show();
-                   int songId = getResources().getIdentifier(songRawName, "raw", getPackageName());
-                   if (songId == 0) {
-                       Toast.makeText(HomeActivity.this, "Failed to find id", Toast.LENGTH_LONG).show(); //song not found
-                   } else {
-                       MediaPlayer mediaPlayer = MediaPlayer.create(HomeActivity.this, songId); //song found, play!
-                       mediaPlayer.start();
-                   }
+                   int songId = getResources().getIdentifier(selectedSong.getRawName(), "raw", getPackageName());
+                   String playStatus = logicLayer.playSong(selectedSong,HomeActivity.this,songId);
+                   Toast.makeText(HomeActivity.this, playStatus, Toast.LENGTH_LONG).show(); //song not found
                }
            }
-       });
+       });// on item click listener for listview
 
     }//on create
 
+
+
+
+
+
     @Override
     protected void onDestroy() {
+        mediaPlayer.release(); //
         super.onDestroy();
     }
 
@@ -102,12 +95,31 @@ public class HomeActivity extends Activity {
     }
 
 
-    public void onClickPlaySongButton(View view){
-        Toast.makeText(HomeActivity.this, "play music clicked!", Toast.LENGTH_SHORT).show();
-        MediaPlayer mediaPlayer = MediaPlayer.create(HomeActivity.this, R.raw.nocturne);
-        mediaPlayer.start();
+    public void onClickPause(View view){
+
+        if(songPlaying){
+            mediaPlayer.pause();
+            songPaused = true;
+        }else{
+            Toast.makeText(HomeActivity.this, "No song playing", Toast.LENGTH_LONG).show();
+        }
 
     }
+
+
+
+    public void onCLickResume(View view){
+
+        if(songPaused){
+            //resume!
+
+            songPlaying = true;
+        }else{
+            Toast.makeText(HomeActivity.this, "Song is not paused", Toast.LENGTH_LONG).show();
+        }
+    }
+
+
 
 
 
