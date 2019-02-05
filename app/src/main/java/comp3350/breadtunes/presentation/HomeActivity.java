@@ -15,9 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import java.util.List;
@@ -28,6 +26,7 @@ public class HomeActivity extends Activity {
     // To view info about the activity lifecycle https://developer.android.com/guide/components/activities/activity-lifecycle
     // Populating lists with custom content https://github.com/codepath/android_guides/wiki/Using-an-ArrayAdapter-with-ListView
     // PLAY SONGS https://developer.android.com/guide/topics/media/mediaplayer#java
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
