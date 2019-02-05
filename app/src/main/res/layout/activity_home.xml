@@ -22,25 +22,12 @@
         app:layout_constraintTop_toTopOf="parent" />
 
 
-
-    <Button
-        android:id="@+id/playMusicButton"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_alignParentLeft="true"
-        android:layout_alignParentTop="true"
-        android:layout_alignParentRight="true"
-        android:onClick="playSong"
-        android:text="Play a song"
-        app:layout_constraintTop_toBottomOf="@id/textTitle"
-        tools:layout_editor_absoluteX="16dp" />
-
     <ListView
         android:id="@+id/songList"
         android:layout_width="match_parent"
         android:layout_height="0dp"
         android:background="@color/colorAccent"
-        app:layout_constraintTop_toBottomOf="@id/playMusicButton"
+        app:layout_constraintTop_toBottomOf="@id/textTitle"
         tools:layout_editor_absoluteX="16dp"
         />
 

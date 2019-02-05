@@ -10,6 +10,7 @@ import android.app.Activity;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -34,9 +35,9 @@ public class HomeActivity extends Activity {
 
         //Get the list of songs from application services
         Services services = new Services();
-        SongPersistence songPersistenceStub = services.getSongPersistence(); //get interface for getting songs from persistance
+        final SongPersistenceStub songPersistenceStub = (SongPersistenceStub) services.getSongPersistence(); //get interface for getting songs from persistance
 
-        List<Song> songList = songPersistenceStub.getAll(); //get all songs in persistance
+        final List<Song> songList = songPersistenceStub.getAll(); //get all songs in persistance
         String[] songNames = new String[songList.size()]; //array where all song names will be stored
 
         for(int i= 0; i<songList.size(); i++){
@@ -53,9 +54,23 @@ public class HomeActivity extends Activity {
        activitySongList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
            @Override
            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-              String selectedItem = (String) adapterView.getItemAtPosition(i);     //get the name of the song being played
-               Toast.makeText(HomeActivity.this, "Selected "+selectedItem, Toast.LENGTH_SHORT).show();
-                
+              String selectedSongName = (String) adapterView.getItemAtPosition(i);     //get the name of the song being played
+               Toast.makeText(HomeActivity.this, "Playing "+selectedSongName, Toast.LENGTH_SHORT).show();
+
+               //get the song object associated with the songname that was clicked
+               Song selectedSong = songPersistenceStub.getSong(selectedSongName);
+
+               if(selectedSong != null) {
+                   String songRawName = selectedSong.getRawName();// get the rawName of the song in order to find its Id
+                   Toast.makeText(HomeActivity.this, "RawName is "+songRawName, Toast.LENGTH_LONG).show();
+                   int songId = getResources().getIdentifier(songRawName, "raw", getPackageName());
+                   if (songId == 0) {
+                       Toast.makeText(HomeActivity.this, "Failed to find id", Toast.LENGTH_LONG).show(); //song not found
+                   } else {
+                       MediaPlayer mediaPlayer = MediaPlayer.create(HomeActivity.this, songId); //song found, play!
+                       mediaPlayer.start();
+                   }
+               }
            }
        });
 
@@ -87,7 +102,7 @@ public class HomeActivity extends Activity {
     }
 
 
-    public void playSong(View view){
+    public void onClickPlaySongButton(View view){
         Toast.makeText(HomeActivity.this, "play music clicked!", Toast.LENGTH_SHORT).show();
         MediaPlayer mediaPlayer = MediaPlayer.create(HomeActivity.this, R.raw.nocturne);
         mediaPlayer.start();
@@ -95,11 +110,6 @@ public class HomeActivity extends Activity {
     }
 
 
-//    public void onSongListItemClick(View view){
-//
-//
-//
-//    }
 
     /*
     public void buttonStudentsOnClick(View v) {

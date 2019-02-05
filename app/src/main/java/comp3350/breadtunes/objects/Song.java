@@ -4,12 +4,14 @@ import java.io.File;
 
 public class Song {
     private String name;
+    private String rawName;
     private int year = Integer.MIN_VALUE;
     private int trackNumber;
     private SongDuration duration;
     private Artist artist;
     private Album album;
     private File songFile;
+
 
     public Song(){
 
@@ -32,8 +34,20 @@ public class Song {
         this.songFile = new File(songPath);
     }
 
+    public Song(String name,String rawName, int trackNumber, SongDuration duration, Artist artist, Album album, String songPath) {
+        this.name = name;
+        this.rawName = rawName;
+        this.trackNumber = trackNumber;
+        this.duration = duration;
+        this.artist = artist;
+        this.album = album;
+        this.songFile = new File(songPath);
+    }
+
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
+
+    public String getRawName(){return rawName;}
 
     public int getYear() { return year; }
     public void setYear(int year) { this.year = year; }

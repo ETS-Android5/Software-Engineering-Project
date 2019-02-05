@@ -18,15 +18,15 @@ public class SongPersistenceStub implements SongPersistence {
         this.songs = new ArrayList<>();
 
         songs.add(
-                new Song("Bloch Prayer", 1, new SongDuration(0, 0),
+                new Song("Bloch Prayer","prayer", 1, new SongDuration(0, 0),
                         new Artist("Artist 1", new ArrayList<Album>()),
                                 new Album("Album 1", new ArrayList<Song>()), "res/raw/prayer.mp3"));
         songs.add(
-                new Song("Haydn Adagio", 1, new SongDuration(0, 0),
+                new Song("Haydn Adagio","adagio", 1, new SongDuration(0, 0),
                         new Artist("Artist 2", new ArrayList<Album>()),
                         new Album("Album 2", new ArrayList<Song>()), "res/raw/adagio.mp3"));
         songs.add(
-                new Song("Tchaikovsky Nocturne", 1, new SongDuration(0, 0),
+                new Song("Tchaikovsky Nocturne", "nocturne",1, new SongDuration(0, 0),
                         new Artist("Artist 3", new ArrayList<Album>()),
                         new Album("Album 3", new ArrayList<Song>()), "res/raw/nocturne.mp3"));
     }
@@ -65,5 +65,17 @@ public class SongPersistenceStub implements SongPersistence {
         }
 
         songs.remove(index);
+    }
+
+    //return the raw song name for the given song
+    public Song getSong(String songName){
+
+        for(int i=0; i< songs.size(); i++){
+            Song temp = songs.get(i);
+            if(temp.getName().equals(songName)){
+                return temp;
+            }
+        }
+        return null;
     }
 }
