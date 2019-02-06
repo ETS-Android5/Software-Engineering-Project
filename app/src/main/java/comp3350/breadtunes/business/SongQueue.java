@@ -9,20 +9,20 @@ public class SongQueue {
     private int rear;
     private int nItems;
 
-    public SongQueue(int s){
-        size = s;
+    public SongQueue(int queueSize){
+        size = queueSize;
         qArray = new Song[size];
         top = 0;
         rear = -1;
         nItems = 0;
     }
 
-    public void insert(Song ll){
+    public void insert(Song insertSong){
         // Wrap queue
         if (rear == size - 1){
             rear = -1;
         }
-        qArray[++rear] = ll;
+        qArray[++rear] = insertSong;
         nItems++;
     }
 
@@ -48,6 +48,6 @@ public class SongQueue {
     }
 
     public boolean isFull(){
-        return(nItems == size);
+        return (nItems == size);
     }
 }
