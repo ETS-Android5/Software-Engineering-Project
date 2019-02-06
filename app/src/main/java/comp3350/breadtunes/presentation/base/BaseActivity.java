@@ -13,7 +13,7 @@ import android.widget.Toast;
  * Partial credit due to Karim Abou Zeid for his work on the Phonograph app:
  * https://github.com/kabouzeid/Phonograph
  */
-public class BaseActivity extends Activity {
+public abstract class BaseActivity extends Activity {
     private static final int MY_PERMISSION_READ_EXTERNAL_REQUEST = 60000;
 
     @Override
