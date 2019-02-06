@@ -15,33 +15,39 @@ public class SongQueue {
         top = 0;
         rear = -1;
         nItems = 0;
-
-    }//constructor
+    }
 
     public void insert(Song ll){
-        if(rear == size-1){//wrap
+        // Wrap queue
+        if (rear == size - 1){
             rear = -1;
         }
         qArray[++rear] = ll;
         nItems++;
-
-    }//insert
+    }
 
 
     public Song remove(){
         Song temp = qArray[top++];
-        if(top ==size){//wrap
+
+        // Wrap queue if queue cannot fit another item
+        if (top == size){
             top = 0;
         }
         nItems--;
-    return temp;//incase we want to display the song to the user
-    }//remove
+
+        return temp;
+    }
 
     public int size(){
         return nItems;
-    }//size
+    }
+
+    public boolean isEmpty() {
+        return (nItems == 0);
+    }
 
     public boolean isFull(){
         return(nItems == size);
-    }//isFull
-}//SongQueue
+    }
+}
