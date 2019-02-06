@@ -5,8 +5,8 @@ import comp3350.breadtunes.application.Services;
 import comp3350.breadtunes.objects.Song;
 import comp3350.breadtunes.persistence.*;
 import comp3350.breadtunes.persistence.stubs.SongPersistenceStub;
+import comp3350.breadtunes.presentation.base.BaseActivity;
 
-import android.app.Activity;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -20,7 +20,7 @@ import android.widget.Toast;
 
 import java.util.List;
 
-public class HomeActivity extends Activity {
+public class HomeActivity extends BaseActivity {
 
 
     // To view info about the activity lifecycle https://developer.android.com/guide/components/activities/activity-lifecycle
