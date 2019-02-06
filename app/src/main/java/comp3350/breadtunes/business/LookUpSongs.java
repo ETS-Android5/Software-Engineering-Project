@@ -19,41 +19,40 @@ public class LookUpSongs {
 
     public ArrayList<Object> searchSongs(String input) {
         ArrayList<Object>all = new ArrayList<>();
+
         for (int i = 0; i < allSongs.size() - 1; i++) {
             Song ss = (Song) allSongs.get(i);
 
             if (input.compareTo(ss.getName()) == 0) {
                 all.add(ss);
             }
-            }//for loop
+        }
         return all;
-        }//searchSongs
+    }
 
-        public ArrayList<Object> searchAlbums(String input){
-            ArrayList<Object>all = new ArrayList<>();
+    public ArrayList<Object> searchAlbums(String input){
+        ArrayList<Object>all = new ArrayList<>();
 
-            for (int i = 0; i < allAlbums.size() - 1; i++) {
-                Album al = (Album) allAlbums.get(i);
+        for (int i = 0; i < allAlbums.size() - 1; i++) {
+            Album al = (Album) allAlbums.get(i);
 
-                if (input.compareTo(al.getName()) == 0) {
-                    all.add(al);
+            if (input.compareTo(al.getName()) == 0) {
+                all.add(al);
+            }
+        }
+        return all;
+    }
 
-                }
-            }//for loop
-            return all;
-        }//searchAlbums
+    public ArrayList<Object> searchArtists(String input){
+        ArrayList<Object>all = new ArrayList<>();
 
-        public ArrayList<Object> searchArtists(String input){
-            ArrayList<Object>all = new ArrayList<>();
+        for(int i = 0; i < allArtists.size() - 1; i++) {
+            Artist ar = (Artist) allArtists.get(i);
 
-            for(int i = 0; i < allArtists.size() - 1; i++) {
-                Artist ar = (Artist) allArtists.get(i);
-
-                if (input.compareTo(ar.getName()) == 0){
-                    all.add(ar);
-                }
-            }//for loop
-            return all;
-        }//searchArtists
-    }// lookUpSongs
-
+            if (input.compareTo(ar.getName()) == 0){
+                all.add(ar);
+            }
+        }
+        return all;
+    }
+}

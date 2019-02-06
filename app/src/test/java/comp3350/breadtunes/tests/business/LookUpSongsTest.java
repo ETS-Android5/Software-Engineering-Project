@@ -21,7 +21,7 @@ public class LookUpSongsTest {
         System.out.println("\nStarting searchAlbumsTest");
         LookUpSongs search = new LookUpSongs();
         assertEquals(0, search.searchAlbums("21").size());
-        System.out.println("\nFinishing searchAlbumsTest");
+        System.out.println("Finished searchAlbumsTest");
     }
 
     @Test
@@ -29,6 +29,6 @@ public class LookUpSongsTest {
         System.out.println("\nStarting searchArtistsTest");
         LookUpSongs search = new LookUpSongs();
         assertEquals(0, search.searchArtists("Adele").size());
-        System.out.println("\nFinishing searchArtistsTest");
+        System.out.println("Finished searchArtistsTest");
     }
 }
