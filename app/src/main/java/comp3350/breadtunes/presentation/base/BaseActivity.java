@@ -2,23 +2,19 @@ package comp3350.breadtunes.presentation.base;
 
 import android.Manifest;
 import android.app.Activity;
+import android.content.pm.PackageManager;
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.widget.Toast;
 
-import java.util.ArrayList;
 
 /**
  * Partial credit due to Karim Abou Zeid for his work on the Phonograph app:
  * https://github.com/kabouzeid/Phonograph
  */
 public class BaseActivity extends Activity {
-
-    private final Permission[] requiredPermissions = {
-            new Permission(Manifest.permission.READ_EXTERNAL_STORAGE, "Permission to read external storage has been denied.")
-    };
-
-    private ArrayList<Permission> permissionsNotAccepted = null;
-
+    private static final int MY_PERMISSION_READ_EXTERNAL_REQUEST = 60000;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -29,27 +25,40 @@ public class BaseActivity extends Activity {
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
 
-        getPermissionsNotAccepted();
-        requestPermissions();
+        requestReadExternalStoragePermission();
     }
 
-    private void getPermissionsNotAccepted() {
+    protected void requestReadExternalStoragePermission() {
+        String readExternalStoragePermission = Manifest.permission.READ_EXTERNAL_STORAGE;
 
-    }
-
-    private void requestPermissions() {
-        for (Permission permission : requiredPermissions) {
-
+        // If build version is at least Marshmallow
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            if (checkSelfPermission(readExternalStoragePermission) != PackageManager.PERMISSION_GRANTED) {
+                // User wants to see the rationale for accepting read external storage
+                if (shouldShowRequestPermissionRationale(readExternalStoragePermission)) {
+                    Toast.makeText(getApplicationContext(),
+                            "Permission is required to read your audio files.",
+                            Toast.LENGTH_LONG)
+                            .show();
+                }
+                // User does not want to see rationale, just ask for permission
+                else {
+                    String[] permissions = {readExternalStoragePermission};
+                    requestPermissions(permissions, MY_PERMISSION_READ_EXTERNAL_REQUEST);
+                }
+            }
         }
     }
 
-    protected class Permission {
-        protected String permissionName;
-        protected String permissionDeniedMessage;
-
-        protected Permission(String name, String deniedMessage) {
-            permissionName = name;
-            permissionDeniedMessage = deniedMessage;
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
+        switch (requestCode) {
+            case MY_PERMISSION_READ_EXTERNAL_REQUEST: {
+                // If request is cancelled, the result arrays are empty.
+                if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
+                    // We can now read the external storage
+                }
+            }
         }
     }
 }
