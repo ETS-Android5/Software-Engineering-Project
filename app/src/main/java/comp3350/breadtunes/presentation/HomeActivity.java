@@ -5,6 +5,9 @@ import comp3350.breadtunes.business.MediaPlayerController;
 import comp3350.breadtunes.business.MusicPlayerState;
 import comp3350.breadtunes.objects.Song;
 import android.app.Activity;
+import comp3350.breadtunes.persistence.*;
+import comp3350.breadtunes.persistence.stubs.SongPersistenceStub;
+import comp3350.breadtunes.presentation.base.BaseActivity;
 import android.content.Intent;
 import android.media.MediaPlayer;
 import android.os.Bundle;
@@ -27,7 +30,7 @@ import android.widget.Toast;
 
 
 
-public class HomeActivity extends Activity {
+public class HomeActivity extends BaseActivity {
 
 
      MediaPlayerController mediaPlayerController;  //business layer objects that help presentation layer carry out operations

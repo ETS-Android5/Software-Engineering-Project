@@ -4,6 +4,7 @@ import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
 import comp3350.breadtunes.tests.business.QueueTest;
+import comp3350.breadtunes.tests.business.LookUpSongsTest;
 import comp3350.breadtunes.tests.objects.*;
 
 @RunWith(Suite.class)
@@ -13,7 +14,7 @@ import comp3350.breadtunes.tests.objects.*;
         GenreTest.class,
         SongDurationTest.class,
         SongTest.class,
-        QueueTest.class
-
+        QueueTest.class,
+        LookUpSongsTest.class
 })
 public class AllTests { }
