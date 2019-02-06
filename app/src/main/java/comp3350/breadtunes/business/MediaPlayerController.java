@@ -22,7 +22,7 @@ public class MediaPlayerController implements MediaPlayer.OnCompletionListener {
     //plays a song, returns a string "succesful" or "failed to find resource" so that activity that calls this metjod can display toast message
     public String playSong(Song song, int resourceId){
 
-        String response = "";
+        String response;
         if(resourceId == 0){
             response = "Failed to find resource";
         }else{
@@ -67,6 +67,46 @@ public class MediaPlayerController implements MediaPlayer.OnCompletionListener {
     //https://developer.android.com/reference/android/media/MediaPlayer.OnCompletionListener
     public void onCompletion(MediaPlayer mediaPlayer) {
         //get reference to next from app state
+    }
+
+
+    // play next song button
+    public String playNextSong(Context context){
+        String response;
+        if(appState.getCurrentlyPlayingSong() != null && appState.getCurrentSongList()!= null){ //make sure there is a song playing
+            Song nextSong = appState.getNextSong();
+
+            if(nextSong != null) {
+                int nextSongId = context.getResources().getIdentifier(nextSong.getRawName(), "raw", context.getPackageName());    //get the resource pointer
+                playSong(nextSong, nextSongId); //play the new song
+                response = "playing " + nextSong.getName();
+            }else{
+                response = "no next song";
+            }
+        }else{
+            response = "no song currently playing";
+        }
+        return response;
+    }
+
+    //play previous song button
+    public String playPreviousSong(Context context){
+        String response;
+        if(appState.getCurrentlyPlayingSong() != null && appState.getCurrentSongList()!= null){ //make sure there is a song playing
+            Song previousSong = appState.getPreviousSong();
+
+            if(previousSong != null) {
+                int nextSongId = context.getResources().getIdentifier(previousSong.getRawName(), "raw", context.getPackageName());    //get the resource pointer
+                playSong(previousSong, nextSongId); //play the new song
+                response = "playing " + previousSong.getName();
+            }else{
+                response = "no previous song";
+            }
+        }else{
+            response = "no song currently playing";
+        }
+        return response;
+
     }
 
 

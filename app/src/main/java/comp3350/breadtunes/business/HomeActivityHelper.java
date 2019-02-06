@@ -12,11 +12,13 @@ public class HomeActivityHelper {
 
     private Services services;   //object to communicate with the song persistence
     private SongPersistenceStub songPersistenceStub;
+    private List<Song> songList;
 
 
     public HomeActivityHelper(){
         services = new Services();
         songPersistenceStub = (SongPersistenceStub) services.getSongPersistence(); //get interface for getting songs from persistance
+        songList = songPersistenceStub.getAll();
     }
 
 
@@ -29,11 +31,15 @@ public class HomeActivityHelper {
 
     //return a String array with all song names
     public String[] getSongNames(){
-        List<Song> songList = songPersistenceStub.getAll();
         String[] songNames = new String[songList.size()];
         for(int i= 0; i<songList.size(); i++){
             songNames[i] = songList.get(i).getName();
         }
         return songNames;
+    }
+
+    // return the list of songs for the HomeActivity!
+    public List<Song> getHomeActivitySongList(){
+        return songList;
     }
 }

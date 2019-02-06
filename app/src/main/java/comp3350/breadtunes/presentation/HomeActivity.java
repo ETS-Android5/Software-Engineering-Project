@@ -30,18 +30,19 @@ import android.widget.Toast;
 public class HomeActivity extends Activity {
 
 
-    MediaPlayerController mediaPlayerController;  //business layer objects that help presentation layer carry out operations
-    MusicPlayerState musicPlayerState ; //business layer object that contains the current state of the music player
-    HomeActivityHelper homeActivityHelper; //populates this activity and provides small utilities such as
+     MediaPlayerController mediaPlayerController;  //business layer objects that help presentation layer carry out operations
+     MusicPlayerState musicPlayerState ; //business layer object that contains the current state of the music player
+     HomeActivityHelper homeActivityHelper; //populates this activity and provides small utilities such as
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        musicPlayerState = new MusicPlayerState();
-        mediaPlayerController = new MediaPlayerController(HomeActivity.this, musicPlayerState); //init logic layer
         homeActivityHelper = new HomeActivityHelper();
+        musicPlayerState = new MusicPlayerState(homeActivityHelper.getHomeActivitySongList()); //crate the object and pass it the list of songs in the home activity
+        mediaPlayerController = new MediaPlayerController(HomeActivity.this, musicPlayerState); //init logic layer
+
 
         String[] songNames = homeActivityHelper.getSongNames();  //get the names of all songs to be displayed in the ListView
 
@@ -49,7 +50,6 @@ public class HomeActivity extends Activity {
         ArrayAdapter adapter = new ArrayAdapter<String>(this, R.layout.songlist_element, songNames);
         final ListView activitySongList = (ListView) findViewById(R.id.songList);
         activitySongList.setAdapter(adapter); //populate the items!
-
 
         //set on item click listener to react to list clicks
         activitySongList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -94,14 +94,13 @@ public class HomeActivity extends Activity {
         return super.onOptionsItemSelected(item);
     }
 
-
+    // PAUSE BUTTON
     public void onClickPause(View view){
         String response = mediaPlayerController.pauseSong();
         Toast.makeText(HomeActivity.this, response, Toast.LENGTH_SHORT).show();
     }
 
-
-
+    //RESUME BUTTON
     public void onClickResume(View view) {
 
         //make sure a song is actually paused
@@ -111,22 +110,19 @@ public class HomeActivity extends Activity {
             String response = mediaPlayerController.resumeSong(resourceId);                 // ask  media controller to resume
             Toast.makeText(HomeActivity.this, response, Toast.LENGTH_SHORT).show(); //display result of operation
         }else{
-            Toast.makeText(HomeActivity.this, "No song to resume", Toast.LENGTH_SHORT).show();
+            Toast.makeText(HomeActivity.this, "Cannot resume, No song is paused", Toast.LENGTH_SHORT).show();
         }
     }
 
-
-
-
-    /*
-    public void buttonStudentsOnClick(View v) {
-        Intent studentsIntent = new Intent(HomeActivity.this, StudentsActivity.class);
-        HomeActivity.this.startActivity(studentsIntent);
+    //NEXT BUTTON
+    public void onClickPlayNext(View view){
+        String response = mediaPlayerController.playNextSong(HomeActivity.this);
+        Toast.makeText(HomeActivity.this, response, Toast.LENGTH_SHORT).show();
     }
 
-    public void buttonCoursesOnClick(View v) {
-        Intent coursesIntent = new Intent(HomeActivity.this, CoursesActivity.class);
-        HomeActivity.this.startActivity(coursesIntent);
+    //PREVIOUS BUTTON
+    public void onClickPlayPrevious(View view){
+        String response = mediaPlayerController.playPreviousSong(HomeActivity.this);
+        Toast.makeText(HomeActivity.this, response, Toast.LENGTH_SHORT).show();
     }
-    */
 }
