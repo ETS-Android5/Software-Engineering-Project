@@ -42,4 +42,9 @@ public class HomeActivityHelper {
     public List<Song> getHomeActivitySongList(){
         return songList;
     }
-}
+
+
+
+
+
+}// home activity helper

@@ -3,6 +3,7 @@ import comp3350.breadtunes.R;
 import comp3350.breadtunes.business.HomeActivityHelper;
 import comp3350.breadtunes.business.MediaPlayerController;
 import comp3350.breadtunes.business.MusicPlayerState;
+import comp3350.breadtunes.business.NowPlayingUpdater;
 import comp3350.breadtunes.objects.Song;
 import android.app.Activity;
 import comp3350.breadtunes.persistence.*;
@@ -16,7 +17,9 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 
@@ -37,6 +40,8 @@ public class HomeActivity extends BaseActivity {
      MusicPlayerState musicPlayerState ; //business layer object that contains the current state of the music player
      HomeActivityHelper homeActivityHelper; //populates this activity and provides small utilities such as
 
+    public static TextView nowPlayingGUI;  //UI element that indicates which song is being played
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -46,7 +51,7 @@ public class HomeActivity extends BaseActivity {
         musicPlayerState = new MusicPlayerState(homeActivityHelper.getHomeActivitySongList()); //crate the object and pass it the list of songs in the home activity
         mediaPlayerController = new MediaPlayerController(HomeActivity.this, musicPlayerState); //init logic layer
 
-
+        nowPlayingGUI = (TextView) findViewById(R.id.song_playing);
         String[] songNames = homeActivityHelper.getSongNames();  //get the names of all songs to be displayed in the ListView
 
         //create adapter to populate list items in the listView in the main activity
@@ -61,12 +66,13 @@ public class HomeActivity extends BaseActivity {
               String selectedSongName = (String) adapterView.getItemAtPosition(i);     //get the name of the song being played
                Toast.makeText(HomeActivity.this, "Playing "+selectedSongName, Toast.LENGTH_SHORT).show();
 
-               //get the song object associated with the songname that was clicked
+               //get the song object associated with the song name that was clicked
                Song selectedSong = homeActivityHelper.getSong(selectedSongName);
 
                if(selectedSong != null) {
                    int songId = getResources().getIdentifier(selectedSong.getRawName(), "raw", getPackageName());
-                   String playStatus = mediaPlayerController.playSong(selectedSong, songId);
+                   String playStatus = mediaPlayerController.playSong(selectedSong, songId); //                             play the song!
+                   updateNowPlaying(); //update the gui with the new song playing
                    Toast.makeText(HomeActivity.this, playStatus, Toast.LENGTH_SHORT).show(); //song not found
                }
            }
@@ -120,12 +126,24 @@ public class HomeActivity extends BaseActivity {
     //NEXT BUTTON
     public void onClickPlayNext(View view){
         String response = mediaPlayerController.playNextSong(HomeActivity.this);
+        updateNowPlaying();
         Toast.makeText(HomeActivity.this, response, Toast.LENGTH_SHORT).show();
     }
 
     //PREVIOUS BUTTON
     public void onClickPlayPrevious(View view){
         String response = mediaPlayerController.playPreviousSong(HomeActivity.this);
+        updateNowPlaying();
         Toast.makeText(HomeActivity.this, response, Toast.LENGTH_SHORT).show();
     }
+
+    //update the now playing part of the gui: more info https://developer.android.com/training/multiple-threads/communicate-ui
+    //more info : https://stackoverflow.com/questions/11140285/how-do-we-use-runonuithread-in-android
+    private void updateNowPlaying(){
+        NowPlayingUpdater uiUpdater; //module in the business layer that updates the gui everu time a song is changed
+        uiUpdater = new NowPlayingUpdater(HomeActivity.this, musicPlayerState);
+        uiUpdater.run();
+
+    }
+
 }
