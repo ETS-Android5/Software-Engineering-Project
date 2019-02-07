@@ -22,10 +22,10 @@ public class LookUpSongs {
     public ArrayList<Song> searchSongs(String input) {
         ArrayList<Song> matchingSongs = new ArrayList<>();
 
-        for (int i = 0; i < allSongs.size() - 1; i++) {
+        for (int i = 0; i < allSongs.size(); i++) {
             Song ss = allSongs.get(i);
 
-            if (input.compareTo(ss.getName()) == 0) {
+            if (input.length() != 0 && ss.getName().toUpperCase().contains(input.toUpperCase())) {
                 matchingSongs.add(ss);
             }
         }
@@ -35,10 +35,10 @@ public class LookUpSongs {
     public ArrayList<Album> searchAlbums(String input){
         ArrayList<Album> matchingAlbums = new ArrayList<>();
 
-        for (int i = 0; i < allAlbums.size() - 1; i++) {
+        for (int i = 0; i < allAlbums.size(); i++) {
             Album al = allAlbums.get(i);
 
-            if (input.compareTo(al.getName()) == 0) {
+            if (input.length() != 0 && al.getName().toUpperCase().contains(input.toUpperCase())) {
                 matchingAlbums.add(al);
             }
         }
@@ -48,10 +48,10 @@ public class LookUpSongs {
     public ArrayList<Artist> searchArtists(String input){
         ArrayList<Artist> matchingArtists = new ArrayList<>();
 
-        for(int i = 0; i < allArtists.size() - 1; i++) {
+        for(int i = 0; i < allArtists.size(); i++) {
             Artist ar = allArtists.get(i);
 
-            if (input.compareTo(ar.getName()) == 0){
+            if (input.length() != 0 && ar.getName().toUpperCase().contains(input.toUpperCase())){
                 matchingArtists.add(ar);
             }
         }

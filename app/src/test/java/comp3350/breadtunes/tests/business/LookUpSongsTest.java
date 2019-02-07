@@ -81,7 +81,7 @@ public class LookUpSongsTest {
         ArrayList<Song> songList = testTarget.searchSongs("Prayer");
 
         // Assert
-        assertTrue(songList.size() == 1);
+        assertEquals(songList.size(), 1);
         assertEquals(songList.get(0).getName(), "Bloch Prayer");
 
         System.out.println("Finished searchSongsNameSubstringTest");
@@ -191,7 +191,7 @@ public class LookUpSongsTest {
         ArrayList<Artist> artistList = testTarget.searchArtists("yonce");
 
         // Assert
-        assertTrue(artistList.size() == 1);
+        assertEquals(artistList.size(),1);
         assertEquals(artistList.get(0).getName(), "Beyonce");
 
         System.out.println("Finished searchArtistsNameSubstringTest");
