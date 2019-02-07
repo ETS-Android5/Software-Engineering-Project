@@ -42,7 +42,7 @@ public class HomeActivity extends BaseActivity {
         setContentView(R.layout.activity_home);
 
         homeActivityHelper = new HomeActivityHelper(HomeActivity.this);
-        musicPlayerState = new MusicPlayerState(homeActivityHelper.getHomeActivitySongList()); //crate the object and pass it the list of songs in the home activity
+        musicPlayerState = new MusicPlayerState(homeActivityHelper.getHomeActivitySongList(), homeActivityHelper); //crate the object and pass it the list of songs in the home activity
         homeActivityHelper.setAppState(musicPlayerState); //pass the app state so that home activity helper can update the gui when a song changes
         mediaPlayerController = new MediaPlayerController(HomeActivity.this, musicPlayerState); //init logic layer
 
@@ -68,7 +68,6 @@ public class HomeActivity extends BaseActivity {
                if(selectedSong != null) {
                    int songId = getResources().getIdentifier(selectedSong.getRawName(), "raw", getPackageName());
                    String playStatus = mediaPlayerController.playSong(selectedSong, songId); //                             play the song!
-                   updateNowPlaying(); //update the gui with the new song playing
                     Log.e(TAG, playStatus);
                }
            }
@@ -122,22 +121,14 @@ public class HomeActivity extends BaseActivity {
     //NEXT BUTTON
     public void onClickPlayNext(View view){
         String response = mediaPlayerController.playNextSong(HomeActivity.this);
-        updateNowPlaying();
         Log.i(TAG, response);
     }
 
     //PREVIOUS BUTTON
     public void onClickPlayPrevious(View view){
         String response = mediaPlayerController.playPreviousSong(HomeActivity.this);
-        updateNowPlaying();
         Log.i(TAG, response);
     }
 
-    //update the now playing part of the gui: more info https://developer.android.com/training/multiple-threads/communicate-ui
-    //more info : https://stackoverflow.com/questions/11140285/how-do-we-use-runonuithread-in-android
-    private void updateNowPlaying(){
-        homeActivityHelper.run();
-
-    }
 
 }

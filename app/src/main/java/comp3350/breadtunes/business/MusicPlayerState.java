@@ -17,7 +17,11 @@ public class MusicPlayerState {
     private Song previousSong;
 
 
-    public MusicPlayerState(List<Song> initialSongList){
+    //================Subject to change, using it this way because right now we only have one activity's gui to update
+    HomeActivityHelper guiUpdater;
+
+
+    public MusicPlayerState(List<Song> initialSongList, HomeActivityHelper guiUpdater){
 
         songPlaying = false;
         songPaused = false;
@@ -26,6 +30,7 @@ public class MusicPlayerState {
         currentSongList = initialSongList;
         nextSong = null;
         previousSong = null;
+        this.guiUpdater = guiUpdater; //subject to change, logical way to update gui for iteration 0
 
     }
 
@@ -35,6 +40,7 @@ public class MusicPlayerState {
     public void setPausedPosition(int pausedPosition) { this.pausedPosition = pausedPosition; }
     public boolean isSongPaused() { return songPaused; }
     public int getPausedPosition() { return pausedPosition; }
+
 
     //getters that return song objects
     public Song getCurrentlyPlayingSong() { return currentSong;}
@@ -53,6 +59,7 @@ public class MusicPlayerState {
         this.currentSong = newCurrentSong; //when the song is changed, update the new next and previous
         updateNextSong();
         updatePreviousSong();
+        updateGUI(); //update the gui in the home activity with the information of the new song playing
 
     }
 
@@ -85,7 +92,9 @@ public class MusicPlayerState {
 
     }
 
-
+    private void updateGUI(){
+        guiUpdater.run();
+    }
 
 
 

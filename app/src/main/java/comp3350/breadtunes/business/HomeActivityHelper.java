@@ -54,6 +54,9 @@ public class HomeActivityHelper implements Runnable{
     }
 
 
+
+    //update the now playing part of the gui: more info https://developer.android.com/training/multiple-threads/communicate-ui
+    //more info : https://stackoverflow.com/questions/11140285/how-do-we-use-runonuithread-in-android
     //update the gui
     public void run() {
         homeActivity.runOnUiThread(new Runnable()
