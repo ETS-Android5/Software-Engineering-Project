@@ -13,48 +13,48 @@ public class LookUpSongs {
     List<Album> allAlbums;
     List<Artist> allArtists;
 
-    public LookUpSongs(Services serviceProvider) {
-        allSongs = serviceProvider.getSongPersistence().getAll();
-        allAlbums = serviceProvider.getAlbumPersistence().getAll();
-        allArtists = serviceProvider.getArtistPersistence().getAll();
+    public LookUpSongs(List<Song> songs, List<Album> albums, List<Artist> artists) {
+        allSongs = songs;
+        allAlbums = albums;
+        allArtists = artists;
     }
 
-    public ArrayList<Object> searchSongs(String input) {
-        ArrayList<Object>all = new ArrayList<>();
+    public ArrayList<Song> searchSongs(String input) {
+        ArrayList<Song> matchingSongs = new ArrayList<>();
 
         for (int i = 0; i < allSongs.size() - 1; i++) {
             Song ss = allSongs.get(i);
 
             if (input.compareTo(ss.getName()) == 0) {
-                all.add(ss);
+                matchingSongs.add(ss);
             }
         }
-        return all;
+        return matchingSongs;
     }
 
-    public ArrayList<Object> searchAlbums(String input){
-        ArrayList<Object>all = new ArrayList<>();
+    public ArrayList<Album> searchAlbums(String input){
+        ArrayList<Album> matchingAlbums = new ArrayList<>();
 
         for (int i = 0; i < allAlbums.size() - 1; i++) {
             Album al = allAlbums.get(i);
 
             if (input.compareTo(al.getName()) == 0) {
-                all.add(al);
+                matchingAlbums.add(al);
             }
         }
-        return all;
+        return matchingAlbums;
     }
 
-    public ArrayList<Object> searchArtists(String input){
-        ArrayList<Object>all = new ArrayList<>();
+    public ArrayList<Artist> searchArtists(String input){
+        ArrayList<Artist> matchingArtists = new ArrayList<>();
 
         for(int i = 0; i < allArtists.size() - 1; i++) {
             Artist ar = allArtists.get(i);
 
             if (input.compareTo(ar.getName()) == 0){
-                all.add(ar);
+                matchingArtists.add(ar);
             }
         }
-        return all;
+        return matchingArtists;
     }
 }
