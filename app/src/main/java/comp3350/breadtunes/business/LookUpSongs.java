@@ -3,57 +3,58 @@ package comp3350.breadtunes.business;
 import java.util.ArrayList;
 import java.util.List;
 
+import comp3350.breadtunes.application.Services;
 import comp3350.breadtunes.objects.Album;
 import comp3350.breadtunes.objects.Artist;
 import comp3350.breadtunes.objects.Song;
 
-import static comp3350.breadtunes.application.Services.getAlbumPersistence;
-import static comp3350.breadtunes.application.Services.getArtistPersistence;
-import static comp3350.breadtunes.application.Services.getSongPersistence;
-
 public class LookUpSongs {
+    List<Song> allSongs;
+    List<Album> allAlbums;
+    List<Artist> allArtists;
 
-    List allSongs = getSongPersistence().getAll();
-    List allAlbums = getAlbumPersistence().getAll();
-    List allArtists = getArtistPersistence().getAll();
+    public LookUpSongs(List<Song> songs, List<Album> albums, List<Artist> artists) {
+        allSongs = songs;
+        allAlbums = albums;
+        allArtists = artists;
+    }
 
-    public ArrayList<Object> searchSongs(String input) {
-        ArrayList<Object>all = new ArrayList<>();
-        for (int i = 0; i < allSongs.size() - 1; i++) {
-            Song ss = (Song) allSongs.get(i);
+    public ArrayList<Song> searchSongs(String input) {
+        ArrayList<Song> matchingSongs = new ArrayList<>();
 
-            if (input.compareTo(ss.getName()) == 0) {
-                all.add(ss);
+        for (int i = 0; i < allSongs.size(); i++) {
+            Song ss = allSongs.get(i);
+
+            if (input.length() != 0 && ss.getName().toUpperCase().contains(input.toUpperCase())) {
+                matchingSongs.add(ss);
             }
-            }//for loop
-        return all;
-        }//searchSongs
+        }
+        return matchingSongs;
+    }
 
-        public ArrayList<Object> searchAlbums(String input){
-            ArrayList<Object>all = new ArrayList<>();
+    public ArrayList<Album> searchAlbums(String input){
+        ArrayList<Album> matchingAlbums = new ArrayList<>();
 
-            for (int i = 0; i < allAlbums.size() - 1; i++) {
-                Album al = (Album) allAlbums.get(i);
+        for (int i = 0; i < allAlbums.size(); i++) {
+            Album al = allAlbums.get(i);
 
-                if (input.compareTo(al.getName()) == 0) {
-                    all.add(al);
+            if (input.length() != 0 && al.getName().toUpperCase().contains(input.toUpperCase())) {
+                matchingAlbums.add(al);
+            }
+        }
+        return matchingAlbums;
+    }
 
-                }
-            }//for loop
-            return all;
-        }//searchAlbums
+    public ArrayList<Artist> searchArtists(String input){
+        ArrayList<Artist> matchingArtists = new ArrayList<>();
 
-        public ArrayList<Object> searchArtists(String input){
-            ArrayList<Object>all = new ArrayList<>();
+        for(int i = 0; i < allArtists.size(); i++) {
+            Artist ar = allArtists.get(i);
 
-            for(int i = 0; i < allArtists.size() - 1; i++) {
-                Artist ar = (Artist) allArtists.get(i);
-
-                if (input.compareTo(ar.getName()) == 0){
-                    all.add(ar);
-                }
-            }//for loop
-            return all;
-        }//searchArtists
-    }// lookUpSongs
-
+            if (input.length() != 0 && ar.getName().toUpperCase().contains(input.toUpperCase())){
+                matchingArtists.add(ar);
+            }
+        }
+        return matchingArtists;
+    }
+}
