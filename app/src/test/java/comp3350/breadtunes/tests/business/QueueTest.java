@@ -133,11 +133,11 @@ public class QueueTest {
         Song expectedSong = q.remove();
 
         // Assert
-        assertEquals(expectedSong, song2); // Expect that the only item in the queue was song2
+        assertEquals(expectedSong, song1); // Expect that the only item in the queue was song1
         assertNotNull(expectedSong);
-        assertTrue(q.isFull());
-        assertFalse(q.isEmpty());
-        assertTrue(q.size() == 1);
+        assertFalse(q.isFull());
+        assertTrue(q.isEmpty());
+        assertTrue(q.size() == 0);
 
         System.out.println("Finished testOneSizeQueue");
     }

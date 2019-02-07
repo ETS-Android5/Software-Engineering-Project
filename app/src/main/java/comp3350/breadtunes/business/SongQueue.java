@@ -19,24 +19,36 @@ public class SongQueue {
 
     public void insert(Song insertSong){
         // Wrap queue
-        if (rear == size - 1){
-            rear = -1;
+        if(!isFull()) {
+            if (rear == size - 1) {
+                rear = -1;
+            }
+            qArray[++rear] = insertSong;
+            nItems++;
         }
-        qArray[++rear] = insertSong;
-        nItems++;
+        else{
+            //unability to add to the full queue
+        }
     }
 
 
     public Song remove(){
-        Song temp = qArray[top++];
-
-        // Wrap queue if queue cannot fit another item
-        if (top == size){
-            top = 0;
+        Song temp;
+        if(!isEmpty() && top != rear) {
+            temp = qArray[top++];
+            // Wrap queue if queue cannot fit another item
+            if (top == size) {
+                top = 0;
+            }
+            nItems--;
+            return temp;
         }
-        nItems--;
-
-        return temp;
+        else if(!isEmpty() && top == rear){
+            temp = qArray[top];
+            nItems--;
+            return temp;
+        }
+        return null;
     }
 
     public int size(){
