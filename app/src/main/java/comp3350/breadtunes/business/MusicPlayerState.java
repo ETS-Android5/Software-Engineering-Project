@@ -65,7 +65,7 @@ public class MusicPlayerState {
             if (currentSongIndex + 1 < currentSongList.size()) {
                 nextSong = currentSongList.get(++currentSongIndex);//make sure we do not go out of bounds
             }else{
-                nextSong = null;
+                nextSong = null; //no next song to play, we are the end of the list
             }
         }
     }
@@ -79,7 +79,7 @@ public class MusicPlayerState {
             if (currentSongIndex -1 > -1) {
                 previousSong = currentSongList.get(--currentSongIndex); //make sure we do not go out of bounds if the current song is the first song in the list
             }else{
-                previousSong = null;
+                previousSong = null; //no previous song , we are the start of the list
             }
         }
 
