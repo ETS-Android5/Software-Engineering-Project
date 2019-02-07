@@ -3,21 +3,14 @@ import comp3350.breadtunes.R;
 import comp3350.breadtunes.business.HomeActivityHelper;
 import comp3350.breadtunes.business.MediaPlayerController;
 import comp3350.breadtunes.business.MusicPlayerState;
-import comp3350.breadtunes.business.NowPlayingUpdater;
 import comp3350.breadtunes.objects.Song;
-import android.app.Activity;
-import comp3350.breadtunes.persistence.*;
-import comp3350.breadtunes.persistence.stubs.SongPersistenceStub;
 import comp3350.breadtunes.presentation.base.BaseActivity;
-import android.content.Intent;
-import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
-import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -47,8 +40,9 @@ public class HomeActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        homeActivityHelper = new HomeActivityHelper();
+        homeActivityHelper = new HomeActivityHelper(HomeActivity.this);
         musicPlayerState = new MusicPlayerState(homeActivityHelper.getHomeActivitySongList()); //crate the object and pass it the list of songs in the home activity
+        homeActivityHelper.setAppState(musicPlayerState); //pass the app state so that home activity helper can update the gui when a song changes
         mediaPlayerController = new MediaPlayerController(HomeActivity.this, musicPlayerState); //init logic layer
 
         nowPlayingGUI = (TextView) findViewById(R.id.song_playing);
@@ -140,9 +134,7 @@ public class HomeActivity extends BaseActivity {
     //update the now playing part of the gui: more info https://developer.android.com/training/multiple-threads/communicate-ui
     //more info : https://stackoverflow.com/questions/11140285/how-do-we-use-runonuithread-in-android
     private void updateNowPlaying(){
-        NowPlayingUpdater uiUpdater; //module in the business layer that updates the gui everu time a song is changed
-        uiUpdater = new NowPlayingUpdater(HomeActivity.this, musicPlayerState);
-        uiUpdater.run();
+        homeActivityHelper.run();
 
     }
 
