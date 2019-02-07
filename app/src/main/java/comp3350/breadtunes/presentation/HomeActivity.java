@@ -45,7 +45,9 @@ public class HomeActivity extends BaseActivity {
         homeActivityHelper.setAppState(musicPlayerState); //pass the app state so that home activity helper can update the gui when a song changes
         mediaPlayerController = new MediaPlayerController(HomeActivity.this, musicPlayerState); //init logic layer
 
-        nowPlayingGUI = (TextView) findViewById(R.id.song_playing);
+        nowPlayingGUI = (TextView) findViewById(R.id.song_playing_text);
+        nowPlayingGUI.setKeyListener(null);
+
         String[] songNames = homeActivityHelper.getSongNames();  //get the names of all songs to be displayed in the ListView
 
         //create adapter to populate list items in the listView in the main activity

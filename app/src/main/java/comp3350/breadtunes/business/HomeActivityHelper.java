@@ -62,9 +62,15 @@ public class HomeActivityHelper implements Runnable{
             public void run()
             {
                 Song newSong = appState.getCurrentlyPlayingSong();
-                if(newSong != null) {
+
+                if (newSong != null) {
                     String songTitle = newSong.getName();
-                    HomeActivity.nowPlayingGUI.setText(songTitle);
+                    String albumName = newSong.getAlbum().getName();
+                    String artistName = newSong.getArtist().getName();
+
+                    String message = String.format("Song: %s\nAlbum: %s\nArtist: %s", songTitle, albumName, artistName);
+
+                    HomeActivity.nowPlayingGUI.setText(message);
                 }
             }
         });
