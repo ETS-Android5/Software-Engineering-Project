@@ -27,7 +27,9 @@ public class SongQueue {
             nItems++;
         }
         else{
-            //unability to add to the full queue
+            //unable to add to a full queue
+
+            //do nothing
         }
     }
 
