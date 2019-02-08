@@ -70,16 +70,4 @@ public class SongPersistenceStub implements SongPersistence {
 
         songs.remove(index);
     }
-
-    //return the raw song name for the given song
-    public Song getSong(String songName){
-
-        for(int i=0; i< songs.size(); i++){
-            Song temp = songs.get(i);
-            if(temp.getName().equals(songName)){
-                return temp;
-            }
-        }
-        return null;
-    }
 }

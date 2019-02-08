@@ -1,5 +1,6 @@
 package comp3350.breadtunes.presentation;
 import comp3350.breadtunes.R;
+import comp3350.breadtunes.application.Services;
 import comp3350.breadtunes.business.HomeActivityHelper;
 import comp3350.breadtunes.business.MediaPlayerController;
 import comp3350.breadtunes.business.MusicPlayerState;
@@ -14,6 +15,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import java.util.List;
 
 
 //==============================
@@ -41,8 +44,9 @@ public class HomeActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        homeActivityHelper = new HomeActivityHelper(HomeActivity.this);
-        musicPlayerState = new MusicPlayerState(homeActivityHelper.getHomeActivitySongList(), homeActivityHelper); //crate the object and pass it the list of songs in the home activity
+        List<Song> songList = Services.getSongPersistence().getAll();
+        homeActivityHelper = new HomeActivityHelper(HomeActivity.this, songList);
+        musicPlayerState = new MusicPlayerState(songList, homeActivityHelper); //crate the object and pass it the list of songs in the home activity
         homeActivityHelper.setAppState(musicPlayerState); //pass the app state so that home activity helper can update the gui when a song changes
         mediaPlayerController = new MediaPlayerController(HomeActivity.this, musicPlayerState); //init logic layer
 

@@ -10,34 +10,27 @@ import comp3350.breadtunes.persistence.stubs.SongPersistenceStub;
 import comp3350.breadtunes.presentation.HomeActivity;
 
 //class that populates the list in the home activity and helps with other tasks such as updating the gui
-public class HomeActivityHelper implements Runnable{
+public class HomeActivityHelper implements Runnable {
 
-
-    private Services services;   //object to communicate with the song persistence
-    private SongPersistenceStub songPersistenceStub;
     private List<Song> songList;
     private MusicPlayerState appState;
     private Activity homeActivity; //reference to the home activity, necessary to update its gui
 
-    public HomeActivityHelper(Activity homeActivity){
-        services = new Services();
-        songPersistenceStub = (SongPersistenceStub) services.getSongPersistence(); //get interface for getting songs from persistance
-        songList = songPersistenceStub.getAll();
-        appState = null;
+    public HomeActivityHelper(Activity homeActivity, List<Song> songList){
+        this.songList = songList;
+        this.appState = null;
         this.homeActivity = homeActivity;
     }
 
-
     //return the song object associated with the string song name
     public Song getSong(String songName){
-        Song song = songPersistenceStub.getSong(songName);
-        return song;
+        for (Song song: songList) {
+           if (song.getName().equals(songName)) {
+               return song;
+           }
+        }
+        return null;
     }
-
-    public void setAppState(MusicPlayerState state){
-        this.appState = state;
-    }
-
 
     //return a String array with all song names
     public String[] getSongNames(){
@@ -48,12 +41,13 @@ public class HomeActivityHelper implements Runnable{
         return songNames;
     }
 
-    // return the list of songs for the HomeActivity!
-    public List<Song> getHomeActivitySongList(){
-        return songList;
+    public MusicPlayerState getAppState() {
+        return appState;
     }
 
-
+    public void setAppState(MusicPlayerState appState) {
+        this.appState = appState;
+    }
 
     //update the now playing part of the gui: more info https://developer.android.com/training/multiple-threads/communicate-ui
     //more info : https://stackoverflow.com/questions/11140285/how-do-we-use-runonuithread-in-android
@@ -78,7 +72,4 @@ public class HomeActivityHelper implements Runnable{
             }
         });
     }
-
-
-
-}// home activity helper
+}
