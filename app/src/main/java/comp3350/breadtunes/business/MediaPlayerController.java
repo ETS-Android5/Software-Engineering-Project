@@ -4,7 +4,7 @@ import android.media.MediaPlayer;
 import comp3350.breadtunes.objects.Song;
 
 // Class that controls the playing, pausing, and playing next/previous
-public class MediaPlayerController implements MediaPlayer.OnCompletionListener {
+public class MediaPlayerController{
 
 
     private MediaPlayer mediaPlayer;       // media player object to actually play the files
@@ -31,6 +31,17 @@ public class MediaPlayerController implements MediaPlayer.OnCompletionListener {
 
             mediaPlayer = MediaPlayer.create(context, resourceId); //song found, play!
             mediaPlayer.start();
+            mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+
+                public void onCompletion(MediaPlayer mediaPlayer) {     //interface called by the media player object when the current song playing is finished!
+                    //get reference to next from app state
+                    Song nextSong = appState.getNextSong();
+                    if(nextSong != null){
+                        int songId = context.getResources().getIdentifier(nextSong.getRawName(), "raw", context.getPackageName());
+                        playSong(nextSong, songId);
+                    }
+                }
+            });
 
             appState.setCurrentSong(song);  //update the state of the music player!
             appState.setIsSongPlaying(true);
@@ -65,9 +76,7 @@ public class MediaPlayerController implements MediaPlayer.OnCompletionListener {
 
     // WHAT TO DO WHEN THE CURRENT SONG PLAYING FINISHES
     //https://developer.android.com/reference/android/media/MediaPlayer.OnCompletionListener
-    public void onCompletion(MediaPlayer mediaPlayer) {
-        //get reference to next from app state
-    }
+
 
 
     // play next song button

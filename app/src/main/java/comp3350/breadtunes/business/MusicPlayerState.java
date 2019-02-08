@@ -17,7 +17,11 @@ public class MusicPlayerState {
     private Song previousSong;
 
 
-    public MusicPlayerState(List<Song> initialSongList){
+    //================Subject to change, using it this way because right now we only have one activity's gui to update
+    HomeActivityHelper guiUpdater;
+
+
+    public MusicPlayerState(List<Song> initialSongList, HomeActivityHelper guiUpdater){
 
         songPlaying = false;
         songPaused = false;
@@ -26,6 +30,7 @@ public class MusicPlayerState {
         currentSongList = initialSongList;
         nextSong = null;
         previousSong = null;
+        this.guiUpdater = guiUpdater; //subject to change, logical way to update gui for iteration 0
 
     }
 
@@ -35,6 +40,7 @@ public class MusicPlayerState {
     public void setPausedPosition(int pausedPosition) { this.pausedPosition = pausedPosition; }
     public boolean isSongPaused() { return songPaused; }
     public int getPausedPosition() { return pausedPosition; }
+
 
     //getters that return song objects
     public Song getCurrentlyPlayingSong() { return currentSong;}
@@ -53,6 +59,7 @@ public class MusicPlayerState {
         this.currentSong = newCurrentSong; //when the song is changed, update the new next and previous
         updateNextSong();
         updatePreviousSong();
+        updateGUI(); //update the gui in the home activity with the information of the new song playing
 
     }
 
@@ -65,7 +72,7 @@ public class MusicPlayerState {
             if (currentSongIndex + 1 < currentSongList.size()) {
                 nextSong = currentSongList.get(++currentSongIndex);//make sure we do not go out of bounds
             }else{
-                nextSong = null;
+                nextSong = null; //no next song to play, we are the end of the list
             }
         }
     }
@@ -79,13 +86,15 @@ public class MusicPlayerState {
             if (currentSongIndex -1 > -1) {
                 previousSong = currentSongList.get(--currentSongIndex); //make sure we do not go out of bounds if the current song is the first song in the list
             }else{
-                previousSong = null;
+                previousSong = null; //no previous song , we are the start of the list
             }
         }
 
     }
 
-
+    private void updateGUI(){
+        guiUpdater.run();
+    }
 
 
 

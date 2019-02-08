@@ -54,6 +54,9 @@ public class HomeActivityHelper implements Runnable{
     }
 
 
+
+    //update the now playing part of the gui: more info https://developer.android.com/training/multiple-threads/communicate-ui
+    //more info : https://stackoverflow.com/questions/11140285/how-do-we-use-runonuithread-in-android
     //update the gui
     public void run() {
         homeActivity.runOnUiThread(new Runnable()
@@ -62,9 +65,15 @@ public class HomeActivityHelper implements Runnable{
             public void run()
             {
                 Song newSong = appState.getCurrentlyPlayingSong();
-                if(newSong != null) {
+
+                if (newSong != null) {
                     String songTitle = newSong.getName();
-                    HomeActivity.nowPlayingGUI.setText(songTitle);
+                    String albumName = newSong.getAlbum().getName();
+                    String artistName = newSong.getArtist().getName();
+
+                    String message = String.format("Song: %s\nAlbum: %s\nArtist: %s", songTitle, albumName, artistName);
+
+                    HomeActivity.nowPlayingGUI.setText(message);
                 }
             }
         });

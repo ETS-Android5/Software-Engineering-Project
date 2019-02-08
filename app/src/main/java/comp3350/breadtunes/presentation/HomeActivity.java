@@ -6,6 +6,7 @@ import comp3350.breadtunes.business.MusicPlayerState;
 import comp3350.breadtunes.objects.Song;
 import comp3350.breadtunes.presentation.base.BaseActivity;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -13,7 +14,6 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 
 //==============================
@@ -32,6 +32,7 @@ public class HomeActivity extends BaseActivity {
      MediaPlayerController mediaPlayerController;  //business layer objects that help presentation layer carry out operations
      MusicPlayerState musicPlayerState ; //business layer object that contains the current state of the music player
      HomeActivityHelper homeActivityHelper; //populates this activity and provides small utilities such as
+     private static final String TAG = "Home Activity"; //tag used in messages to the log
 
     public static TextView nowPlayingGUI;  //UI element that indicates which song is being played
 
@@ -41,11 +42,13 @@ public class HomeActivity extends BaseActivity {
         setContentView(R.layout.activity_home);
 
         homeActivityHelper = new HomeActivityHelper(HomeActivity.this);
-        musicPlayerState = new MusicPlayerState(homeActivityHelper.getHomeActivitySongList()); //crate the object and pass it the list of songs in the home activity
+        musicPlayerState = new MusicPlayerState(homeActivityHelper.getHomeActivitySongList(), homeActivityHelper); //crate the object and pass it the list of songs in the home activity
         homeActivityHelper.setAppState(musicPlayerState); //pass the app state so that home activity helper can update the gui when a song changes
         mediaPlayerController = new MediaPlayerController(HomeActivity.this, musicPlayerState); //init logic layer
 
-        nowPlayingGUI = (TextView) findViewById(R.id.song_playing);
+        nowPlayingGUI = (TextView) findViewById(R.id.song_playing_text);
+        nowPlayingGUI.setKeyListener(null);
+
         String[] songNames = homeActivityHelper.getSongNames();  //get the names of all songs to be displayed in the ListView
 
         //create adapter to populate list items in the listView in the main activity
@@ -58,16 +61,14 @@ public class HomeActivity extends BaseActivity {
 
            public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
               String selectedSongName = (String) adapterView.getItemAtPosition(i);     //get the name of the song being played
-               Toast.makeText(HomeActivity.this, "Playing "+selectedSongName, Toast.LENGTH_SHORT).show();
-
+               Log.i(TAG, "Clicked on "+selectedSongName);
                //get the song object associated with the song name that was clicked
                Song selectedSong = homeActivityHelper.getSong(selectedSongName);
 
                if(selectedSong != null) {
                    int songId = getResources().getIdentifier(selectedSong.getRawName(), "raw", getPackageName());
                    String playStatus = mediaPlayerController.playSong(selectedSong, songId); //                             play the song!
-                   updateNowPlaying(); //update the gui with the new song playing
-                   Toast.makeText(HomeActivity.this, playStatus, Toast.LENGTH_SHORT).show(); //song not found
+                    Log.e(TAG, playStatus);
                }
            }
        });// on item click listener for listview
@@ -100,7 +101,7 @@ public class HomeActivity extends BaseActivity {
     // PAUSE BUTTON
     public void onClickPause(View view){
         String response = mediaPlayerController.pauseSong();
-        Toast.makeText(HomeActivity.this, response, Toast.LENGTH_SHORT).show();
+        Log.i(TAG, response);
     }
 
     //RESUME BUTTON
@@ -111,31 +112,23 @@ public class HomeActivity extends BaseActivity {
             Song pausedSong = musicPlayerState.getCurrentlyPlayingSong();   //get the current playing song from the app state
             int resourceId = getResources().getIdentifier(pausedSong.getRawName(), "raw", getPackageName());    //get the resource pointer
             String response = mediaPlayerController.resumeSong(resourceId);                 // ask  media controller to resume
-            Toast.makeText(HomeActivity.this, response, Toast.LENGTH_SHORT).show(); //display result of operation
+            Log.i(TAG, response); //display result of operation to log
         }else{
-            Toast.makeText(HomeActivity.this, "Cannot resume, No song is paused", Toast.LENGTH_SHORT).show();
+            Log.i(TAG, "Cannot resume, no song is paused");
         }
     }
 
     //NEXT BUTTON
     public void onClickPlayNext(View view){
         String response = mediaPlayerController.playNextSong(HomeActivity.this);
-        updateNowPlaying();
-        Toast.makeText(HomeActivity.this, response, Toast.LENGTH_SHORT).show();
+        Log.i(TAG, response);
     }
 
     //PREVIOUS BUTTON
     public void onClickPlayPrevious(View view){
         String response = mediaPlayerController.playPreviousSong(HomeActivity.this);
-        updateNowPlaying();
-        Toast.makeText(HomeActivity.this, response, Toast.LENGTH_SHORT).show();
+        Log.i(TAG, response);
     }
 
-    //update the now playing part of the gui: more info https://developer.android.com/training/multiple-threads/communicate-ui
-    //more info : https://stackoverflow.com/questions/11140285/how-do-we-use-runonuithread-in-android
-    private void updateNowPlaying(){
-        homeActivityHelper.run();
-
-    }
 
 }
