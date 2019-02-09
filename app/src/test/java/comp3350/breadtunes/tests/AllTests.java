@@ -3,9 +3,7 @@ package comp3350.breadtunes.tests;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
 
-import comp3350.breadtunes.tests.business.MusicPlayerStateTest;
-import comp3350.breadtunes.tests.business.QueueTest;
-import comp3350.breadtunes.tests.business.LookUpSongsTest;
+import comp3350.breadtunes.tests.business.*;
 import comp3350.breadtunes.tests.objects.*;
 
 @RunWith(Suite.class)
@@ -16,6 +14,8 @@ import comp3350.breadtunes.tests.objects.*;
         SongDurationTest.class,
         SongTest.class,
         QueueTest.class,
+        LookUpSongsTest.class,
+        HomeActivityHelperTest.class,
         LookUpSongsTest.class,
         MusicPlayerStateTest.class
 })
