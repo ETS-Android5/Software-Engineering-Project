@@ -1,9 +1,10 @@
 package comp3350.breadtunes.presentation;
 import comp3350.breadtunes.R;
-import comp3350.breadtunes.application.Services;
+import comp3350.breadtunes.services.ServiceGateway;
 import comp3350.breadtunes.business.HomeActivityHelper;
 import comp3350.breadtunes.business.MediaPlayerController;
 import comp3350.breadtunes.business.MusicPlayerState;
+import comp3350.breadtunes.business.observables.SongObservable;
 import comp3350.breadtunes.objects.Song;
 import comp3350.breadtunes.presentation.base.BaseActivity;
 import android.os.Bundle;
@@ -17,6 +18,8 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
 
 //==============================
@@ -29,7 +32,7 @@ import java.util.List;
 
 
 
-public class HomeActivity extends BaseActivity {
+public class HomeActivity extends BaseActivity implements Observer {
 
 
      MediaPlayerController mediaPlayerController;  //business layer objects that help presentation layer carry out operations
@@ -44,11 +47,12 @@ public class HomeActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        List<Song> songList = Services.getSongPersistence().getAll();
-        homeActivityHelper = new HomeActivityHelper(HomeActivity.this, songList);
-        musicPlayerState = new MusicPlayerState(songList, homeActivityHelper); //crate the object and pass it the list of songs in the home activity
+        List<Song> songList = ServiceGateway.getSongPersistence().getAll();
+        homeActivityHelper = new HomeActivityHelper(songList);
+        musicPlayerState = new MusicPlayerState(songList);
+        musicPlayerState.subscribeToSongChange(this);
         homeActivityHelper.setAppState(musicPlayerState); //pass the app state so that home activity helper can update the gui when a song changes
-        mediaPlayerController = new MediaPlayerController(HomeActivity.this, musicPlayerState); //init logic layer
+        mediaPlayerController = new MediaPlayerController(HomeActivity.this, musicPlayerState, ServiceGateway.getMediaManager());
 
         nowPlayingGUI = (TextView) findViewById(R.id.song_playing_text);
         nowPlayingGUI.setKeyListener(null);
@@ -134,5 +138,16 @@ public class HomeActivity extends BaseActivity {
         Log.i(TAG, response);
     }
 
+    @Override
+    public void update(Observable observable, Object args) {
+        SongObservable songObservable = (SongObservable) observable;
 
+        Song song = songObservable.getSong();
+
+        String songName = song.getName();
+        String albumName = song.getAlbum().getName();
+        String artistName = song.getArtist().getName();
+
+        nowPlayingGUI.setText(String.format("Song: %s\nAlbum: %s\nArtist: %s", songName, albumName, artistName));
+    }
 }

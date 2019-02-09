@@ -1,6 +1,8 @@
 package comp3350.breadtunes.business;
 import java.util.List;
+import java.util.Observer;
 
+import comp3350.breadtunes.business.observables.SongObservable;
 import comp3350.breadtunes.objects.Song;
 
 
@@ -12,16 +14,12 @@ public class MusicPlayerState {
     private Song currentSong;       // current song (playing or pausing)
     private int pausedPosition;        //timestamp where a song is paused
     private List<Song> currentSongList; //the song list that the app is playing from at the moment
-
     private Song nextSong;
     private Song previousSong;
 
+    private SongObservable songObservable;
 
-    //================Subject to change, using it this way because right now we only have one activity's gui to update
-    HomeActivityHelper guiUpdater;
-
-
-    public MusicPlayerState(List<Song> initialSongList, HomeActivityHelper guiUpdater){
+    public MusicPlayerState(List<Song> initialSongList){
 
         songPlaying = false;
         songPaused = false;
@@ -30,8 +28,7 @@ public class MusicPlayerState {
         currentSongList = initialSongList;
         nextSong = null;
         previousSong = null;
-        this.guiUpdater = guiUpdater; //subject to change, logical way to update gui for iteration 0
-
+        songObservable = new SongObservable();
     }
 
 
@@ -59,8 +56,8 @@ public class MusicPlayerState {
         this.currentSong = newCurrentSong; //when the song is changed, update the new next and previous
         updateNextSong();
         updatePreviousSong();
-        updateGUI(); //update the gui in the home activity with the information of the new song playing
 
+        songObservable.setSong(newCurrentSong); // Notify any listeners that the song has changed
     }
 
     //update the next song instance variable based on the current playing song
@@ -92,12 +89,7 @@ public class MusicPlayerState {
 
     }
 
-    private void updateGUI(){
-        guiUpdater.run();
+    public void subscribeToSongChange(Observer observer) {
+        songObservable.addObserver(observer);
     }
-
-
-
-
-
-}//Music Player State
+}

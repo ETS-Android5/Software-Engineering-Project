@@ -14,10 +14,10 @@ import comp3350.breadtunes.tests.objects.*;
         SongDurationTest.class,
         SongTest.class,
         QueueTest.class,
+        LookUpSongsTest.class,
         HomeActivityHelperTest.class,
         LookUpSongsTest.class,
         MusicPlayerStateTest.class,
-        MediaPlayerControllerTest.class
-
+        MediaPlayerControllerTest.class,
 })
 public class AllTests { }
