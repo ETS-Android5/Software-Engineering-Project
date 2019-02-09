@@ -1,20 +1,18 @@
 package comp3350.breadtunes.business;
 import android.content.Context;
 import android.media.MediaPlayer;
+
+import comp3350.breadtunes.business.interfaces.MediaManager;
 import comp3350.breadtunes.objects.Song;
 
 // Class that controls the playing, pausing, and playing next/previous
 public class MediaPlayerController{
+    private MediaManager mediaManager;
+    private Context context;
+    private MusicPlayerState appState;
 
-
-    private MediaPlayer mediaPlayer;       // media player object to actually play the files
-    private Context context;            //the context for the activity from which the song is being played
-    private MusicPlayerState appState; //the state of the player, before playing a file, this class
-                                       // will check information such as "is a song currently playing?"
-                                        // "is a song paused?" etc.
-
-    public MediaPlayerController(Context context, MusicPlayerState appState){
-        mediaPlayer = null;
+    public MediaPlayerController(Context context, MusicPlayerState appState, MediaManager mediaManager){
+        this.mediaManager = mediaManager;
         this.context = context;
         this.appState = appState;
     }
@@ -26,14 +24,13 @@ public class MediaPlayerController{
         if(resourceId == 0){
             response = "Failed to find resource";
         }else{
-            if(mediaPlayer != null && mediaPlayer.isPlaying()) //pause a song, if there is one currently playing
-                mediaPlayer.stop();
+            if(mediaManager != null && mediaManager.isPlaying()) {
+                mediaManager.stopPlayingSong();
+            }
 
-            mediaPlayer = MediaPlayer.create(context, resourceId); //song found, play!
-            mediaPlayer.start();
-            mediaPlayer.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-
-                public void onCompletion(MediaPlayer mediaPlayer) {     //interface called by the media player object when the current song playing is finished!
+            mediaManager.startPlayingSong(context, resourceId);
+            mediaManager.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                public void onCompletion(MediaPlayer mediaPlayer) {
                     //get reference to next from app state
                     Song nextSong = appState.getNextSong();
                     if(nextSong != null){
@@ -58,10 +55,11 @@ public class MediaPlayerController{
         String response;
         //check first if a song is playing
         if(appState.isSongPlaying()){
-            if(mediaPlayer != null){ //make sure the media player object is not in idle state
-                appState.setPausedPosition(mediaPlayer.getCurrentPosition()); // save the timestamp in the state so we can resume where we left off
-                mediaPlayer.pause();
-                response = "paused song "+appState.getCurrentlyPlayingSong().getName();
+            if(mediaManager != null){ //make sure the media player object is not in idle state
+                appState.setPausedPosition(mediaManager.getCurrentPosition()); // save the timestamp in the state so we can resume where we left off
+                mediaManager.pausePlayingSong();
+
+                response = "paused song " + appState.getCurrentlyPlayingSong().getName();
                 appState.setIsSongPaused(true); //update the state of the music player
                 appState.setIsSongPlaying(false);
             }else{
@@ -118,25 +116,21 @@ public class MediaPlayerController{
 
     }
 
-
-
     // resume the playing of a song
     public String resumeSong(int resourceId){
      String response;
         try{
-                if(appState.isSongPaused()) {
-                    mediaPlayer = MediaPlayer.create(context, resourceId);
-                    mediaPlayer.seekTo(appState.getPausedPosition());   //go to the saved position in which the song was paused
-                    mediaPlayer.start();    //resume
+            if(appState.isSongPaused()) {
+                mediaManager.resumePlayingSong();
 
-                    //update app state!
-                    appState.setIsSongPaused(false);
-                    appState.setIsSongPlaying(true);
+                //update app state!
+                appState.setIsSongPaused(false);
+                appState.setIsSongPlaying(true);
 
-                    response = "Response succesful";
-                }else{
-                    response = "Can not resume , no song is paused";
-                }
+                response = "Response successful";
+            }else{
+                response = "Can not resume , no song is paused";
+            }
         }catch(Exception e){
             response = e.toString();
         }
@@ -146,8 +140,6 @@ public class MediaPlayerController{
 
     //called in OnDestroy() to free up the media player, just housekeeping
     public void releaseMediaPlayer(){
-        mediaPlayer.release();
+        mediaManager.close();
     }
-
-
 }//media player controller class
