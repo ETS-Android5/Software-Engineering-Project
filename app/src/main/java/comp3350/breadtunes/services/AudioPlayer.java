@@ -1,4 +1,4 @@
-package comp3350.breadtunes.business;
+package comp3350.breadtunes.services;
 
 import android.content.Context;
 import android.media.MediaPlayer;

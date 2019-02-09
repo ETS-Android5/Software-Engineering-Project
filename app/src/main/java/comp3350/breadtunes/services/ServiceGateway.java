@@ -1,11 +1,10 @@
-package comp3350.breadtunes.application;
+package comp3350.breadtunes.services;
 
-import comp3350.breadtunes.business.AudioPlayer;
 import comp3350.breadtunes.business.interfaces.MediaManager;
 import comp3350.breadtunes.persistence.*;
 import comp3350.breadtunes.persistence.stubs.*;
 
-public class Services
+public class ServiceGateway
 {
 	private static SongPersistence songPersistence = null;
     private static AlbumPersistence albumPersistence = null;

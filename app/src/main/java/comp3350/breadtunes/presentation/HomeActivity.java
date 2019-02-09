@@ -1,6 +1,6 @@
 package comp3350.breadtunes.presentation;
 import comp3350.breadtunes.R;
-import comp3350.breadtunes.application.Services;
+import comp3350.breadtunes.services.ServiceGateway;
 import comp3350.breadtunes.business.HomeActivityHelper;
 import comp3350.breadtunes.business.MediaPlayerController;
 import comp3350.breadtunes.business.MusicPlayerState;
@@ -47,12 +47,12 @@ public class HomeActivity extends BaseActivity implements Observer {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        List<Song> songList = Services.getSongPersistence().getAll();
+        List<Song> songList = ServiceGateway.getSongPersistence().getAll();
         homeActivityHelper = new HomeActivityHelper(songList);
         musicPlayerState = new MusicPlayerState(songList);
         musicPlayerState.subscribeToSongChange(this);
         homeActivityHelper.setAppState(musicPlayerState); //pass the app state so that home activity helper can update the gui when a song changes
-        mediaPlayerController = new MediaPlayerController(HomeActivity.this, musicPlayerState, Services.getMediaManager());
+        mediaPlayerController = new MediaPlayerController(HomeActivity.this, musicPlayerState, ServiceGateway.getMediaManager());
 
         nowPlayingGUI = (TextView) findViewById(R.id.song_playing_text);
         nowPlayingGUI.setKeyListener(null);
