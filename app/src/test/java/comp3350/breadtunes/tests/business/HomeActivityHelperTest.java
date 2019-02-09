@@ -33,7 +33,7 @@ public class HomeActivityHelperTest {
                 new Artist("Artist 3", new ArrayList<Album>()),
                 new Album("Album 3", new ArrayList<Song>()), "res/raw/nocturne.mp3"));
 
-        testTarget = new HomeActivityHelper(null, mockSongList);
+        testTarget = new HomeActivityHelper(mockSongList);
     }
 
     @Test
@@ -89,7 +89,7 @@ public class HomeActivityHelperTest {
         System.out.println("\nStarting getAppStateTest");
 
         // Arrange
-        MusicPlayerState state = new MusicPlayerState(mockSongList, testTarget);
+        MusicPlayerState state = new MusicPlayerState(mockSongList);
 
         // Act
         testTarget.setAppState(state);
