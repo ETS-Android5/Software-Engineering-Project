@@ -2,6 +2,8 @@ package comp3350.breadtunes.tests.business;
 
 // imports
 import org.junit.Test;
+import org.mockito.Mockito;
+
 import java.util.Arrays;
 import java.util.List;
 
@@ -19,7 +21,7 @@ public class MusicPlayerStateTest
     Song b = new Song();
     Song c = new Song();
     Song d = new Song();
-    HomeActivityHelper guiUpdater;
+    HomeActivityHelper guiUpdater = Mockito.mock(HomeActivityHelper.class);
 
     @Test
     public void getCurrentlyPlayingSongTest()// done
