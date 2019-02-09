@@ -1,8 +1,6 @@
 package comp3350.breadtunes.tests.business;
 
 import android.content.Context;
-import android.provider.MediaStore;
-import android.test.mock.MockContext;
 
 import org.junit.Before;
 import org.junit.Test;
