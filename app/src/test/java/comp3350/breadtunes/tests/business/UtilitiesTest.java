@@ -7,7 +7,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import comp3350.breadtunes.business.HomeActivityHelper;
+import comp3350.breadtunes.business.Utilities;
 import comp3350.breadtunes.business.MusicPlayerState;
 import comp3350.breadtunes.objects.Album;
 import comp3350.breadtunes.objects.Artist;
@@ -16,9 +16,9 @@ import comp3350.breadtunes.objects.SongDuration;
 
 import static org.junit.Assert.*;
 
-public class HomeActivityHelperTest {
+public class UtilitiesTest {
     List<Song> mockSongList = new ArrayList<>();
-    HomeActivityHelper testTarget;
+    Utilities testTarget;
 
     @Before
     public void setup() {
@@ -33,7 +33,7 @@ public class HomeActivityHelperTest {
                 new Artist("Artist 3", new ArrayList<Album>()),
                 new Album("Album 3", new ArrayList<Song>()), "res/raw/nocturne.mp3"));
 
-        testTarget = new HomeActivityHelper(mockSongList);
+        testTarget = new Utilities(mockSongList);
     }
 
     @Test
@@ -82,21 +82,5 @@ public class HomeActivityHelperTest {
         assertTrue(results.contains("Tchaikovsky Nocturne"));
 
         System.out.println("Finished getSongNamesTest");
-    }
-
-    @Test
-    public void setAppStateTest() {
-        System.out.println("\nStarting getAppStateTest");
-
-        // Arrange
-        MusicPlayerState state = new MusicPlayerState(mockSongList);
-
-        // Act
-        testTarget.setAppState(state);
-
-        // Assert
-        assertEquals(testTarget.getAppState(), state);
-
-        System.out.println("Finished getAppStateTest");
     }
 }

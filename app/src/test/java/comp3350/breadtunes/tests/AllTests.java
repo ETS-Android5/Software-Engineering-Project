@@ -15,7 +15,7 @@ import comp3350.breadtunes.tests.objects.*;
         SongTest.class,
         QueueTest.class,
         LookUpSongsTest.class,
-        HomeActivityHelperTest.class,
+        UtilitiesTest.class,
         LookUpSongsTest.class,
         MusicPlayerStateTest.class,
         MediaPlayerControllerTest.class,
