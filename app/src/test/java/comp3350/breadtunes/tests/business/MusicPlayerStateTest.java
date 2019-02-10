@@ -23,7 +23,7 @@ public class MusicPlayerStateTest
     @Test
     public void getCurrentlyPlayingSongTest()// done
     {
-        System.out.println("\nStarting getCurrentlyPlayingSongTest");
+        System.out.print("\nStarting getCurrentlyPlayingSongTest");
         List<Song> songList = Arrays.asList(a, b, c, d);
         MusicPlayerState mps = new MusicPlayerState(songList);
 
@@ -31,13 +31,13 @@ public class MusicPlayerStateTest
         assertTrue(a == mps.getCurrentlyPlayingSong());
         assertFalse(b == mps.getCurrentlyPlayingSong());
 
-        System.out.println("Finished getCurrentPlayingSongTest");
+        System.out.println("\nFinished getCurrentPlayingSongTest");
     }// getCurrentlyPlayingSongTest
 
     @Test
     public void setCurrentSongTest()// done
     {
-        System.out.println("\nStarting setCurrentSongTest");
+        System.out.print("\nStarting setCurrentSongTest");
 
         List<Song> songList = Arrays.asList(a, b, c, d);
         MusicPlayerState mps = new MusicPlayerState(songList);
@@ -49,25 +49,25 @@ public class MusicPlayerStateTest
         }
         assertFalse(mps.getCurrentlyPlayingSong() == songList.get(0));
 
-        System.out.println("Finished setCurrentSongTest");
+        System.out.println("\nFinished setCurrentSongTest");
     }// setCurrentSongTest
 
     @Test
     public void getCurrentSongList()// done
     {
-        System.out.println("\nStarting getCurrentSongList");
+        System.out.print("\nStarting getCurrentSongList");
         List<Song> songList = Arrays.asList(a, b, c, d);
         MusicPlayerState mps = new MusicPlayerState(songList);
 
         assertTrue(mps.getCurrentSongList() == songList);
         assertFalse(mps.getCurrentSongList() == null);
-        System.out.println("Finished getCurrentSongListTest");
+        System.out.println("\nFinished getCurrentSongListTest");
     }
 
     @Test
     public void setCurrentSongListTest()
     {
-        System.out.println("\nStarting setCurrentSongListTest");
+        System.out.print("\nStarting setCurrentSongListTest");
 
         List<Song> songList = Arrays.asList(a, b, c, d);
         List<Song> testSongList = Arrays.asList(a,b,c);
@@ -81,13 +81,13 @@ public class MusicPlayerStateTest
         assertTrue(testSongList == mps.getCurrentSongList());
         assertFalse(songList == mps.getCurrentSongList());
 
-        System.out.println("Finished setCurrentSongListTest");
+        System.out.println("\nFinished setCurrentSongListTest");
     }// getCurrentSongListTest
 
     @Test
     public void getNextSongTest()// done
     {
-        System.out.println("\nStarting getNextSongTest");
+        System.out.print("\nStarting getNextSongTest");
 
         List<Song> songList = Arrays.asList(a, b, c, d);
         MusicPlayerState mps = new MusicPlayerState(songList);
@@ -101,13 +101,13 @@ public class MusicPlayerStateTest
         }
         assertNull(mps.getCurrentlyPlayingSong());
 
-        System.out.println("Finished getNextSongTest");
+        System.out.println("\nFinished getNextSongTest");
     }// getNextSongTest
 
     @Test
     public void getPreviousSongTest()// done
     {
-        System.out.println("\nStarting getPreviousSongTest");
+        System.out.print("\nStarting getPreviousSongTest");
 
         List<Song> songList = Arrays.asList(a, b, c, d);
         MusicPlayerState mps = new MusicPlayerState(songList);
@@ -121,13 +121,13 @@ public class MusicPlayerStateTest
         }
         assertNull(mps.getCurrentlyPlayingSong());
 
-        System.out.println("Finished getPreviousSongTest");
+        System.out.println("\nFinished getPreviousSongTest");
     }// getPreviousSongTest
 
     @Test
     public void getSetPausedPositionTest() // done
     {
-        System.out.println("\nStarting getSetPausedPositionTest");
+        System.out.print("\nStarting getSetPausedPositionTest");
 
         List<Song> songList = Arrays.asList(a, b, c, d);
         MusicPlayerState mps = new MusicPlayerState(songList);
@@ -136,7 +136,7 @@ public class MusicPlayerStateTest
         assertEquals(mps.getPausedPosition(),30);
         assertFalse(mps.getPausedPosition() == 0);
 
-        System.out.println("Finished getSetPausedPositionTest");
+        System.out.println("\nFinished getSetPausedPositionTest");
     }// getSetPausedPositionTest
 
     @Test
@@ -146,7 +146,7 @@ public class MusicPlayerStateTest
         // setIsSongPlaying, isSongPlaying
         // setIsSongPaused, isSongPaused
 
-        System.out.println("\nStarting songPlayingTest");
+        System.out.print("\nStarting songPlayingTest");
         List<Song> songList = Arrays.asList(a, b, c, d);
         MusicPlayerState mps = new MusicPlayerState(songList);
 
@@ -166,13 +166,13 @@ public class MusicPlayerStateTest
         assertTrue(mps.isSongPaused() == false);
         assertFalse(mps.isSongPaused() == true);
 
-        System.out.println("Finished songPlayingTest");
+        System.out.println("\nFinished songPlayingTest");
     }// songPlayingTest
 
     @Test
     public void updateSongTest() // done
     {
-        System.out.println("\nStarting updateSongTest");
+        System.out.print("\nStarting updateSongTest");
 
         List<Song> songList = Arrays.asList(a, b, c, d);
         MusicPlayerState mps = new MusicPlayerState(songList);
@@ -187,8 +187,6 @@ public class MusicPlayerStateTest
         assertFalse(mps.getNextSong() == songList.get(3));
         assertFalse(mps.getPreviousSong() == songList.get(1));
 
-        System.out.println("Finished updateSongTest");
+        System.out.println("\nFinished updateSongTest");
     }
-
-
 }// MusicPlayerStateTest
