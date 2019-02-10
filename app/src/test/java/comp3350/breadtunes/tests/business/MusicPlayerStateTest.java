@@ -2,9 +2,11 @@ package comp3350.breadtunes.tests.business;
 
 // imports
 import org.junit.Test;
+import org.mockito.Mockito;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Observer;
 
 import comp3350.breadtunes.business.MusicPlayerState;
 import static junit.framework.Assert.assertFalse;
@@ -188,5 +190,19 @@ public class MusicPlayerStateTest
         assertFalse(mps.getPreviousSong() == songList.get(1));
 
         System.out.println("\nFinished updateSongTest");
+    }// updateSongTest
+
+    @Test
+    public void subscribeToSongChangeTest()
+    {
+        System.out.print("\nStarting subscribeToSongChangeTest");
+
+        List<Song> songList = Arrays.asList(a, b, c, d);
+        MusicPlayerState mps = new MusicPlayerState(songList);
+        Observer mockObserver = Mockito.mock(Observer.class);
+
+        mps.subscribeToSongChange(mockObserver);
+
+        System.out.println("\nFinished subscribeToSongChangeTest");
     }
 }// MusicPlayerStateTest
