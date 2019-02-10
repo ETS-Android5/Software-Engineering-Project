@@ -47,8 +47,7 @@ public class HomeActivity extends BaseActivity implements Observer {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
-        List<Song> songList = ServiceGateway.getSongPersistence().getAll();
-        utilities = new Utilities(songList);
+        final List<Song> songList = ServiceGateway.getSongPersistence().getAll();
         musicPlayerState = new MusicPlayerState(songList);
         musicPlayerState.subscribeToSongChange(this);
         mediaPlayerController = new MediaPlayerController(HomeActivity.this, musicPlayerState, ServiceGateway.getMediaManager());
@@ -56,7 +55,7 @@ public class HomeActivity extends BaseActivity implements Observer {
         nowPlayingGUI = (TextView) findViewById(R.id.song_playing_text);
         nowPlayingGUI.setKeyListener(null);
 
-        String[] songNames = utilities.getSongNames();  //get the names of all songs to be displayed in the ListView
+        String[] songNames = Utilities.getSongNames(songList);  //get the names of all songs to be displayed in the ListView
 
         //create adapter to populate list items in the listView in the main activity
         ArrayAdapter adapter = new ArrayAdapter<String>(this, R.layout.songlist_element, songNames);
@@ -70,7 +69,7 @@ public class HomeActivity extends BaseActivity implements Observer {
               String selectedSongName = (String) adapterView.getItemAtPosition(i);     //get the name of the song being played
                Log.i(TAG, "Clicked on "+selectedSongName);
                //get the song object associated with the song name that was clicked
-               Song selectedSong = utilities.getSong(selectedSongName);
+               Song selectedSong = Utilities.getSong(songList, selectedSongName);
 
                if(selectedSong != null) {
                    int songId = getResources().getIdentifier(selectedSong.getRawName(), "raw", getPackageName());

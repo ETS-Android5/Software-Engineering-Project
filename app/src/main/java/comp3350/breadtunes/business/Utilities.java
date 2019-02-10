@@ -1,20 +1,12 @@
 package comp3350.breadtunes.business;
 
 import java.util.List;
-import java.util.Observable;
+
 import comp3350.breadtunes.objects.Song;
 
-//class that populates the list in the home activity and helps with other tasks such as updating the gui
-public class Utilities extends Observable {
-
-    private List<Song> songList;
-
-    public Utilities(List<Song> songList){
-        this.songList = songList;
-    }
-
+public class Utilities {
     //return the song object associated with the string song name
-    public Song getSong(String songName){
+    public static Song getSong(List<Song> songList, String songName){
         for (Song song: songList) {
            if (song.getName().equals(songName)) {
                return song;
@@ -24,7 +16,7 @@ public class Utilities extends Observable {
     }
 
     //return a String array with all song names
-    public String[] getSongNames(){
+    public static String[] getSongNames(List<Song> songList){
         String[] songNames = new String[songList.size()];
         for(int i= 0; i<songList.size(); i++){
             songNames[i] = songList.get(i).getName();
