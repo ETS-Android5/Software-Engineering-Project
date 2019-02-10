@@ -1,7 +1,7 @@
 package comp3350.breadtunes.presentation;
 import comp3350.breadtunes.R;
 import comp3350.breadtunes.services.ServiceGateway;
-import comp3350.breadtunes.business.HomeActivityHelper;
+import comp3350.breadtunes.business.Utilities;
 import comp3350.breadtunes.business.MediaPlayerController;
 import comp3350.breadtunes.business.MusicPlayerState;
 import comp3350.breadtunes.business.observables.SongObservable;
@@ -37,7 +37,7 @@ public class HomeActivity extends BaseActivity implements Observer {
 
      MediaPlayerController mediaPlayerController;  //business layer objects that help presentation layer carry out operations
      MusicPlayerState musicPlayerState ; //business layer object that contains the current state of the music player
-     HomeActivityHelper homeActivityHelper; //populates this activity and provides small utilities such as
+     Utilities utilities; //populates this activity and provides small utilities such as
      private static final String TAG = "Home Activity"; //tag used in messages to the log
 
     public static TextView nowPlayingGUI;  //UI element that indicates which song is being played
@@ -48,16 +48,15 @@ public class HomeActivity extends BaseActivity implements Observer {
         setContentView(R.layout.activity_home);
 
         List<Song> songList = ServiceGateway.getSongPersistence().getAll();
-        homeActivityHelper = new HomeActivityHelper(songList);
+        utilities = new Utilities(songList);
         musicPlayerState = new MusicPlayerState(songList);
         musicPlayerState.subscribeToSongChange(this);
-        homeActivityHelper.setAppState(musicPlayerState); //pass the app state so that home activity helper can update the gui when a song changes
         mediaPlayerController = new MediaPlayerController(HomeActivity.this, musicPlayerState, ServiceGateway.getMediaManager());
 
         nowPlayingGUI = (TextView) findViewById(R.id.song_playing_text);
         nowPlayingGUI.setKeyListener(null);
 
-        String[] songNames = homeActivityHelper.getSongNames();  //get the names of all songs to be displayed in the ListView
+        String[] songNames = utilities.getSongNames();  //get the names of all songs to be displayed in the ListView
 
         //create adapter to populate list items in the listView in the main activity
         ArrayAdapter adapter = new ArrayAdapter<String>(this, R.layout.songlist_element, songNames);
@@ -71,7 +70,7 @@ public class HomeActivity extends BaseActivity implements Observer {
               String selectedSongName = (String) adapterView.getItemAtPosition(i);     //get the name of the song being played
                Log.i(TAG, "Clicked on "+selectedSongName);
                //get the song object associated with the song name that was clicked
-               Song selectedSong = homeActivityHelper.getSong(selectedSongName);
+               Song selectedSong = utilities.getSong(selectedSongName);
 
                if(selectedSong != null) {
                    int songId = getResources().getIdentifier(selectedSong.getRawName(), "raw", getPackageName());

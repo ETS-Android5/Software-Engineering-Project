@@ -5,14 +5,12 @@ import java.util.Observable;
 import comp3350.breadtunes.objects.Song;
 
 //class that populates the list in the home activity and helps with other tasks such as updating the gui
-public class HomeActivityHelper extends Observable {
+public class Utilities extends Observable {
 
     private List<Song> songList;
-    private MusicPlayerState appState;
 
-    public HomeActivityHelper(List<Song> songList){
+    public Utilities(List<Song> songList){
         this.songList = songList;
-        this.appState = null;
     }
 
     //return the song object associated with the string song name
@@ -32,13 +30,5 @@ public class HomeActivityHelper extends Observable {
             songNames[i] = songList.get(i).getName();
         }
         return songNames;
-    }
-
-    public MusicPlayerState getAppState() {
-        return appState;
-    }
-
-    public void setAppState(MusicPlayerState appState) {
-        this.appState = appState;
     }
 }
