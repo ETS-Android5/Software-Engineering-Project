@@ -3,12 +3,15 @@ package comp3350.breadtunes.objects;
 import java.io.File;
 
 public class Song {
+    private int songId;
     private String name;
     private String rawName;
     private int year = Integer.MIN_VALUE;
     private int trackNumber;
     private SongDuration duration;
+    private int artistId;
     private Artist artist;
+    private int albumId;
     private Album album;
     private File songFile;
 
@@ -44,6 +47,17 @@ public class Song {
         this.songFile = new File(songPath);
     }
 
+    private Song(Builder builder) {
+        songId = builder.songId;
+        setName(builder.name);
+        setYear(builder.year);
+        setTrackNumber(builder.trackNumber);
+        setDuration(builder.duration);
+        artistId = builder.artistId;
+        albumId = builder.albumId;
+        setSongFile(builder.songFile);
+    }
+
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
 
@@ -67,5 +81,62 @@ public class Song {
     public File getSongFile() { return songFile; }
     public void setSongFile(File songFile) {  this.songFile = songFile; }
 
-    
+
+    public static final class Builder {
+        private int songId;
+        private String name;
+        private int year;
+        private int trackNumber;
+        private SongDuration duration;
+        private int artistId;
+        private int albumId;
+        private File songFile;
+
+        public Builder() {
+        }
+
+        public Builder songId(int val) {
+            songId = val;
+            return this;
+        }
+
+        public Builder name(String val) {
+            name = val;
+            return this;
+        }
+
+        public Builder year(int val) {
+            year = val;
+            return this;
+        }
+
+        public Builder trackNumber(int val) {
+            trackNumber = val;
+            return this;
+        }
+
+        public Builder duration(SongDuration val) {
+            duration = val;
+            return this;
+        }
+
+        public Builder artistId(int val) {
+            artistId = val;
+            return this;
+        }
+
+        public Builder albumId(int val) {
+            albumId = val;
+            return this;
+        }
+
+        public Builder songFile(File val) {
+            songFile = val;
+            return this;
+        }
+
+        public Song build() {
+            return new Song(this);
+        }
+    }
 }
