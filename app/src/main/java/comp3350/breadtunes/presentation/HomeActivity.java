@@ -17,6 +17,7 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
@@ -41,7 +42,7 @@ public class HomeActivity extends BaseActivity implements Observer {
      private static final String TAG = "Home Activity"; //tag used in messages to the log
 
     public static TextView nowPlayingGUI;  //UI element that indicates which song is being played
-
+    public static ArrayList<Song> sList = new ArrayList<>();
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -54,8 +55,13 @@ public class HomeActivity extends BaseActivity implements Observer {
 
         nowPlayingGUI = (TextView) findViewById(R.id.song_playing_text);
         nowPlayingGUI.setKeyListener(null);
-
-        String[] songNames = Utilities.getSongNames(songList);  //get the names of all songs to be displayed in the ListView
+        //**********************************************************************************
+        //only way I could sort the problem
+        for(int i=0; i<songList.size(); i++){
+            sList.add(songList.get(i));
+        }
+        //**********************************************************************************
+        String[] songNames = Utilities.getSongNames(sList);  //get the names of all songs to be displayed in the ListView
 
         //create adapter to populate list items in the listView in the main activity
         ArrayAdapter adapter = new ArrayAdapter<String>(this, R.layout.songlist_element, songNames);
@@ -69,7 +75,7 @@ public class HomeActivity extends BaseActivity implements Observer {
               String selectedSongName = (String) adapterView.getItemAtPosition(i);     //get the name of the song being played
                Log.i(TAG, "Clicked on "+selectedSongName);
                //get the song object associated with the song name that was clicked
-               Song selectedSong = Utilities.getSong(songList, selectedSongName);
+               Song selectedSong = Utilities.getSong(sList, selectedSongName);
 
                if(selectedSong != null) {
                    int songId = getResources().getIdentifier(selectedSong.getRawName(), "raw", getPackageName());

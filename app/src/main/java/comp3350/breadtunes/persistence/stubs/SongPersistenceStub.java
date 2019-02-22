@@ -12,7 +12,7 @@ import comp3350.breadtunes.objects.SongDuration;
 import comp3350.breadtunes.persistence.SongPersistence;
 
 public class SongPersistenceStub implements SongPersistence {
-    private List<Song> songs;
+    private ArrayList<Song> songs;
 
     public SongPersistenceStub() {
         this.songs = new ArrayList<>();
@@ -37,6 +37,7 @@ public class SongPersistenceStub implements SongPersistence {
 
     @Override
     public List<Song> getAll() {
+
         return Collections.unmodifiableList(songs);
     }
 
@@ -55,7 +56,7 @@ public class SongPersistenceStub implements SongPersistence {
             throw new RecordDoesNotExistException(String.format("Trying to update nonexistent song (name: %s).", updateSong.getName()));
         }
 
-        songs.set(index, updateSong);
+        songs.add(index,updateSong);
 
         return updateSong;
     }

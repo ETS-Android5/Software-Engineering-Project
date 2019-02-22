@@ -17,7 +17,7 @@ import comp3350.breadtunes.objects.SongDuration;
 import static org.junit.Assert.*;
 
 public class UtilitiesTest {
-    List<Song> mockSongList = new ArrayList<>();
+    ArrayList<Song> mockSongList = new ArrayList<>();
     Utilities testTarget;
 
     @Before
@@ -33,7 +33,7 @@ public class UtilitiesTest {
                 new Artist("Artist 3", new ArrayList<Album>()),
                 new Album("Album 3", new ArrayList<Song>()), "res/raw/nocturne.mp3"));
 
-        testTarget = new Utilities(mockSongList);
+        testTarget = new Utilities();
     }
 
     @Test
@@ -41,7 +41,7 @@ public class UtilitiesTest {
         System.out.println("\nStarting getSongTest");
 
         // Act
-        Song song = testTarget.getSong("Bloch Prayer");
+        Song song = testTarget.getSong(mockSongList,"Bloch Prayer");
 
         // Assert
         assertNotNull(song);
@@ -56,7 +56,7 @@ public class UtilitiesTest {
         System.out.println("\nStarting getSongDoesNotExistTest");
 
         // Act
-        Song song = testTarget.getSong("Highway to Hell");
+        Song song = testTarget.getSong(mockSongList,"Highway to Hell");
 
         // Assert
         assertNull(song);
@@ -72,7 +72,7 @@ public class UtilitiesTest {
         Set<String> results = new HashSet<>(3);
 
         // Act
-        String[] songNames = testTarget.getSongNames();
+        String[] songNames = testTarget.getSongNames(mockSongList);
         for (String songName: songNames) { results.add(songName); }
 
         // Assert
