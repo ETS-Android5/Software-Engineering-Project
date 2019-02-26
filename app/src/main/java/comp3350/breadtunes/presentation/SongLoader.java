@@ -22,14 +22,14 @@ import comp3350.breadtunes.objects.SongDuration;
  */
 public class SongLoader {
     protected static final String[] defaultProjection = new String[]{
-            BaseColumns._ID,// 0
-            MediaStore.Audio.AudioColumns.TITLE,// 1
-            MediaStore.Audio.AudioColumns.TRACK,// 2
-            MediaStore.Audio.AudioColumns.YEAR,// 3
-            MediaStore.Audio.AudioColumns.DURATION,// 4
-            MediaStore.Audio.AudioColumns.DATA,// 5
-            MediaStore.Audio.AudioColumns.ALBUM_ID,// 6
-            MediaStore.Audio.AudioColumns.ARTIST_ID,// 7
+            BaseColumns._ID,
+            MediaStore.Audio.AudioColumns.TITLE,
+            MediaStore.Audio.AudioColumns.TRACK,
+            MediaStore.Audio.AudioColumns.YEAR,
+            MediaStore.Audio.AudioColumns.DURATION,
+            MediaStore.Audio.AudioColumns.DATA,
+            MediaStore.Audio.AudioColumns.ALBUM_ID,
+            MediaStore.Audio.AudioColumns.ARTIST_ID,
     };
 
     private Context context;
@@ -42,7 +42,7 @@ public class SongLoader {
         Cursor cursor = getDefaultCursor();
         List<Song> songList = new ArrayList<>();
 
-        if (cursor != null && cursor.getCount() > 0) {
+        if (cursor != null && cursor.moveToFirst()) {
             do {
                 songList.add(getSongFromCursor(cursor));
             } while (cursor.moveToNext());
@@ -58,21 +58,36 @@ public class SongLoader {
     public Cursor getDefaultCursor() {
         ContentResolver contentResolver = context.getContentResolver();
         Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
-        String selection = String.format("%s=1 AND %s=0", MediaStore.Audio.Media.IS_MUSIC, MediaStore.Audio.Media.TITLE);
+        String selection = String.format("%s=1 AND %s!=''", MediaStore.Audio.Media.IS_MUSIC, MediaStore.Audio.Media.TITLE);
         String sortOrder = MediaStore.Audio.Media.TITLE + " ASC";
         return contentResolver.query(uri, defaultProjection, selection, null, sortOrder);
     }
 
     public Song getSongFromCursor(Cursor cursor) {
-        return new Song.Builder()
-                .songId(cursor.getInt(0))
-                .name(cursor.getString(1))
-                .trackNumber(cursor.getInt(2))
-                .year(cursor.getInt(3))
-                .duration(SongDuration.convertMillisToDuration(cursor.getLong(4)))
-                .songFile(new File(cursor.getString(5)))
-                .albumId(cursor.getInt(6))
-                .artistId(cursor.getInt(7))
-                .build();
+        try {
+            int songIdIndex = cursor.getColumnIndex(BaseColumns._ID);
+            int titleIndex = cursor.getColumnIndex(MediaStore.Audio.AudioColumns.TITLE);
+            int trackIndex = cursor.getColumnIndex(MediaStore.Audio.AudioColumns.TRACK);
+            int yearIndex = cursor.getColumnIndex(MediaStore.Audio.AudioColumns.YEAR);
+            int durationIndex = cursor.getColumnIndex(MediaStore.Audio.AudioColumns.DURATION);
+            int dataIndex = cursor.getColumnIndex(MediaStore.Audio.AudioColumns.DATA);
+            int albumIdIndex = cursor.getColumnIndex(MediaStore.Audio.AudioColumns.ALBUM_ID);
+            int artistIdIndex = cursor.getColumnIndex(MediaStore.Audio.AudioColumns.ARTIST_ID);
+
+            return new Song.Builder()
+                    .songId(cursor.getInt(songIdIndex))
+                    .name(cursor.getString(titleIndex))
+                    .trackNumber(cursor.getInt(trackIndex))
+                    .year(cursor.getInt(yearIndex))
+                    .duration(SongDuration.convertMillisToDuration(cursor.getLong(durationIndex)))
+                    .songFile(new File(cursor.getString(dataIndex)))
+                    .albumId(cursor.getInt(albumIdIndex))
+                    .artistId(cursor.getInt(artistIdIndex))
+                    .build();
+
+        } catch (Exception ex) {
+            System.out.println(ex);
+            return new Song();
+        }
     }
 }

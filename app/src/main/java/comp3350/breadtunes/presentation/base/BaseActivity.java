@@ -8,6 +8,11 @@ import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.widget.Toast;
 
+import java.util.List;
+
+import comp3350.breadtunes.objects.Song;
+import java8.util.concurrent.CompletableFuture;
+import comp3350.breadtunes.presentation.SongLoader;
 
 /**
  * Partial credit due to Karim Abou Zeid for his work on the Phonograph app:
@@ -15,10 +20,12 @@ import android.widget.Toast;
  */
 public abstract class BaseActivity extends Activity {
     private static final int MY_PERMISSION_READ_EXTERNAL_REQUEST = 60000;
+    private SongLoader songLoader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        songLoader = new SongLoader(this);
     }
 
     @Override
@@ -26,6 +33,18 @@ public abstract class BaseActivity extends Activity {
         super.onPostCreate(savedInstanceState);
 
         requestReadExternalStoragePermission();
+
+        CompletableFuture.supplyAsync(() -> songLoader.getAllSongs()) // Read songs async from MediaStore
+            .thenAccept(allSongs -> viewSongs(allSongs));
+
+        // Maybe -> if no songs, give the sample ones?
+
+        // load songs into database
+
+        // signal to application whether there are new songs/albums/artists that can be loaded
+    }
+
+    private void viewSongs(List<Song> songList) {
     }
 
     protected void requestReadExternalStoragePermission() {
