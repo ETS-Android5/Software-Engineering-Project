@@ -20,6 +20,10 @@ android {
             testCoverageEnabled false
         }
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
@@ -28,6 +32,7 @@ dependencies {
     testImplementation 'org.mockito:mockito-core:2.7.22'
     implementation 'com.android.support:appcompat-v7:23.3.0'
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+    implementation 'net.sourceforge.streamsupport:streamsupport-cfuture:1.7.0'
 }
 
 sourceSets {
