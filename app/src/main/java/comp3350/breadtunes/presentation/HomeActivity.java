@@ -1,8 +1,7 @@
 package comp3350.breadtunes.presentation;
 import comp3350.breadtunes.R;
+import comp3350.breadtunes.business.LookUpSongs;
 import comp3350.breadtunes.services.ServiceGateway;
-import comp3350.breadtunes.business.Utilities;
-import comp3350.breadtunes.business.MediaPlayerController;
 import comp3350.breadtunes.business.MusicPlayerState;
 import comp3350.breadtunes.business.observables.SongObservable;
 import comp3350.breadtunes.objects.Song;
@@ -38,7 +37,6 @@ public class HomeActivity extends BaseActivity implements Observer {
 
      MediaPlayerController mediaPlayerController;  //business layer objects that help presentation layer carry out operations
      MusicPlayerState musicPlayerState ; //business layer object that contains the current state of the music player
-     Utilities utilities; //populates this activity and provides small utilities such as
      private static final String TAG = "Home Activity"; //tag used in messages to the log
 
     public static TextView nowPlayingGUI;  //UI element that indicates which song is being played
@@ -61,7 +59,7 @@ public class HomeActivity extends BaseActivity implements Observer {
             sList.add(songList.get(i));
         }
         //**********************************************************************************
-        String[] songNames = Utilities.getSongNames(sList);  //get the names of all songs to be displayed in the ListView
+        String[] songNames = getSongNames(sList);  //get the names of all songs to be displayed in the ListView
 
         //create adapter to populate list items in the listView in the main activity
         ArrayAdapter adapter = new ArrayAdapter<String>(this, R.layout.songlist_element, songNames);
@@ -75,7 +73,7 @@ public class HomeActivity extends BaseActivity implements Observer {
               String selectedSongName = (String) adapterView.getItemAtPosition(i);     //get the name of the song being played
                Log.i(TAG, "Clicked on "+selectedSongName);
                //get the song object associated with the song name that was clicked
-               Song selectedSong = Utilities.getSong(sList, selectedSongName);
+               Song selectedSong = LookUpSongs.getSong(sList, selectedSongName);
 
                if(selectedSong != null) {
                    int songId = getResources().getIdentifier(selectedSong.getRawName(), "raw", getPackageName());
@@ -153,5 +151,14 @@ public class HomeActivity extends BaseActivity implements Observer {
         String artistName = song.getArtist().getName();
 
         nowPlayingGUI.setText(String.format("Song: %s\nAlbum: %s\nArtist: %s", songName, albumName, artistName));
+    }
+
+    //extract all the names from a list of songs. *** method moved from Utilities.java
+    private String[] getSongNames(ArrayList<Song> songList){
+        String[] songNames = new String[songList.size()];
+        for(int i= 0; i<songList.size(); i++){
+            songNames[i] = songList.get(i).getName();
+        }
+        return songNames;
     }
 }

@@ -4,13 +4,11 @@ import android.content.Context;
 
 import org.junit.Before;
 import org.junit.Test;
-import org.mockito.Mockito;
-import org.mockito.Mock;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import comp3350.breadtunes.business.MediaPlayerController;
+import comp3350.breadtunes.presentation.MediaPlayerController;
 import comp3350.breadtunes.business.MusicPlayerState;
 import comp3350.breadtunes.business.interfaces.MediaManager;
 import comp3350.breadtunes.objects.Album;

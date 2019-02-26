@@ -75,4 +75,14 @@ public class LookUpSongs {
         }
         return out;
     }
+
+    //method added by Mario, put in here as told by a code smell
+    public static Song getSong(ArrayList<Song> songList, String songName){
+        for (Song song: songList) {
+            if (song.getName().equals(songName)) {
+                return song;
+            }
+        }
+        return null;
+    }
 }
