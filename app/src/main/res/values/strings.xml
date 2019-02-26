@@ -1,3 +1,4 @@
 <resources>
     <string name="app_name">BreadTunes</string>
+    <string name="title_activity_now_playing">NowPlayingActivity</string>
 </resources>

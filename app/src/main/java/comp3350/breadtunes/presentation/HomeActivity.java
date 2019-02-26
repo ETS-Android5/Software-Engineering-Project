@@ -6,6 +6,8 @@ import comp3350.breadtunes.business.MusicPlayerState;
 import comp3350.breadtunes.business.observables.SongObservable;
 import comp3350.breadtunes.objects.Song;
 import comp3350.breadtunes.presentation.base.BaseActivity;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.Menu;
@@ -52,7 +54,17 @@ public class HomeActivity extends BaseActivity implements Observer {
         mediaPlayerController = new MediaPlayerController(HomeActivity.this, musicPlayerState, ServiceGateway.getMediaManager());
 
         nowPlayingGUI = (TextView) findViewById(R.id.song_playing_text);
-        nowPlayingGUI.setKeyListener(null);
+
+
+        nowPlayingGUI.setOnClickListener(new View.OnClickListener(){
+            public void onClick(View v){
+                Intent intent = new Intent(HomeActivity.this, NowPlayingActvity.class);
+                startActivity(intent);
+            }
+        });
+
+
+
         //**********************************************************************************
         //only way I could sort the problem
         for(int i=0; i<songList.size(); i++){
