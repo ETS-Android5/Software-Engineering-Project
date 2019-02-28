@@ -55,10 +55,15 @@ public class HomeActivity extends BaseActivity implements Observer {
 
         nowPlayingGUI = (TextView) findViewById(R.id.song_playing_text);
 
-
+        // start now playing activity when click on song name!
         nowPlayingGUI.setOnClickListener(new View.OnClickListener(){
             public void onClick(View v){
                 Intent intent = new Intent(HomeActivity.this, NowPlayingActvity.class);
+                Song currentSong = musicPlayerState.getCurrentlyPlayingSong();
+                intent.putExtra("Song", currentSong.getName());
+                intent.putExtra("Album", currentSong.getAlbum().getName());     // add all the information necessary to start the now playing activity
+                intent.putExtra("Artist", currentSong.getArtist().getName());
+
                 startActivity(intent);
             }
         });
