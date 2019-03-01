@@ -12,22 +12,31 @@ import comp3350.breadtunes.objects.Album;
 import comp3350.breadtunes.objects.Song;
 
 public class AlbumLoader {
-
+    // Get songs from MediaStore before splitting them
     public static List<Album> getAllAlbums(Context context) {
-        List<Album> albums;
         List<Song> songs = SongLoader.getAllSongs(context);
+        return getAlbumsFromSongs(songs);
+    }
+
+    // Split an existing list of songs into albums
+    public static List<Album> getAllAlbums(List<Song> songs) {
+        return getAlbumsFromSongs(songs);
+    }
+
+    private static List<Album> getAlbumsFromSongs(List<Song> songs) {
+        List<Album> albums;
 
         if (songs.isEmpty()) {
             albums = new ArrayList<>();
         } else {
-            albums = getAlbumsFromSongs(songs);
+            albums = splitSongsIntoAlbums(songs);
             Collections.sort(albums); // Sort by album name
         }
 
         return albums;
     }
 
-    private static List<Album> getAlbumsFromSongs(@NonNull List<Song> songs) {
+    private static List<Album> splitSongsIntoAlbums(@NonNull List<Song> songs) {
         Collections.sort(songs, new SongComparator());
         List<Album> albums = new ArrayList<>();
 
