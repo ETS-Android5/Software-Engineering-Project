@@ -6,6 +6,7 @@ import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v7.app.AppCompatActivity;
 import android.widget.Toast;
 
 
@@ -13,7 +14,7 @@ import android.widget.Toast;
  * Partial credit due to Karim Abou Zeid for his work on the Phonograph app:
  * https://github.com/kabouzeid/Phonograph
  */
-public abstract class BaseActivity extends Activity {
+public abstract class BaseActivity extends AppCompatActivity {
     private static final int MY_PERMISSION_READ_EXTERNAL_REQUEST = 60000;
 
     @Override

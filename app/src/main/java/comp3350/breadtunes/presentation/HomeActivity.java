@@ -7,8 +7,8 @@ import comp3350.breadtunes.business.observables.SongObservable;
 import comp3350.breadtunes.objects.Song;
 import comp3350.breadtunes.presentation.base.BaseActivity;
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -48,6 +48,8 @@ public class HomeActivity extends BaseActivity implements Observer {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+
+
         final List<Song> songList = ServiceGateway.getSongPersistence().getAll();
         musicPlayerState = new MusicPlayerState(songList);
         musicPlayerState.subscribeToSongChange(this);
@@ -55,16 +57,12 @@ public class HomeActivity extends BaseActivity implements Observer {
 
         nowPlayingGUI = (TextView) findViewById(R.id.song_playing_text);
 
-        // start now playing activity when click on song name!
-        nowPlayingGUI.setOnClickListener(new View.OnClickListener(){
-            public void onClick(View v){
-                Intent intent = new Intent(HomeActivity.this, NowPlayingActvity.class);
-                Song currentSong = musicPlayerState.getCurrentlyPlayingSong();
-                intent.putExtra("Song", currentSong.getName());
-                intent.putExtra("Album", currentSong.getAlbum().getName());     // add all the information necessary to start the now playing activity
-                intent.putExtra("Artist", currentSong.getArtist().getName());
-
-                startActivity(intent);
+        nowPlayingGUI.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
+                ft.replace(R.id.fragment_placeholder, new NowPlayingFragment());
+                ft.commit();
             }
         });
 
@@ -101,6 +99,7 @@ public class HomeActivity extends BaseActivity implements Observer {
        });// on item click listener for listview
 
     }//on create
+
 
 
 
