@@ -2,7 +2,7 @@ package comp3350.breadtunes.objects;
 
 import java.util.List;
 
-public class Album {
+public class Album implements Comparable<Album> {
     private String name;
     private List<Song> songs;
     private Genre genre = null;
@@ -26,4 +26,8 @@ public class Album {
 
     public Genre getGenre() { return genre; }
     public void setGenre(Genre genre) { this.genre = genre; }
+
+    public int compareTo(Album album) {
+        return name.compareTo(album.getName());
+    }
 }
