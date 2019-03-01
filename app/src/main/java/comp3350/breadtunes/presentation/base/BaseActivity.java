@@ -10,9 +10,11 @@ import android.widget.Toast;
 
 import java.util.List;
 
+import comp3350.breadtunes.objects.Album;
 import comp3350.breadtunes.objects.Song;
+import comp3350.breadtunes.presentation.loaders.AlbumLoader;
 import java8.util.concurrent.CompletableFuture;
-import comp3350.breadtunes.presentation.SongLoader;
+import comp3350.breadtunes.presentation.loaders.SongLoader;
 
 /**
  * Partial credit due to Karim Abou Zeid for his work on the Phonograph app:
@@ -20,7 +22,6 @@ import comp3350.breadtunes.presentation.SongLoader;
  */
 public abstract class BaseActivity extends Activity {
     private static final int MY_PERMISSION_READ_EXTERNAL_REQUEST = 60000;
-    private SongLoader songLoader;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,8 +34,9 @@ public abstract class BaseActivity extends Activity {
 
         requestReadExternalStoragePermission();
 
-        CompletableFuture.supplyAsync(() -> SongLoader.getAllSongs(this)) // Read songs async from MediaStore
-            .thenAccept(allSongs -> viewSongs(allSongs));
+        // CompletableFuture.supplyAsync(() -> SongLoader.getAllSongs(this)) // Read songs async from MediaStore
+        //    .thenAccept(allSongs -> viewSongs(allSongs));
+        List<Album> albums = AlbumLoader.getAllAlbums(this);
 
         // Maybe -> if no songs, give the sample ones?
 
