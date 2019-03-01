@@ -1,4 +1,4 @@
-package comp3350.breadtunes.presentation;
+package comp3350.breadtunes.presentation.loaders;
 
 import android.content.ContentResolver;
 import android.content.Context;
@@ -51,7 +51,7 @@ public class SongLoader {
         return songList;
     }
 
-    public static Cursor getDefaultCursor(Context context) {
+    private static Cursor getDefaultCursor(Context context) {
         ContentResolver contentResolver = context.getContentResolver();
         Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         String selection = String.format("%s=1 AND %s!=''", MediaStore.Audio.Media.IS_MUSIC, MediaStore.Audio.Media.TITLE);
@@ -59,7 +59,7 @@ public class SongLoader {
         return contentResolver.query(uri, defaultProjection, selection, null, sortOrder);
     }
 
-    public static Song getSongFromCursor(Cursor cursor) {
+    private static Song getSongFromCursor(Cursor cursor) {
         try {
             int songIdIndex = cursor.getColumnIndex(BaseColumns._ID);
             int titleIndex = cursor.getColumnIndex(MediaStore.Audio.AudioColumns.TITLE);
