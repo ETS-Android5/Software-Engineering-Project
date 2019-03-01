@@ -1,6 +1,7 @@
 package comp3350.breadtunes.presentation;
 import comp3350.breadtunes.R;
 import comp3350.breadtunes.business.LookUpSongs;
+import comp3350.breadtunes.presentation.MediaController.MediaPlayerController;
 import comp3350.breadtunes.services.ServiceGateway;
 import comp3350.breadtunes.business.MusicPlayerState;
 import comp3350.breadtunes.business.observables.SongObservable;
@@ -34,15 +35,19 @@ import java.util.Observer;
 
 
 
-public class HomeActivity extends BaseActivity implements Observer {
+public class HomeActivity extends BaseActivity  {
 
 
-     MediaPlayerController mediaPlayerController;  //business layer objects that help presentation layer carry out operations
-     MusicPlayerState musicPlayerState ; //business layer object that contains the current state of the music player
-     private static final String TAG = "Home Activity"; //tag used in messages to the log
-
-    public static TextView nowPlayingGUI;  //UI element that indicates which song is being played
+    MediaPlayerController mediaPlayerController;  // controls playback operations
+    MusicPlayerState musicPlayerState ; //business layer object that contains the current state of the music player
     public static ArrayList<Song> sList = new ArrayList<>();
+    String[] songNamesToDisplay;
+    private final String TAG = "HomeActivity";
+
+
+
+
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -52,55 +57,27 @@ public class HomeActivity extends BaseActivity implements Observer {
 
         final List<Song> songList = ServiceGateway.getSongPersistence().getAll();
         musicPlayerState = new MusicPlayerState(songList);
-        musicPlayerState.subscribeToSongChange(this);
         mediaPlayerController = new MediaPlayerController(HomeActivity.this, musicPlayerState, ServiceGateway.getMediaManager());
 
-        nowPlayingGUI = (TextView) findViewById(R.id.song_playing_text);
+        //initialize the songNamestoDisplay so that the fragment can populate its list
+        sList.addAll(songList);
+        songNamesToDisplay = getSongNames(sList);
 
-        nowPlayingGUI.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                FragmentTransaction ft = getSupportFragmentManager().beginTransaction();
-                ft.replace(R.id.fragment_placeholder, new NowPlayingFragment());
-                ft.commit();
-            }
-        });
+        //put the song list fragment on top of the main activity
+        FragmentTransaction fragmentTransaction= getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.fragment_placeholder, new SongListFragment());
+        fragmentTransaction.commit();
 
 
-
-        //**********************************************************************************
-        //only way I could sort the problem
-        for(int i=0; i<songList.size(); i++){
-            sList.add(songList.get(i));
-        }
-        //**********************************************************************************
-        String[] songNames = getSongNames(sList);  //get the names of all songs to be displayed in the ListView
-
-        //create adapter to populate list items in the listView in the main activity
-        ArrayAdapter adapter = new ArrayAdapter<String>(this, R.layout.songlist_element, songNames);
-        final ListView activitySongList = (ListView) findViewById(R.id.songList);
-        activitySongList.setAdapter(adapter); //populate the items!
-
-        //set on item click listener to react to list clicks
-        activitySongList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-           public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-              String selectedSongName = (String) adapterView.getItemAtPosition(i);     //get the name of the song being played
-               Log.i(TAG, "Clicked on "+selectedSongName);
-               //get the song object associated with the song name that was clicked
-               Song selectedSong = LookUpSongs.getSong(sList, selectedSongName);
-
-               if(selectedSong != null) {
-                   int songId = getResources().getIdentifier(selectedSong.getRawName(), "raw", getPackageName());
-                   String playStatus = mediaPlayerController.playSong(selectedSong, songId); //                             play the song!
-                    Log.e(TAG, playStatus);
-               }
-           }
-       });// on item click listener for listview
 
     }//on create
 
-
+    //replace the song list fragment with the now playing fragment
+    public void showNowPlayingFragment(){
+        FragmentTransaction fragmentTransaction= getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.fragment_placeholder, new NowPlayingFragment());
+        fragmentTransaction.commit();
+    }
 
 
     protected void onDestroy() {
@@ -122,6 +99,15 @@ public class HomeActivity extends BaseActivity implements Observer {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         return super.onOptionsItemSelected(item);
+    }
+
+
+    private String[] getSongNames(ArrayList<Song> songList){
+        String[] songNames = new String[songList.size()];
+        for(int i= 0; i<songList.size(); i++){
+            songNames[i] = songList.get(i).getName();
+        }
+        return songNames;
     }
 
     // PAUSE BUTTON
@@ -156,25 +142,5 @@ public class HomeActivity extends BaseActivity implements Observer {
         Log.i(TAG, response);
     }
 
-    @Override
-    public void update(Observable observable, Object args) {
-        SongObservable songObservable = (SongObservable) observable;
 
-        Song song = songObservable.getSong();
-
-        String songName = song.getName();
-        String albumName = song.getAlbum().getName();
-        String artistName = song.getArtist().getName();
-
-        nowPlayingGUI.setText(String.format("Song: %s\nAlbum: %s\nArtist: %s", songName, albumName, artistName));
-    }
-
-    //extract all the names from a list of songs. *** method moved from Utilities.java
-    private String[] getSongNames(ArrayList<Song> songList){
-        String[] songNames = new String[songList.size()];
-        for(int i= 0; i<songList.size(); i++){
-            songNames[i] = songList.get(i).getName();
-        }
-        return songNames;
-    }
 }

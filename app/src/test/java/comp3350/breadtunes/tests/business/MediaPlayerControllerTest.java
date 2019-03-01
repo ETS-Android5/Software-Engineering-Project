@@ -8,7 +8,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.List;
 
-import comp3350.breadtunes.presentation.MediaPlayerController;
+import comp3350.breadtunes.presentation.MediaController.MediaPlayerController;
 import comp3350.breadtunes.business.MusicPlayerState;
 import comp3350.breadtunes.business.interfaces.MediaManager;
 import comp3350.breadtunes.objects.Album;

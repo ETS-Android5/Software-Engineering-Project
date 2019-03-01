@@ -1,4 +1,4 @@
-package comp3350.breadtunes.presentation;
+package comp3350.breadtunes.presentation.MediaController;
 import android.content.Context;
 import android.media.MediaPlayer;
 
