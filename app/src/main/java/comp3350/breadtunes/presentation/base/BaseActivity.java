@@ -10,11 +10,9 @@ import android.widget.Toast;
 
 import java.util.List;
 
-import comp3350.breadtunes.objects.Album;
-import comp3350.breadtunes.objects.Song;
-import comp3350.breadtunes.presentation.loaders.AlbumLoader;
+import comp3350.breadtunes.objects.*;
+import comp3350.breadtunes.presentation.loaders.*;
 import java8.util.concurrent.CompletableFuture;
-import comp3350.breadtunes.presentation.loaders.SongLoader;
 
 /**
  * Partial credit due to Karim Abou Zeid for his work on the Phonograph app:
@@ -36,16 +34,14 @@ public abstract class BaseActivity extends Activity {
 
         // CompletableFuture.supplyAsync(() -> SongLoader.getAllSongs(this)) // Read songs async from MediaStore
         //    .thenAccept(allSongs -> viewSongs(allSongs));
-        List<Album> albums = AlbumLoader.getAllAlbums(this);
+
+        List<Artist> artists = ArtistLoader.getAllArtists(this);
 
         // Maybe -> if no songs, give the sample ones?
 
         // load songs into database
 
         // signal to application whether there are new songs/albums/artists that can be loaded
-    }
-
-    private void viewSongs(List<Song> songList) {
     }
 
     protected void requestReadExternalStoragePermission() {
