@@ -11,6 +11,8 @@ public class Song {
     private SongDuration duration;
     private int artistId;
     private Artist artist;
+    private String artistName;
+    private String albumName;
     private int albumId;
     private Album album;
     private File songFile;
@@ -90,6 +92,8 @@ public class Song {
         private SongDuration duration;
         private int artistId;
         private int albumId;
+        private String albumName;
+        private String artistName;
         private File songFile;
 
         public Builder() {
@@ -127,6 +131,16 @@ public class Song {
 
         public Builder albumId(int val) {
             albumId = val;
+            return this;
+        }
+
+        public Builder artistName(String val) {
+           artistName = val;
+           return this;
+        }
+
+        public Builder albumName(String val) {
+            albumName = val;
             return this;
         }
 

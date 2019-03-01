@@ -25,7 +25,6 @@ public abstract class BaseActivity extends Activity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        songLoader = new SongLoader(this);
     }
 
     @Override
@@ -34,7 +33,7 @@ public abstract class BaseActivity extends Activity {
 
         requestReadExternalStoragePermission();
 
-        CompletableFuture.supplyAsync(() -> songLoader.getAllSongs()) // Read songs async from MediaStore
+        CompletableFuture.supplyAsync(() -> SongLoader.getAllSongs(this)) // Read songs async from MediaStore
             .thenAccept(allSongs -> viewSongs(allSongs));
 
         // Maybe -> if no songs, give the sample ones?

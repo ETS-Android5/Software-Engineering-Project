@@ -30,16 +30,12 @@ public class SongLoader {
             MediaStore.Audio.AudioColumns.DATA,
             MediaStore.Audio.AudioColumns.ALBUM_ID,
             MediaStore.Audio.AudioColumns.ARTIST_ID,
+            MediaStore.Audio.AudioColumns.ALBUM,
+            MediaStore.Audio.AudioColumns.ARTIST,
     };
 
-    private Context context;
-
-    public SongLoader(Context context) {
-        this.context = context;
-    }
-
-    public List<Song> getAllSongs() {
-        Cursor cursor = getDefaultCursor();
+    public static List<Song> getAllSongs(Context context) {
+        Cursor cursor = getDefaultCursor(context);
         List<Song> songList = new ArrayList<>();
 
         if (cursor != null && cursor.moveToFirst()) {
@@ -55,7 +51,7 @@ public class SongLoader {
         return songList;
     }
 
-    public Cursor getDefaultCursor() {
+    public static Cursor getDefaultCursor(Context context) {
         ContentResolver contentResolver = context.getContentResolver();
         Uri uri = MediaStore.Audio.Media.EXTERNAL_CONTENT_URI;
         String selection = String.format("%s=1 AND %s!=''", MediaStore.Audio.Media.IS_MUSIC, MediaStore.Audio.Media.TITLE);
@@ -63,7 +59,7 @@ public class SongLoader {
         return contentResolver.query(uri, defaultProjection, selection, null, sortOrder);
     }
 
-    public Song getSongFromCursor(Cursor cursor) {
+    public static Song getSongFromCursor(Cursor cursor) {
         try {
             int songIdIndex = cursor.getColumnIndex(BaseColumns._ID);
             int titleIndex = cursor.getColumnIndex(MediaStore.Audio.AudioColumns.TITLE);
@@ -73,6 +69,8 @@ public class SongLoader {
             int dataIndex = cursor.getColumnIndex(MediaStore.Audio.AudioColumns.DATA);
             int albumIdIndex = cursor.getColumnIndex(MediaStore.Audio.AudioColumns.ALBUM_ID);
             int artistIdIndex = cursor.getColumnIndex(MediaStore.Audio.AudioColumns.ARTIST_ID);
+            int albumNameIndex = cursor.getColumnIndex(MediaStore.Audio.AudioColumns.ALBUM);
+            int artistNameIndex = cursor.getColumnIndex(MediaStore.Audio.AudioColumns.ARTIST);
 
             return new Song.Builder()
                     .songId(cursor.getInt(songIdIndex))
@@ -83,6 +81,8 @@ public class SongLoader {
                     .songFile(new File(cursor.getString(dataIndex)))
                     .albumId(cursor.getInt(albumIdIndex))
                     .artistId(cursor.getInt(artistIdIndex))
+                    .albumName(cursor.getString(albumNameIndex))
+                    .artistName(cursor.getString(artistNameIndex))
                     .build();
 
         } catch (Exception ex) {
