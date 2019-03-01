@@ -1,12 +1,13 @@
 package comp3350.breadtunes.objects;
 
 import java.util.Collection;
+import java.util.List;
 
-public class Artist {
+public class Artist implements Comparable<Artist> {
     private String name;
-    private Collection<Album> albums;
+    private List<Album> albums;
 
-    public Artist(String name, Collection<Album> albums) {
+    public Artist(String name, List<Album> albums) {
         this.name = name;
         this.albums = albums;
     }
@@ -14,6 +15,10 @@ public class Artist {
     public String getName() { return name; }
     public void setName(String name) { this.name = name; }
 
-    public Collection<Album> getAlbums() { return albums; }
-    public void setAlbums(Collection<Album> albums) { this.albums = albums; }
+    public List<Album> getAlbums() { return albums; }
+    public void setAlbums(List<Album> albums) { this.albums = albums; }
+
+    public int compareTo(Artist artist) {
+        return name.compareTo(artist.getName());
+    }
 }
