@@ -1,6 +1,5 @@
 package comp3350.breadtunes.objects;
 
-import java.util.Collection;
 import java.util.List;
 
 public class Artist implements Comparable<Artist> {
@@ -19,6 +18,6 @@ public class Artist implements Comparable<Artist> {
     public void setAlbums(List<Album> albums) { this.albums = albums; }
 
     public int compareTo(Artist artist) {
-        return name.compareTo(artist.getName());
+        return name.compareToIgnoreCase(artist.getName());
     }
 }
