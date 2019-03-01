@@ -57,6 +57,8 @@ public class Song {
         setDuration(builder.duration);
         artistId = builder.artistId;
         albumId = builder.albumId;
+        albumName = builder.albumName;
+        artistName = builder.artistName;
         setSongFile(builder.songFile);
     }
 
@@ -76,9 +78,13 @@ public class Song {
 
     public Artist getArtist() { return artist; }
     public void setArtist(Artist artist) { this.artist = artist; }
+    public int getArtistId() { return this.artistId; }
+    public String getArtistName() { return this.artistName; }
 
     public Album getAlbum() { return album; }
     public void setAlbum(Album album) { this.album = album; }
+    public int getAlbumId() { return this.albumId; }
+    public String getAlbumName() { return this.albumName; }
 
     public File getSongFile() { return songFile; }
     public void setSongFile(File songFile) {  this.songFile = songFile; }
