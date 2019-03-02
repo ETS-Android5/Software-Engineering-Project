@@ -143,8 +143,8 @@ public class HomeActivity extends BaseActivity implements Observer {
         Song song = songObservable.getSong();
 
         String songName = song.getName();
-        String albumName = song.getAlbum().getName();
-        String artistName = song.getArtist().getName();
+        String albumName = song.getAlbumName();
+        String artistName = song.getArtistName();
 
         nowPlayingGUI.setText(String.format("Song: %s\nAlbum: %s\nArtist: %s", songName, albumName, artistName));
     }
