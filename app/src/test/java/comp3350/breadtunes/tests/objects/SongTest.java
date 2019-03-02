@@ -4,14 +4,13 @@ import org.junit.Test;
 
 import comp3350.breadtunes.objects.Song;
 import comp3350.breadtunes.objects.SongDuration;
+import comp3350.breadtunes.tests.watchers.TestLogger;
 
 import static org.junit.Assert.*;
 
-public class SongTest {
+public class SongTest extends TestLogger {
     @Test
     public void testSongBuilder() {
-        System.out.println("\nStarting testSongBuilder");
-
         // Arrange
         SongDuration duration = new SongDuration(3, 3);
 
@@ -41,7 +40,5 @@ public class SongTest {
         assertEquals(song.getAlbumName(), "Test Album");
         assertEquals(song.getAlbumId(), 456);
         assertEquals(song.getSongUri(), null);
-
-        System.out.println("Finished testSongBuilder");
     }
 }

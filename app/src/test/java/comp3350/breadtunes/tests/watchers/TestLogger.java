@@ -1,4 +1,4 @@
-package comp3350.breadtunes.tests.watcher;
+package comp3350.breadtunes.tests.watchers;
 
 import org.junit.Rule;
 import org.junit.rules.MethodRule;
