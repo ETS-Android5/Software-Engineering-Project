@@ -1,10 +1,8 @@
 package comp3350.breadtunes.presentation;
 import comp3350.breadtunes.R;
-import comp3350.breadtunes.business.LookUpSongs;
 import comp3350.breadtunes.presentation.MediaController.MediaPlayerController;
 import comp3350.breadtunes.services.ServiceGateway;
 import comp3350.breadtunes.business.MusicPlayerState;
-import comp3350.breadtunes.business.observables.SongObservable;
 import comp3350.breadtunes.objects.Song;
 import comp3350.breadtunes.presentation.base.BaseActivity;
 
@@ -16,17 +14,10 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
 import android.widget.SearchView;
-import android.widget.TextView;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
-
 
 //==============================
 // HELPFUL DOCUMENTATION
@@ -35,7 +26,6 @@ import java.util.Observer;
 //    // Populating lists with custom content https://github.com/codepath/android_guides/wiki/Using-an-ArrayAdapter-with-ListView
 //    // PLAY SONGS https://developer.android.com/guide/topics/media/mediaplayer#java
 //==============================
-
 
 
 public class HomeActivity extends BaseActivity  {
@@ -152,6 +142,4 @@ public class HomeActivity extends BaseActivity  {
         String response = mediaPlayerController.playPreviousSong(HomeActivity.this);
         Log.i(TAG, response);
     }
-
-
 }

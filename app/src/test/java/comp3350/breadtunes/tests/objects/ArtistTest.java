@@ -6,14 +6,13 @@ import java.util.ArrayList;
 
 import comp3350.breadtunes.objects.Album;
 import comp3350.breadtunes.objects.Artist;
+import comp3350.breadtunes.tests.watchers.TestLogger;
 
 import static org.junit.Assert.*;
 
-public class ArtistTest {
+public class ArtistTest extends TestLogger {
     @Test
     public void testArtist() {
-        System.out.println("\nRunning testArtist");
-
         // Arrange
         ArrayList<Album> albums = new ArrayList<>();
 
@@ -24,7 +23,5 @@ public class ArtistTest {
         assertNotNull(artist);
         assertTrue(artist.getName().equals("Test Artist"));
         assertTrue(artist.getAlbums().equals(albums));
-
-        System.out.println("Finished testArtist");
     }
 }
