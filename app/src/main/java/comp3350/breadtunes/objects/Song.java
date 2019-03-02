@@ -1,6 +1,6 @@
 package comp3350.breadtunes.objects;
 
-import java.io.File;
+import android.net.Uri;
 
 public class Song {
     private int songId;
@@ -15,19 +15,19 @@ public class Song {
     private String albumName;
     private int albumId;
     private Album album;
-    private File songFile;
+    private Uri songUri;
 
 
     public Song(){
 
     }
-    public Song(String name, int trackNumber, SongDuration duration, Artist artist, Album album, File songFile) {
+    public Song(String name, int trackNumber, SongDuration duration, Artist artist, Album album, Uri songUri) {
         this.name = name;
         this.trackNumber = trackNumber;
         this.duration = duration;
         this.artist = artist;
         this.album = album;
-        this.songFile = songFile;
+        this.songUri = songUri;
     }
 
     public Song(String name, int trackNumber, SongDuration duration, Artist artist, Album album, String songPath) {
@@ -36,7 +36,7 @@ public class Song {
         this.duration = duration;
         this.artist = artist;
         this.album = album;
-        this.songFile = new File(songPath);
+        this.songUri = new Uri.Builder().appendPath(songPath).build();
     }
 
     public Song(String name,String rawName, int trackNumber, SongDuration duration, Artist artist, Album album, String songPath) {
@@ -46,7 +46,7 @@ public class Song {
         this.duration = duration;
         this.artist = artist;
         this.album = album;
-        this.songFile = new File(songPath);
+        this.songUri = new Uri.Builder().appendPath(songPath).build();
     }
 
     private Song(Builder builder) {
@@ -59,7 +59,7 @@ public class Song {
         albumId = builder.albumId;
         albumName = builder.albumName;
         artistName = builder.artistName;
-        setSongFile(builder.songFile);
+        setSongUri(builder.songUri);
     }
 
     public String getName() { return name; }
@@ -86,8 +86,8 @@ public class Song {
     public int getAlbumId() { return this.albumId; }
     public String getAlbumName() { return this.albumName; }
 
-    public File getSongFile() { return songFile; }
-    public void setSongFile(File songFile) {  this.songFile = songFile; }
+    public Uri getSongUri() { return songUri; }
+    public void setSongUri(Uri songUri) {  this.songUri = songUri; }
 
 
     public static final class Builder {
@@ -100,7 +100,7 @@ public class Song {
         private int albumId;
         private String albumName;
         private String artistName;
-        private File songFile;
+        private Uri songUri;
 
         public Builder() {
         }
@@ -150,8 +150,8 @@ public class Song {
             return this;
         }
 
-        public Builder songFile(File val) {
-            songFile = val;
+        public Builder songUri(Uri val) {
+            songUri = val;
             return this;
         }
 

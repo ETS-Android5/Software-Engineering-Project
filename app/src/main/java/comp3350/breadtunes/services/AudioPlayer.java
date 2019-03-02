@@ -2,12 +2,13 @@ package comp3350.breadtunes.services;
 
 import android.content.Context;
 import android.media.MediaPlayer;
+import android.net.Uri;
 
 import comp3350.breadtunes.business.interfaces.MediaManager;
 
 public class AudioPlayer implements MediaManager {
-    MediaPlayer player;
-    boolean songPaused;
+    private MediaPlayer player;
+    private boolean songPaused;
 
     public AudioPlayer() {
         songPaused = false;
@@ -22,6 +23,17 @@ public class AudioPlayer implements MediaManager {
         }
 
         player = MediaPlayer.create(context, resourceId);
+        player.start();
+    }
+
+    @Override
+    public void startPlayingSong(Context context, Uri songUri) {
+        if (player != null) {
+            player.reset();
+            player.release();
+        }
+
+        player = MediaPlayer.create(context, songUri);
         player.start();
     }
 
@@ -60,6 +72,11 @@ public class AudioPlayer implements MediaManager {
         }
 
         return isPlaying;
+    }
+
+    @Override
+    public boolean isPaused() {
+        return songPaused;
     }
 
     @Override

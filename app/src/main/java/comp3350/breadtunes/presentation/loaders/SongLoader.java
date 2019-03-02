@@ -21,13 +21,12 @@ import comp3350.breadtunes.objects.SongDuration;
  *   This question about the Android MediaStore: stackoverflow.com/questions/13568798/list-all-music-in-mediastore-with-the-paths
  */
 public class SongLoader {
-    protected static final String[] defaultProjection = new String[]{
-            BaseColumns._ID,
+    private static final String[] defaultProjection = new String[]{
+            MediaStore.MediaColumns._ID,
             MediaStore.Audio.AudioColumns.TITLE,
             MediaStore.Audio.AudioColumns.TRACK,
             MediaStore.Audio.AudioColumns.YEAR,
             MediaStore.Audio.AudioColumns.DURATION,
-            MediaStore.Audio.AudioColumns.DATA,
             MediaStore.Audio.AudioColumns.ALBUM_ID,
             MediaStore.Audio.AudioColumns.ARTIST_ID,
             MediaStore.Audio.AudioColumns.ALBUM,
@@ -61,16 +60,17 @@ public class SongLoader {
 
     private static Song getSongFromCursor(Cursor cursor) {
         try {
-            int songIdIndex = cursor.getColumnIndex(BaseColumns._ID);
+            int songIdIndex = cursor.getColumnIndex(MediaStore.MediaColumns._ID);
             int titleIndex = cursor.getColumnIndex(MediaStore.Audio.AudioColumns.TITLE);
             int trackIndex = cursor.getColumnIndex(MediaStore.Audio.AudioColumns.TRACK);
             int yearIndex = cursor.getColumnIndex(MediaStore.Audio.AudioColumns.YEAR);
             int durationIndex = cursor.getColumnIndex(MediaStore.Audio.AudioColumns.DURATION);
-            int dataIndex = cursor.getColumnIndex(MediaStore.Audio.AudioColumns.DATA);
             int albumIdIndex = cursor.getColumnIndex(MediaStore.Audio.AudioColumns.ALBUM_ID);
             int artistIdIndex = cursor.getColumnIndex(MediaStore.Audio.AudioColumns.ARTIST_ID);
             int albumNameIndex = cursor.getColumnIndex(MediaStore.Audio.AudioColumns.ALBUM);
             int artistNameIndex = cursor.getColumnIndex(MediaStore.Audio.AudioColumns.ARTIST);
+
+            int songId = cursor.getInt(songIdIndex);
 
             return new Song.Builder()
                     .songId(cursor.getInt(songIdIndex))
@@ -78,7 +78,7 @@ public class SongLoader {
                     .trackNumber(cursor.getInt(trackIndex))
                     .year(cursor.getInt(yearIndex))
                     .duration(SongDuration.convertMillisToDuration(cursor.getLong(durationIndex)))
-                    .songFile(new File(cursor.getString(dataIndex)))
+                    .songUri(Uri.withAppendedPath(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, String.valueOf(songId)))
                     .albumId(cursor.getInt(albumIdIndex))
                     .artistId(cursor.getInt(artistIdIndex))
                     .albumName(cursor.getString(albumNameIndex))
@@ -87,7 +87,7 @@ public class SongLoader {
 
         } catch (Exception ex) {
             System.out.println(ex);
-            return new Song();
+            return new Song.Builder().build();
         }
     }
 }
