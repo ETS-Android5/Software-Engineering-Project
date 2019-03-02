@@ -33,6 +33,7 @@ public class Song {
     }
 
     // Getters only, disallow changing Song information
+    public int getSongId() { return songId; }
     public String getName() { return name; }
     public String getRawName() { return rawName; }
     public int getYear() { return year; }

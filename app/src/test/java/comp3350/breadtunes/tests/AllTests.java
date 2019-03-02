@@ -1,7 +1,11 @@
 package comp3350.breadtunes.tests;
 
+import org.junit.Rule;
+import org.junit.rules.MethodRule;
+import org.junit.rules.TestWatchman;
 import org.junit.runner.RunWith;
 import org.junit.runners.Suite;
+import org.junit.runners.model.FrameworkMethod;
 
 import comp3350.breadtunes.tests.business.*;
 import comp3350.breadtunes.tests.objects.*;
@@ -15,9 +19,8 @@ import comp3350.breadtunes.tests.objects.*;
         SongTest.class,
         QueueTest.class,
         LookUpSongsTest.class,
-        UtilitiesTest.class,
-        LookUpSongsTest.class,
         MusicPlayerStateTest.class,
         MediaPlayerControllerTest.class,
 })
-public class AllTests { }
+public class AllTests {
+}
