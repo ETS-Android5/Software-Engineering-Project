@@ -104,7 +104,7 @@ public class SongListFragment extends Fragment implements Observer {
 
         String songName = song.getName();
 
-        String artistName = song.getArtist().getName();
+        String artistName = song.getArtistName();
 
         nowPlayingSongGui.setText(songName);
         nowPlayingArtistGui.setText(artistName);
