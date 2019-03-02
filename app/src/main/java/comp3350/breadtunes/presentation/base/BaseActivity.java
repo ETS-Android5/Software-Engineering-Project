@@ -1,7 +1,6 @@
 package comp3350.breadtunes.presentation.base;
 
 import android.Manifest;
-import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.os.Build;
 import android.os.Bundle;

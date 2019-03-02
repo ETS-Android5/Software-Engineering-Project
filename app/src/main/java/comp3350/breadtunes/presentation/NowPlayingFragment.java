@@ -46,8 +46,8 @@ public class NowPlayingFragment extends Fragment implements Observer {
 
         //populate the fields in the fragment
         nowPlayingSongGui.setText(homeActivity.musicPlayerState.getCurrentlyPlayingSong().getName());
-        nowPlayingAlbumGui.setText(homeActivity.musicPlayerState.getCurrentlyPlayingSong().getAlbum().getName());
-        nowPlayingArtistGui.setText(homeActivity.musicPlayerState.getCurrentlyPlayingSong().getArtist().getName());
+        nowPlayingAlbumGui.setText(homeActivity.musicPlayerState.getCurrentlyPlayingSong().getAlbumName());
+        nowPlayingArtistGui.setText(homeActivity.musicPlayerState.getCurrentlyPlayingSong().getArtistName());
 
     }
 
@@ -59,8 +59,8 @@ public class NowPlayingFragment extends Fragment implements Observer {
         Song song = songObservable.getSong();
 
         String songName = song.getName();
-        String albumName = song.getAlbum().getName();
-        String artistName = song.getArtist().getName();
+        String albumName = song.getAlbumName();
+        String artistName = song.getArtistName();
 
         nowPlayingSongGui.setText(songName);
         nowPlayingAlbumGui.setText(albumName);

@@ -9,7 +9,7 @@ import comp3350.breadtunes.persistence.SongPersistence;
 import comp3350.breadtunes.persistence.mocks.*;
 
 public class SongPersistenceStub implements SongPersistence {
-    private ArrayList<Song> songs;
+    private List<Song> songs;
 
     public SongPersistenceStub() {
         this.songs = MockSongs.getMockSongList();
