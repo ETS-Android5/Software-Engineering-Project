@@ -46,7 +46,7 @@ public class HomeActivity extends BaseActivity  {
     public static ArrayList<Song> sList = new ArrayList<>();
     String[] songNamesToDisplay;
     private final String TAG = "HomeActivity";
-
+    LookUpSongs findSong;
 
 
 
@@ -61,7 +61,7 @@ public class HomeActivity extends BaseActivity  {
         final List<Song> songList = ServiceGateway.getSongPersistence().getAll();
         musicPlayerState = new MusicPlayerState(songList);
         mediaPlayerController = new MediaPlayerController(HomeActivity.this, musicPlayerState, ServiceGateway.getMediaManager());
-
+        findSong = new LookUpSongs(songList);
         //initialize the songNamestoDisplay so that the fragment can populate its list
         sList.addAll(songList);
         songNamesToDisplay = getSongNames(sList);
@@ -70,6 +70,7 @@ public class HomeActivity extends BaseActivity  {
         FragmentTransaction fragmentTransaction= getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.fragment_placeholder, new SongListFragment());
         fragmentTransaction.commit();
+
 
 
 

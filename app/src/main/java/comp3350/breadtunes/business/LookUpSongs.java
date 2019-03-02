@@ -2,7 +2,9 @@ package comp3350.breadtunes.business;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observer;
 
+import comp3350.breadtunes.business.observables.SongObservable;
 import comp3350.breadtunes.objects.Album;
 import comp3350.breadtunes.objects.Artist;
 import comp3350.breadtunes.objects.Song;
@@ -32,6 +34,7 @@ public class LookUpSongs {
                 matchingSongs.add(ss);
             }
         }
+
         return matchingSongs;
     }
 
@@ -70,4 +73,5 @@ public class LookUpSongs {
         }
         return null;
     }
+
 }
