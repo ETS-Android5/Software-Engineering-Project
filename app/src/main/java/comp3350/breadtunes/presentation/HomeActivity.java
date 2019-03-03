@@ -9,6 +9,7 @@ import comp3350.breadtunes.presentation.base.BaseActivity;
 
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
@@ -38,9 +39,9 @@ public class HomeActivity extends BaseActivity  {
     String[] songNamesToDisplay;
     private final String TAG = "HomeActivity";
     LookUpSongs findSong;
-
-
-
+    List<Song> sResult;
+    String [] result;
+    private FragmentTransaction fragmentTransaction;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -58,19 +59,27 @@ public class HomeActivity extends BaseActivity  {
         songNamesToDisplay = getSongNames(sList);
 
         //put the song list fragment on top of the main activity
-        FragmentTransaction fragmentTransaction= getSupportFragmentManager().beginTransaction();
+        fragmentTransaction= getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.fragment_placeholder, new SongListFragment());
         fragmentTransaction.commit();
 
-
+        handleIntent(getIntent());
 
 
     }//on create
 
     //replace the song list fragment with the now playing fragment
     public void showNowPlayingFragment(){
-        FragmentTransaction fragmentTransaction= getSupportFragmentManager().beginTransaction();
+        fragmentTransaction= getSupportFragmentManager().beginTransaction();
         fragmentTransaction.replace(R.id.fragment_placeholder, new NowPlayingFragment());
+        fragmentTransaction.addToBackStack(null);
+        fragmentTransaction.commit();
+    }
+
+    public void showSearchResultsFragment(){
+        fragmentTransaction= getSupportFragmentManager().beginTransaction();
+        fragmentTransaction.replace(R.id.fragment_placeholder, new SearchResultsFragment());
+        fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
 
@@ -143,5 +152,24 @@ public class HomeActivity extends BaseActivity  {
     public void onClickPlayPrevious(View view){
         String response = mediaPlayerController.playPreviousSong(HomeActivity.this);
         Log.i(TAG, response);
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        handleIntent(intent);
+    }
+
+    public void handleIntent(Intent intent) {
+
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            //use the query to search your data somehow
+            sResult = findSong.searchSongs(query);
+            ArrayList ss = new ArrayList();
+            for(int i=0; i<sResult.size();i++)
+                ss.add(sResult.get(i));
+            result = getSongNames(ss);
+            showSearchResultsFragment();
+        }
     }
 }
