@@ -43,4 +43,39 @@ public class AlbumTest extends TestLogger {
         assertTrue(album.getSongs().equals(songList));
         assertTrue(album.getGenre().equals(genre));
     }
+
+    @Test
+    public void testSetSongs()
+    {
+        // Arrange
+        ArrayList<Song> songList = new ArrayList<>();
+        ArrayList<Song> songList2 = new ArrayList<>();
+        Song a = new Song();
+        songList2.add(a);
+
+        // Act
+        Album testTarget = new Album("Album 1", songList);
+
+        assertEquals(songList, testTarget.getSongs());
+
+        testTarget.setSongs(songList2);
+
+        assertEquals(songList2, testTarget.getSongs());
+    }
+
+    @Test
+    public void testSetGenre()
+    {
+        ArrayList<Song> songList = new ArrayList<>();
+        Genre genre = new Genre("Test Genre");
+        Genre genre2 = new Genre("Test Genre 2");
+
+        Album testTarget = new Album("Album 1", songList, genre);
+
+        assertEquals(genre, testTarget.getGenre());
+
+        testTarget.setGenre(genre2);
+
+        assertEquals(genre2, testTarget.getGenre());
+    }
 }
