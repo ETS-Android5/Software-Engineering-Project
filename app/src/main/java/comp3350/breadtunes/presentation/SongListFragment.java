@@ -9,6 +9,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
 
@@ -36,8 +37,9 @@ public class SongListFragment extends Fragment implements Observer {
     public HomeActivity homeActivity;
     private final String TAG = "Song list fragment: ";
 
-    public static TextView nowPlayingSongGui;
-    public static TextView nowPlayingArtistGui;
+    public static Button nowPlayingSongGui;
+
+
 
 
     public SongListFragment() {
@@ -61,8 +63,7 @@ public class SongListFragment extends Fragment implements Observer {
         activitySongList.setAdapter(adapter);
 
         //get reference to the now playing song gui
-        nowPlayingSongGui = (TextView) view.findViewById(R.id.song_name);
-        nowPlayingArtistGui = (TextView) view.findViewById(R.id.artist_name);
+        nowPlayingSongGui = (Button) view.findViewById(R.id.song_name);
 
         //@// TODO: 28/02/19 //add on click listener for the above views to launch the now playing fragment
 
@@ -107,8 +108,6 @@ public class SongListFragment extends Fragment implements Observer {
         String artistName = song.getArtistName();
 
         nowPlayingSongGui.setText(songName);
-        nowPlayingArtistGui.setText(artistName);
-
 
     }
 
