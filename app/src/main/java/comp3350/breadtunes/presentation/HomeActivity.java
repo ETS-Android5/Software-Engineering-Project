@@ -122,20 +122,6 @@ public class HomeActivity extends BaseActivity  {
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
         //if the fragment is already in the container, show it
 
-
-
-//        if(searchSongFragment.isAdded()){
-//            fragmentTransaction.remove(searchSongFragment);
-//            searchSongFragment = new SearchResultsFragment(); //create a new instance with the new search results
-//            fragmentTransaction.replace(R.id.fragment_placeholder, searchSongFragment);
-//        }else{
-//            //inflate it if it has not been added
-//            fragmentTransaction.add(R.id.fragment_placeholder, searchSongFragment);
-//        }
-//
-//        //hide the other fragments if they are showing
-//        if(songListFragment.isAdded()){fragmentTransaction.remove(songListFragment);}
-
         searchSongFragment = new SearchResultsFragment();
         fragmentTransaction.remove(songListFragment);
         fragmentTransaction.add(R.id.fragment_placeholder,searchSongFragment);

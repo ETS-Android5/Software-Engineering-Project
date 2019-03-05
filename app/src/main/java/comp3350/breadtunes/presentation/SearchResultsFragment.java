@@ -23,7 +23,7 @@ import static comp3350.breadtunes.presentation.HomeActivity.sList;
 /**
  * A simple {@link Fragment} subclass.
  */
-public class SearchResultsFragment extends Fragment implements Observer {
+public class SearchResultsFragment extends Fragment  {
 
     public HomeActivity homeActivity;
     private final String TAG = "SearchResultsFragment: ";
@@ -38,7 +38,6 @@ public class SearchResultsFragment extends Fragment implements Observer {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         homeActivity = (HomeActivity) getActivity();
-        homeActivity.musicPlayerState.subscribeToSongChange(this);
         return inflater.inflate(R.layout.fragment_search_results2, container, false);
     }
 
@@ -57,20 +56,12 @@ public class SearchResultsFragment extends Fragment implements Observer {
 
             if (selectedSong != null) {
                 int songId = getResources().getIdentifier(selectedSong.getRawName(), "raw", getContext().getPackageName());
-                homeActivity.showNowPlayingFragment();
+                //homeActivity.showNowPlayingFragment();
                 String playStatus = homeActivity.mediaPlayerController.playSong(selectedSong, songId); //play the song!
                 Log.e(TAG, playStatus);
             }
         });// on item click listener for listview
+
     }
 
-    @Override
-    public void update(Observable observable, Object o) {
-        SongObservable songObservable = (SongObservable) observable;
-
-        Song song = songObservable.getSong();
-
-        String songName = song.getName();
-        String artistName = song.getArtistName();
-    }
 }
