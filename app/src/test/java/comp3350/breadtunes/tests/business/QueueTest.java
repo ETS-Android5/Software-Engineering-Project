@@ -4,6 +4,7 @@ import org.junit.Test;
 
 import comp3350.breadtunes.business.SongQueue;
 import comp3350.breadtunes.objects.Song;
+import comp3350.breadtunes.objects.SongDuration;
 import comp3350.breadtunes.tests.watchers.TestLogger;
 
 import static org.junit.Assert.*;
@@ -116,4 +117,26 @@ public class QueueTest extends TestLogger {
         assertTrue(q.isEmpty());
         assertTrue(q.size() == 0);
     }
+
+    @Test
+    public void testAddSongToPlayNext()
+    {
+        // Arrange
+        Song mocksong1 = new Song();
+        Song mocksong2 = new Song();
+        Song mocksong3 = new Song();
+
+        // Act
+        SongQueue testTarget = new SongQueue(7);
+        testTarget.insert(mocksong1);
+        testTarget.insert(mocksong3);
+
+        testTarget.addSongToPlayNext(mocksong2, 0);
+        // suppose we are currently playing at beginning of queue
+        // add `mocksong2` after `mocksong1` that's currently playing
+
+        assertEquals(testTarget.getSong(0), mocksong1);
+        assertEquals(testTarget.getSong(1), mocksong2);
+        assertEquals(testTarget.getSong(2), mocksong3);
+    }// testAddSongToPlayNext
 }
