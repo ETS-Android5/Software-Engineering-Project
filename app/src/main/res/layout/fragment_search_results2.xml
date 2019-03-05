@@ -4,9 +4,8 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".presentation.SearchResultsFragment">
-
-    <!-- TODO: Update blank fragment layout -->
+    tools:context=".presentation.SearchResultsFragment"
+    >
 
     <TextView
         android:id="@+id/titleSearch"
