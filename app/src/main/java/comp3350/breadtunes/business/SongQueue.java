@@ -79,53 +79,6 @@ public class SongQueue {
         // else if full do nothing
     }
 
-    // adds song next to currently playing
-    // makes a new queue
-    /*
-    public void addSongToPlayNext(Song nextSong, int currentlyPlayingIndex)
-    {
-        int index = currentlyPlayingIndex;
-
-        if(!isFull())
-        {
-            int j = 0;
-            Song[] newArray = new Song[size];
-
-            if(index == 0)
-            { newArray[0] = qArray[0]; }
-
-            for (int i = 0; i < index; i++)
-            {
-                newArray[i] = qArray[i];
-                j = i;
-            }
-
-            j++;
-            newArray[j] = nextSong;
-            j++;
-            this.nItems++;
-
-            if(j != this.nItems)
-            {
-                for (int i = j; i < this.nItems; i++)
-                {
-                    newArray[i] = qArray[i - 1];
-                }
-            }
-            qArray = newArray;
-        }
-
-        else if(isEmpty())
-        {
-            this.insert(nextSong);
-            this.nItems++;
-        }
-        // else do nothing
-    }
-    */
-
-
-
     public Song getSong(int index)
     { return qArray[index];}
 
