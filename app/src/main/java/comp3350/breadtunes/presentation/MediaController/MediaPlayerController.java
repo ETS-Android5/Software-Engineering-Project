@@ -1,7 +1,8 @@
-package comp3350.breadtunes.business;
+package comp3350.breadtunes.presentation.MediaController;
 import android.content.Context;
 import android.media.MediaPlayer;
 
+import comp3350.breadtunes.business.MusicPlayerState;
 import comp3350.breadtunes.business.interfaces.MediaManager;
 import comp3350.breadtunes.objects.Song;
 

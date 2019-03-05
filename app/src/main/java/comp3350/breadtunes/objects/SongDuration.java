@@ -1,5 +1,7 @@
 package comp3350.breadtunes.objects;
 
+import java.util.concurrent.TimeUnit;
+
 public class SongDuration {
     private int hours;
     private int minutes;
@@ -25,4 +27,16 @@ public class SongDuration {
 
     public int getSeconds() { return seconds; }
     public void setSeconds(int seconds) { this.seconds = seconds; }
+
+    public static SongDuration convertMillisToDuration(long millis) {
+        int hours = (int) TimeUnit.MILLISECONDS.toHours(millis);
+
+        int minutes = (int) (TimeUnit.MILLISECONDS.toMinutes(millis) -
+                        TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(millis)));
+
+        int seconds = (int) (TimeUnit.MILLISECONDS.toSeconds(millis) -
+                TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)));
+
+        return new SongDuration(hours, minutes , seconds);
+    }
 }

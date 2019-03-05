@@ -2,7 +2,9 @@ package comp3350.breadtunes.business;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observer;
 
+import comp3350.breadtunes.business.observables.SongObservable;
 import comp3350.breadtunes.objects.Album;
 import comp3350.breadtunes.objects.Artist;
 import comp3350.breadtunes.objects.Song;
@@ -18,8 +20,12 @@ public class LookUpSongs {
         allArtists = artists;
     }
 
-    public ArrayList<Song> searchSongs(String input) {
-        ArrayList<Song> matchingSongs = new ArrayList<>();
+    public LookUpSongs(List<Song> songs){
+        allSongs = songs;
+    }
+
+    public List<Song> searchSongs(String input) {
+        List<Song> matchingSongs = new ArrayList<>();
 
         for (int i = 0; i < allSongs.size(); i++) {
             Song ss = allSongs.get(i);
@@ -28,11 +34,12 @@ public class LookUpSongs {
                 matchingSongs.add(ss);
             }
         }
+
         return matchingSongs;
     }
 
-    public ArrayList<Album> searchAlbums(String input){
-        ArrayList<Album> matchingAlbums = new ArrayList<>();
+    public List<Album> searchAlbums(String input){
+        List<Album> matchingAlbums = new ArrayList<>();
 
         for (int i = 0; i < allAlbums.size(); i++) {
             Album al = allAlbums.get(i);
@@ -44,8 +51,8 @@ public class LookUpSongs {
         return matchingAlbums;
     }
 
-    public ArrayList<Artist> searchArtists(String input){
-        ArrayList<Artist> matchingArtists = new ArrayList<>();
+    public List<Artist> searchArtists(String input){
+        List<Artist> matchingArtists = new ArrayList<>();
 
         for(int i = 0; i < allArtists.size(); i++) {
             Artist ar = allArtists.get(i);
@@ -56,4 +63,15 @@ public class LookUpSongs {
         }
         return matchingArtists;
     }
+
+    //method added by Mario, put in here as told by a code smell
+    public static Song getSong(ArrayList<Song> songList, String songName){
+        for (Song song: songList) {
+            if (song.getName().equals(songName)) {
+                return song;
+            }
+        }
+        return null;
+    }
+
 }

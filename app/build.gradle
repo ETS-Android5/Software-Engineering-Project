@@ -20,16 +20,24 @@ android {
             testCoverageEnabled false
         }
     }
+    compileOptions {
+        sourceCompatibility JavaVersion.VERSION_1_8
+        targetCompatibility JavaVersion.VERSION_1_8
+    }
 }
 
 dependencies {
     implementation fileTree(include: ['*.jar'], dir: 'libs')
-    testImplementation 'junit:junit:4.12'
+    testImplementation 'junit:junit:4.7'
     testImplementation 'org.mockito:mockito-core:2.7.22'
     implementation 'com.android.support:appcompat-v7:23.3.0'
     implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+<<<<<<< HEAD
     implementation files('lib/mp3agic-0.9.0.jar')
     implementation group: 'org.hsqldb', name: 'hsqldb', version: '2.4.1'
+=======
+    implementation 'net.sourceforge.streamsupport:streamsupport-cfuture:1.7.0'
+>>>>>>> master
 }
 
 sourceSets {

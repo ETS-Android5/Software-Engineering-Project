@@ -2,9 +2,12 @@ package comp3350.breadtunes.business.interfaces;
 
 import android.content.Context;
 import android.media.MediaPlayer;
+import android.net.Uri;
 
 public interface MediaManager {
     void startPlayingSong(Context context, int resourceId);
+
+    void startPlayingSong(Context context, Uri songUri);
 
     void stopPlayingSong();
 
@@ -13,6 +16,8 @@ public interface MediaManager {
     void resumePlayingSong();
 
     boolean isPlaying();
+
+    boolean isPaused();
 
     int getCurrentPosition();
 

@@ -33,7 +33,6 @@ public class SongQueue {
         }
     }
 
-
     public Song remove(){
         Song temp;
         if(!isEmpty() && top != rear) {
@@ -52,6 +51,36 @@ public class SongQueue {
         }
         return null;
     }
+
+    public void addSongToPlayNext(Song nextSong)
+    {
+        if(!isFull())
+        {
+            if(!isEmpty())
+            {
+                if (rear == size - 1)
+                    rear = -1;
+
+                Song[] newArray = new Song[size];
+                newArray[0] = nextSong;
+
+                for (int i = 1; i < nItems; i++)
+                { newArray[i] = qArray[i - 1]; }
+                newArray[rear+1] = qArray[rear];
+
+                rear++;
+                nItems++;
+                qArray = newArray;
+            }
+
+            else if(isEmpty())
+            { this.insert(nextSong); nItems++;}
+        }
+        // else if full do nothing
+    }
+
+    public Song getSong(int index)
+    { return qArray[index];}
 
     public int size(){
         return nItems;

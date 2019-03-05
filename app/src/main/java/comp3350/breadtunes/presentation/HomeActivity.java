@@ -1,26 +1,26 @@
 package comp3350.breadtunes.presentation;
 import comp3350.breadtunes.R;
+import comp3350.breadtunes.business.LookUpSongs;
+import comp3350.breadtunes.presentation.MediaController.MediaPlayerController;
 import comp3350.breadtunes.services.ServiceGateway;
-import comp3350.breadtunes.business.Utilities;
-import comp3350.breadtunes.business.MediaPlayerController;
 import comp3350.breadtunes.business.MusicPlayerState;
-import comp3350.breadtunes.business.observables.SongObservable;
 import comp3350.breadtunes.objects.Song;
 import comp3350.breadtunes.presentation.base.BaseActivity;
+
+import android.app.SearchManager;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
+import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
-import android.widget.ListView;
-import android.widget.TextView;
+import android.widget.SearchView;
+import android.widget.Toast;
 
+import java.util.ArrayList;
 import java.util.List;
-import java.util.Observable;
-import java.util.Observer;
-
 
 //==============================
 // HELPFUL DOCUMENTATION
@@ -31,67 +31,118 @@ import java.util.Observer;
 //==============================
 
 
+public class HomeActivity extends BaseActivity  {
 
-public class HomeActivity extends BaseActivity implements Observer {
 
+    MediaPlayerController mediaPlayerController;  // controls playback operations
+    MusicPlayerState musicPlayerState ; //business layer object that contains the current state of the music player
+    public static ArrayList<Song> sList = new ArrayList<>();
+    String[] songNamesToDisplay;
+    private final String TAG = "HomeActivity";
+    LookUpSongs findSong;
+    List<Song> sResult;
+    String [] result;
+    private FragmentTransaction fragmentTransaction;
 
-     MediaPlayerController mediaPlayerController;  //business layer objects that help presentation layer carry out operations
-     MusicPlayerState musicPlayerState ; //business layer object that contains the current state of the music player
-     Utilities utilities; //populates this activity and provides small utilities such as
-     private static final String TAG = "Home Activity"; //tag used in messages to the log
-
-    public static TextView nowPlayingGUI;  //UI element that indicates which song is being played
+    // fragments used in the main activity
+    private NowPlayingFragment nowPlayingFragment;
+    private SearchResultsFragment searchSongFragment;
+    private SongListFragment songListFragment;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        if(savedInstanceState == null){
+            nowPlayingFragment = new NowPlayingFragment();
+            searchSongFragment = new SearchResultsFragment();
+            songListFragment = new SongListFragment();
+        }
+
+
         final List<Song> songList = ServiceGateway.getSongPersistence().getAll();
         musicPlayerState = new MusicPlayerState(songList);
-        musicPlayerState.subscribeToSongChange(this);
         mediaPlayerController = new MediaPlayerController(HomeActivity.this, musicPlayerState, ServiceGateway.getMediaManager());
+        findSong = new LookUpSongs(songList);
+        //initialize the songNamestoDisplay so that the fragment can populate its list
+        sList.addAll(songList);
+        songNamesToDisplay = getSongNames(sList);
 
-        nowPlayingGUI = (TextView) findViewById(R.id.song_playing_text);
-        nowPlayingGUI.setKeyListener(null);
+        //put the song list fragment on top of the main activity
+        showSongListFragment();
 
-        String[] songNames = Utilities.getSongNames(songList);  //get the names of all songs to be displayed in the ListView
-
-        //create adapter to populate list items in the listView in the main activity
-        ArrayAdapter adapter = new ArrayAdapter<String>(this, R.layout.songlist_element, songNames);
-        final ListView activitySongList = (ListView) findViewById(R.id.songList);
-        activitySongList.setAdapter(adapter); //populate the items!
-
-        //set on item click listener to react to list clicks
-        activitySongList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
-           public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
-              String selectedSongName = (String) adapterView.getItemAtPosition(i);     //get the name of the song being played
-               Log.i(TAG, "Clicked on "+selectedSongName);
-               //get the song object associated with the song name that was clicked
-               Song selectedSong = Utilities.getSong(songList, selectedSongName);
-
-               if(selectedSong != null) {
-                   int songId = getResources().getIdentifier(selectedSong.getRawName(), "raw", getPackageName());
-                   String playStatus = mediaPlayerController.playSong(selectedSong, songId); //                             play the song!
-                    Log.e(TAG, playStatus);
-               }
-           }
-       });// on item click listener for listview
+        handleIntent(getIntent());
 
     }//on create
 
+    public void showSongListFragment(){
 
+        fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        //if the fragment is already in the container, show it
+        if(songListFragment.isAdded()){
+            fragmentTransaction.show(songListFragment);
+        }else{
+            //inflate it if it has not been added
+            fragmentTransaction.add(R.id.fragment_placeholder, songListFragment);
+        }
 
-    protected void onDestroy() {
-        mediaPlayerController.releaseMediaPlayer();
-        super.onDestroy();
+        //hide the other fragments if they are showing
+        if(nowPlayingFragment.isAdded()){fragmentTransaction.hide(nowPlayingFragment);}
+        if(searchSongFragment.isAdded()){fragmentTransaction.hide(searchSongFragment);}
+        fragmentTransaction.commit();
+
+        //fragmentTransaction.addToBackStack("nowPlaying");
     }
+
+
+    //replace the song list fragment with the now playing fragment
+    public void showNowPlayingFragment(){
+
+        fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        //if the fragment is already in the container, show it
+        if(nowPlayingFragment.isAdded()){
+            fragmentTransaction.show(nowPlayingFragment);
+        }else{
+            //inflate it if it has not been added
+            fragmentTransaction.add(R.id.fragment_placeholder, nowPlayingFragment);
+        }
+
+        //hide the other fragments if they are showing
+        if(songListFragment.isAdded()){fragmentTransaction.hide(songListFragment);}
+        if(searchSongFragment.isAdded()){fragmentTransaction.hide(searchSongFragment);}
+        fragmentTransaction.addToBackStack(null); //add to back stack so we can return to this fragment
+        fragmentTransaction.commit();
+
+
+    }
+
+    public void showSearchResultsFragment(){
+
+        fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        //if the fragment is already in the container, show it
+
+        searchSongFragment = new SearchResultsFragment();
+        fragmentTransaction.remove(songListFragment);
+        fragmentTransaction.add(R.id.fragment_placeholder,searchSongFragment);
+
+        if(nowPlayingFragment.isAdded()){fragmentTransaction.hide(nowPlayingFragment);}
+
+        fragmentTransaction.commit();
+    }
+
+
+
 
 
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.menu_home, menu);
+        getMenuInflater().inflate(R.menu.options_menu, menu);
+
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
+
         return true;
     }
 
@@ -102,6 +153,15 @@ public class HomeActivity extends BaseActivity implements Observer {
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
         return super.onOptionsItemSelected(item);
+    }
+
+
+    private String[] getSongNames(ArrayList<Song> songList){
+        String[] songNames = new String[songList.size()];
+        for(int i= 0; i<songList.size(); i++){
+            songNames[i] = songList.get(i).getName();
+        }
+        return songNames;
     }
 
     // PAUSE BUTTON
@@ -132,20 +192,29 @@ public class HomeActivity extends BaseActivity implements Observer {
 
     //PREVIOUS BUTTON
     public void onClickPlayPrevious(View view){
+        mediaPlayerController.pauseSong();
         String response = mediaPlayerController.playPreviousSong(HomeActivity.this);
         Log.i(TAG, response);
     }
 
     @Override
-    public void update(Observable observable, Object args) {
-        SongObservable songObservable = (SongObservable) observable;
+    protected void onNewIntent(Intent intent) {
+        handleIntent(intent);
+    }
 
-        Song song = songObservable.getSong();
+    //handle user input and launch search fragment
+    public void handleIntent(Intent intent) {
 
-        String songName = song.getName();
-        String albumName = song.getAlbum().getName();
-        String artistName = song.getArtist().getName();
-
-        nowPlayingGUI.setText(String.format("Song: %s\nAlbum: %s\nArtist: %s", songName, albumName, artistName));
+        if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
+            String query = intent.getStringExtra(SearchManager.QUERY);
+            //use the query to search your data somehow
+            sResult = findSong.searchSongs(query);
+            ArrayList ss = new ArrayList();
+            for(int i=0; i<sResult.size();i++)
+                ss.add(sResult.get(i));
+            result = getSongNames(ss); //get the names of the songs in order to populate the listview in the results fragment
+            Toast.makeText(this, "results should be "+result.length, Toast.LENGTH_LONG).show();
+            showSearchResultsFragment(); //show search fragment
+        }
     }
 }

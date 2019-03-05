@@ -4,14 +4,14 @@ import org.junit.Test;
 
 import comp3350.breadtunes.business.SongQueue;
 import comp3350.breadtunes.objects.Song;
+import comp3350.breadtunes.objects.SongDuration;
+import comp3350.breadtunes.tests.watchers.TestLogger;
 
 import static org.junit.Assert.*;
 
-public class QueueTest {
+public class QueueTest extends TestLogger {
     @Test
     public void testInsertQueue() {
-        System.out.println("\nStarting testInsertQueue");
-
         // Arrange
         SongQueue q = new SongQueue(5);
         Song s = new Song();
@@ -27,14 +27,10 @@ public class QueueTest {
         assertEquals(3,q.size());
         assertFalse(q.isEmpty());
         assertFalse(q.isFull());
-
-        System.out.println("Finished testInsertQueue");
     }
 
     @Test
     public void testRemoveQueue() {
-        System.out.println("\nStarting testRemoveQueue");
-
         // Arrange
         SongQueue q = new SongQueue(5);
         Song s = new Song();
@@ -52,14 +48,10 @@ public class QueueTest {
         assertEquals(1,q.size());
         assertFalse(q.isEmpty());
         assertFalse(q.isFull());
-
-        System.out.println("Finished testRemoveQueue");
     }
 
     @Test
     public void testRemoveEmptyQueue() {
-        System.out.println("\nStarting testRemoveEmptyQueue");
-
         // Arrange
         SongQueue q = new SongQueue(5);
 
@@ -69,14 +61,10 @@ public class QueueTest {
         // Assert
         assertNull(song);
         assertTrue(q.isEmpty());
-
-        System.out.println("Finished testRemoveEmptyQueue");
     }
 
     @Test
     public void testAddFullQueue() {
-        System.out.println("\nStarting testAddFullQueue");
-
         // Arrange
         int queueSize = 2;
         SongQueue q = new SongQueue(queueSize);
@@ -89,21 +77,15 @@ public class QueueTest {
         // Assert
         assertTrue(q.isFull());
         assertTrue(q.size() == queueSize);
-
-        System.out.println("Finished testAddFullQueue");
     }
 
     @Test(expected = NegativeArraySizeException.class)
     public void testNegativeSizeQueue() {
-        System.out.println("\nExpecting exception from testZeroSizeQueue");
-
         SongQueue q = new SongQueue(-1);
     }
 
     @Test
     public void testZeroSizeQueue() {
-        System.out.println("\nStarting testZeroSizeQueue");
-
         // Act
         SongQueue q = new SongQueue(0);
         q.insert(new Song());
@@ -114,14 +96,10 @@ public class QueueTest {
         assertTrue(q.isFull());
         assertTrue(q.size() == 0);
         assertNull(song);
-
-        System.out.println("Finished testZeroSizeQueue");
     }
 
     @Test
     public void testOneSizeQueue() {
-        System.out.println("\nStarting testOneSizeQueue");
-
         // Arrange
         Song song1 = new Song();
         Song song2 = new Song();
@@ -138,7 +116,31 @@ public class QueueTest {
         assertFalse(q.isFull());
         assertTrue(q.isEmpty());
         assertTrue(q.size() == 0);
-
-        System.out.println("Finished testOneSizeQueue");
     }
+
+    @Test
+    public void testAddSongToPlayNext()
+    {
+        // Arrange
+        Song mocksong1 = new Song();
+        Song mocksong2 = new Song();
+        Song mocksong3 = new Song();
+        Song mocksong4 = new Song();
+        Song mocksong5 = new Song();
+
+        // Act
+        SongQueue testTarget = new SongQueue(5);
+        testTarget.insert(mocksong1);
+        testTarget.insert(mocksong2);
+        testTarget.insert(mocksong3);
+
+        testTarget.addSongToPlayNext(mocksong4);
+        testTarget.addSongToPlayNext(mocksong5);
+
+        assertEquals(testTarget.getSong(0), mocksong5);
+        assertEquals(testTarget.getSong(1), mocksong4);
+        assertEquals(testTarget.getSong(2), mocksong1);
+        assertEquals(testTarget.getSong(3), mocksong2);
+        assertEquals(testTarget.getSong(4), mocksong3);
+    }// testAddSongToPlayNext
 }
