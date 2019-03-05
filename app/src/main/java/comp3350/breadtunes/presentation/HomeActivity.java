@@ -17,6 +17,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.SearchView;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -43,11 +44,21 @@ public class HomeActivity extends BaseActivity  {
     String [] result;
     private FragmentTransaction fragmentTransaction;
 
+    // fragments used in the main activity
+    private NowPlayingFragment nowPlayingFragment;
+    private SearchResultsFragment searchSongFragment;
+    private SongListFragment songListFragment;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+        if(savedInstanceState == null){
+            nowPlayingFragment = new NowPlayingFragment();
+            searchSongFragment = new SearchResultsFragment();
+            songListFragment = new SongListFragment();
+        }
 
 
         final List<Song> songList = ServiceGateway.getSongPersistence().getAll();
@@ -59,47 +70,92 @@ public class HomeActivity extends BaseActivity  {
         songNamesToDisplay = getSongNames(sList);
 
         //put the song list fragment on top of the main activity
-        fragmentTransaction= getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.fragment_placeholder, new SongListFragment());
-        fragmentTransaction.commit();
+        showSongListFragment();
 
         handleIntent(getIntent());
 
-
     }//on create
+
+    public void showSongListFragment(){
+
+        fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        //if the fragment is already in the container, show it
+        if(songListFragment.isAdded()){
+            fragmentTransaction.show(songListFragment);
+        }else{
+            //inflate it if it has not been added
+            fragmentTransaction.add(R.id.fragment_placeholder, songListFragment);
+        }
+
+        //hide the other fragments if they are showing
+        if(nowPlayingFragment.isAdded()){fragmentTransaction.hide(nowPlayingFragment);}
+        if(searchSongFragment.isAdded()){fragmentTransaction.hide(searchSongFragment);}
+        fragmentTransaction.commit();
+
+        //fragmentTransaction.addToBackStack("nowPlaying");
+    }
+
 
     //replace the song list fragment with the now playing fragment
     public void showNowPlayingFragment(){
-        fragmentTransaction= getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.fragment_placeholder, new NowPlayingFragment());
-        fragmentTransaction.addToBackStack(null);
+
+        fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        //if the fragment is already in the container, show it
+        if(nowPlayingFragment.isAdded()){
+            fragmentTransaction.show(nowPlayingFragment);
+        }else{
+            //inflate it if it has not been added
+            fragmentTransaction.add(R.id.fragment_placeholder, nowPlayingFragment);
+        }
+
+        //hide the other fragments if they are showing
+        if(songListFragment.isAdded()){fragmentTransaction.hide(songListFragment);}
+        if(searchSongFragment.isAdded()){fragmentTransaction.hide(searchSongFragment);}
+        fragmentTransaction.addToBackStack(null); //add to back stack so we can return to this fragment
         fragmentTransaction.commit();
+
+
     }
 
     public void showSearchResultsFragment(){
-        fragmentTransaction= getSupportFragmentManager().beginTransaction();
-        fragmentTransaction.replace(R.id.fragment_placeholder, new SearchResultsFragment());
-        fragmentTransaction.addToBackStack(null);
+
+        fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        //if the fragment is already in the container, show it
+
+
+
+//        if(searchSongFragment.isAdded()){
+//            fragmentTransaction.remove(searchSongFragment);
+//            searchSongFragment = new SearchResultsFragment(); //create a new instance with the new search results
+//            fragmentTransaction.replace(R.id.fragment_placeholder, searchSongFragment);
+//        }else{
+//            //inflate it if it has not been added
+//            fragmentTransaction.add(R.id.fragment_placeholder, searchSongFragment);
+//        }
+//
+//        //hide the other fragments if they are showing
+//        if(songListFragment.isAdded()){fragmentTransaction.remove(songListFragment);}
+
+        searchSongFragment = new SearchResultsFragment();
+        fragmentTransaction.remove(songListFragment);
+        fragmentTransaction.add(R.id.fragment_placeholder,searchSongFragment);
+
+        if(nowPlayingFragment.isAdded()){fragmentTransaction.hide(nowPlayingFragment);}
+
         fragmentTransaction.commit();
     }
 
 
-    protected void onDestroy() {
-        mediaPlayerController.releaseMediaPlayer();
-        super.onDestroy();
-    }
+
 
 
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.options_menu, menu);
 
-        SearchManager searchManager =
-                (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView =
-                (SearchView) menu.findItem(R.id.search).getActionView();
-        searchView.setSearchableInfo(
-                searchManager.getSearchableInfo(getComponentName()));
+        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
 
         return true;
     }
@@ -150,6 +206,7 @@ public class HomeActivity extends BaseActivity  {
 
     //PREVIOUS BUTTON
     public void onClickPlayPrevious(View view){
+        mediaPlayerController.pauseSong();
         String response = mediaPlayerController.playPreviousSong(HomeActivity.this);
         Log.i(TAG, response);
     }
@@ -159,6 +216,7 @@ public class HomeActivity extends BaseActivity  {
         handleIntent(intent);
     }
 
+    //handle user input and launch search fragment
     public void handleIntent(Intent intent) {
 
         if (Intent.ACTION_SEARCH.equals(intent.getAction())) {
@@ -168,8 +226,9 @@ public class HomeActivity extends BaseActivity  {
             ArrayList ss = new ArrayList();
             for(int i=0; i<sResult.size();i++)
                 ss.add(sResult.get(i));
-            result = getSongNames(ss);
-            showSearchResultsFragment();
+            result = getSongNames(ss); //get the names of the songs in order to populate the listview in the results fragment
+            Toast.makeText(this, "results should be "+result.length, Toast.LENGTH_LONG).show();
+            showSearchResultsFragment(); //show search fragment
         }
     }
 }
