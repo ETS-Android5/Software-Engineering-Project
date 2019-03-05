@@ -45,6 +45,24 @@ public class AlbumTest extends TestLogger {
     }
 
     @Test
+    public void testSetName()
+    {
+        // Arrange
+        ArrayList<Song> songList = new ArrayList<>();
+        ArrayList<Song> songList2 = new ArrayList<>();
+        Song a = new Song();
+        songList2.add(a);
+
+        // Act
+        Album testTarget = new Album("Album 1", songList);
+        testTarget.setName("mock name");
+
+        // Assert
+        assertEquals(0, testTarget.compareTo(testTarget));
+        assertEquals("mock name", testTarget.getName());
+    }
+
+    @Test
     public void testSetSongs()
     {
         // Arrange
