@@ -32,6 +32,7 @@ import java8.util.concurrent.CompletableFuture;
  */
 public abstract class BaseActivity extends AppCompatActivity {
     private static final int MY_PERMISSION_READ_EXTERNAL_REQUEST = 60000;
+    private static boolean appInitialized = false;
 
     private static List<Song> songs;
     private static List<Album> albums;
@@ -45,9 +46,15 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onPostCreate(@Nullable Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
+
+        if (appInitialized == false){
+            return;
+        }
+
         requestReadExternalStoragePermission();
         prepareDatabase();
         notifyDatabaseUpdateAsync(updateMediaDatabaseAsync(loadMediaAsync()));
+        appInitialized = true;
     }
 
     protected void requestReadExternalStoragePermission() {
