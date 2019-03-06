@@ -41,14 +41,19 @@ public class HomeActivity extends BaseActivity  {
     String[] songNamesToDisplay;
     private final String TAG = "HomeActivity";
     LookUpSongs findSong;
-    List<Song> sResult;
-    String [] result;
     private FragmentTransaction fragmentTransaction;
 
     // fragments used in the main activity
     private NowPlayingFragment nowPlayingFragment;
     private SearchResultsFragment searchSongFragment;
     private SongListFragment songListFragment;
+
+    // the list of songs acquired from Persistance layer
+    List<Song> songList;
+
+    //variables for getting search query and launching search results fragment
+    List<Song> sResult;
+    String[] result;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -67,7 +72,8 @@ public class HomeActivity extends BaseActivity  {
         }
 
 
-        final List<Song> songList = ServiceGateway.getSongPersistence().getAll();
+        getSongsFromPersistance();
+
         musicPlayerState = new MusicPlayerState(songList);
         mediaPlayerController = new MediaPlayerController(HomeActivity.this, musicPlayerState, ServiceGateway.getMediaManager());
         findSong = new LookUpSongs(songList);
@@ -77,10 +83,27 @@ public class HomeActivity extends BaseActivity  {
 
         //put the song list fragment on top of the main activity
         showSongListFragment();
-
         handleIntent(getIntent());
-
     }//on create
+
+    public void getSongsFromPersistance(){
+        songList = new ArrayList<>();
+        songList.addAll(ServiceGateway.getSongPersistence().getAll());
+    }
+
+    public void refreshSongList(){
+        sList.addAll(songList);
+        songNamesToDisplay = new String[songList.size()];
+        for(int i=0;i<songNamesToDisplay.length;i++)
+            songNamesToDisplay[i] = songList.get(i).getName();
+    }
+
+    protected void onResume(){
+        super.onResume();
+        getSongsFromPersistance();
+        refreshSongList();
+        Toast.makeText(this, "on resume called in main activity...", Toast.LENGTH_LONG).show();
+    }
 
     //restore the activitie state
     protected void onRestoreInstanceState(Bundle savedInstanceState){
@@ -91,7 +114,7 @@ public class HomeActivity extends BaseActivity  {
         musicPlayerState.setCurrentSongPlayingName(savedInstanceState.getString("currentSong"));
         musicPlayerState.setPausedPosition(savedInstanceState.getInt("pausedPosition"));
         songNamesToDisplay = savedInstanceState.getStringArray("currentSongList");
-        //Toast.makeText(this, "Restoring music player state...", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "on restore instance state in main act called...", Toast.LENGTH_LONG).show();
     }
 
     //save the activities state
@@ -101,10 +124,9 @@ public class HomeActivity extends BaseActivity  {
         //save all of the music player state
         outState.putBoolean("songPlaying", musicPlayerState.isSongPlaying());
         outState.putBoolean("songPaused", musicPlayerState.isSongPaused());
-//        outState.putString("currentSong", musicPlayerState.getCurrentlyPlayingSong().getName());
         outState.putInt("pausedPosition", musicPlayerState.getPausedPosition());
         outState.putStringArray("currentSongList", songNamesToDisplay);
-       // Toast.makeText(this, "saving music player state...", Toast.LENGTH_SHORT).show();
+        Toast.makeText(this, "on save instance in main act called..", Toast.LENGTH_LONG).show();
 
     }
 
@@ -124,7 +146,6 @@ public class HomeActivity extends BaseActivity  {
         if(searchSongFragment.isAdded()){fragmentTransaction.hide(searchSongFragment);}
         fragmentTransaction.commit();
 
-        //fragmentTransaction.addToBackStack("nowPlaying");
     }
 
 
@@ -146,7 +167,6 @@ public class HomeActivity extends BaseActivity  {
         fragmentTransaction.addToBackStack(null); //add to back stack so we can return to this fragment
         fragmentTransaction.commit();
 
-
     }
 
 
@@ -166,12 +186,7 @@ public class HomeActivity extends BaseActivity  {
 
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.options_menu, menu);
-
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-
+        getMenuInflater().inflate(R.menu.menu_home, menu);
         return true;
     }
 
@@ -185,7 +200,7 @@ public class HomeActivity extends BaseActivity  {
     }
 
 
-    private String[] getSongNames(ArrayList<Song> songList){
+    public String[] getSongNames(ArrayList<Song> songList){
         String[] songNames = new String[songList.size()];
         for(int i= 0; i<songList.size(); i++){
             songNames[i] = songList.get(i).getName();
@@ -225,6 +240,7 @@ public class HomeActivity extends BaseActivity  {
         Log.i(TAG, response);
     }
 
+
     @Override
     protected void onNewIntent(Intent intent) {
         handleIntent(intent);
@@ -241,6 +257,7 @@ public class HomeActivity extends BaseActivity  {
             for(int i=0; i<sResult.size();i++)
                 ss.add(sResult.get(i));
             result = getSongNames(ss); //get the names of the songs in order to populate the listview in the results fragment
+            Toast.makeText(this, "results should be "+result.length, Toast.LENGTH_LONG).show();
             showSearchResultsFragment(); //show search fragment
         }
     }

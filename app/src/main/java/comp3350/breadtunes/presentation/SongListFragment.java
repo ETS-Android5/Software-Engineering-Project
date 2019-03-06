@@ -1,21 +1,30 @@
 package comp3350.breadtunes.presentation;
 
 
+import android.app.SearchManager;
+import android.content.Context;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
+import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -36,45 +45,58 @@ public class SongListFragment extends Fragment implements Observer {
 
 
     public HomeActivity homeActivity;
+    ListView activitySongList;
+    String[] songNameList;
     private final String TAG = "HomeActivity";
-
     public static Button nowPlayingSongGui;
-
-
 
 
     public SongListFragment() {
         // Required empty public constructor
     }
 
+    public void onCreate(Bundle savedInstanceState){
+        super.onCreate(savedInstanceState);
+        homeActivity = (HomeActivity) getActivity();
+        setHasOptionsMenu(true);
 
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        homeActivity = (HomeActivity) getActivity();
         homeActivity.musicPlayerState.subscribeToSongChange(this);
         return inflater.inflate(R.layout.fragment_song_list, container, false);
     }
 
     public void onViewCreated(View view, Bundle savedInstanceState){
-        //populate the list of songs
-        ArrayAdapter adapter = new ArrayAdapter<String>(getContext(), R.layout.songlist_element, homeActivity.songNamesToDisplay);
-        final ListView activitySongList = (ListView) view.findViewById(R.id.songList);
+
+        populateSongListView();
+        registerOnClickForSonglist();
+        registerOnClickForNowPlayingButton();
+    }
+
+    public void onResume(){
+        super.onResume();
+        homeActivity.musicPlayerState.subscribeToSongChange(this);
+        getSongNames();
+        populateSongListView();
+        registerOnClickForSonglist();
+        registerOnClickForNowPlayingButton();
+    }
+
+    public void getSongNames(){
+        songNameList = homeActivity.songNamesToDisplay.clone();
+    }
+
+
+    public void populateSongListView(){
+        ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.songlist_element, homeActivity.songNamesToDisplay);
+        activitySongList = (ListView) getView().findViewById(R.id.songList);
         activitySongList.setAdapter(adapter);
+    }
 
-        //get reference to the now playing song gui
-        nowPlayingSongGui = (Button) view.findViewById(R.id.song_name);
-
-        nowPlayingSongGui.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(homeActivity.musicPlayerState.isSongPaused() || homeActivity.musicPlayerState.isSongPlaying())
-                    homeActivity.showNowPlayingFragment();
-            }
-        });
-
-        //set on item click listener to react to list clicks
+    public void registerOnClickForSonglist(){
         activitySongList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
 
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
@@ -90,8 +112,26 @@ public class SongListFragment extends Fragment implements Observer {
                 }
             }
         });// on item click listener for listview
-
     }
+
+
+    public void registerOnClickForNowPlayingButton(){
+        //get reference to the now playing song gui
+        nowPlayingSongGui = (Button) getView().findViewById(R.id.song_name);
+
+        nowPlayingSongGui.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                if(homeActivity.musicPlayerState.isSongPaused() || homeActivity.musicPlayerState.isSongPlaying()) {
+                    homeActivity.showNowPlayingFragment();
+                }else{
+                    Log.e(TAG, "no song playing or paused");
+                }
+            }
+        });
+    }
+
+
 
     //save the fragment state so it can be restored
     public void onSaveInstanceState(Bundle outState){
@@ -123,8 +163,19 @@ public class SongListFragment extends Fragment implements Observer {
         nowPlayingSongGui.setText(homeActivity.musicPlayerState.getCurrentlyPlayingSongName());
     }
 
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
+        inflater.inflate(R.menu.options_menu, menu);
+        SearchManager searchManager = (SearchManager) homeActivity.getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(homeActivity.getComponentName()));
+    }
 
-
-
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        return super.onOptionsItemSelected(item);
+    }
 
 }
