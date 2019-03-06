@@ -26,7 +26,7 @@ import static comp3350.breadtunes.presentation.HomeActivity.sList;
 public class SearchResultsFragment extends Fragment  {
 
     public HomeActivity homeActivity;
-    private final String TAG = "SearchResultsFragment: ";
+    private final String TAG = "HomeActivity";
 
     public SearchResultsFragment() {
         // Required empty public constructor
@@ -56,7 +56,6 @@ public class SearchResultsFragment extends Fragment  {
 
             if (selectedSong != null) {
                 int songId = getResources().getIdentifier(selectedSong.getRawName(), "raw", getContext().getPackageName());
-                //homeActivity.showNowPlayingFragment();
                 String playStatus = homeActivity.mediaPlayerController.playSong(selectedSong, songId); //play the song!
                 Log.e(TAG, playStatus);
             }
