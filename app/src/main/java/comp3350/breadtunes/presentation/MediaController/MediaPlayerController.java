@@ -64,10 +64,10 @@ public class MediaPlayerController{
                 appState.setIsSongPaused(true); //update the state of the music player
                 appState.setIsSongPlaying(false);
             }else{
-                response = "Can not pause, no song playing";
+                response = "Can not pause, app state is null";
             }
         }else{
-            response = "Can not pause, no song playing";
+            response = "Can not pause, the song is already paused";
         }
         return response;
     }
@@ -128,7 +128,7 @@ public class MediaPlayerController{
                 appState.setIsSongPaused(false);
                 appState.setIsSongPlaying(true);
 
-                response = "Response successful";
+                response = "resuming song";
             }else{
                 response = "Can not resume , no song is paused";
             }
@@ -139,8 +139,4 @@ public class MediaPlayerController{
     }
 
 
-    //called in OnDestroy() to free up the media player, just housekeeping
-    public void releaseMediaPlayer(){
-        mediaManager.close();
-    }
 }//media player controller class
