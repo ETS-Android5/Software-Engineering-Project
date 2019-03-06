@@ -11,6 +11,7 @@ import android.app.SearchManager;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.Menu;
@@ -54,10 +55,15 @@ public class HomeActivity extends BaseActivity  {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
 
+
         if(savedInstanceState == null){
             nowPlayingFragment = new NowPlayingFragment();
             searchSongFragment = new SearchResultsFragment();
             songListFragment = new SongListFragment();
+        }else{
+            //retrieve the state of the fragment
+            //Toast.makeText(this, "restoring song list fragment in on create of main activity", Toast.LENGTH_LONG).show();
+            songListFragment = (SongListFragment) getSupportFragmentManager().getFragment(savedInstanceState, "songlist_fragment");
         }
 
 
@@ -75,6 +81,32 @@ public class HomeActivity extends BaseActivity  {
         handleIntent(getIntent());
 
     }//on create
+
+    //restore the activitie state
+    protected void onRestoreInstanceState(Bundle savedInstanceState){
+        super.onRestoreInstanceState(savedInstanceState);
+
+        musicPlayerState.setIsSongPlaying(savedInstanceState.getBoolean("songPlaying"));
+        musicPlayerState.setIsSongPaused(savedInstanceState.getBoolean("songPaused"));
+        musicPlayerState.setCurrentSongPlayingName(savedInstanceState.getString("currentSong"));
+        musicPlayerState.setPausedPosition(savedInstanceState.getInt("pausedPosition"));
+        songNamesToDisplay = savedInstanceState.getStringArray("currentSongList");
+        //Toast.makeText(this, "Restoring music player state...", Toast.LENGTH_SHORT).show();
+    }
+
+    //save the activities state
+    protected void onSaveInstanceState(Bundle outState){
+        super.onSaveInstanceState(outState);
+
+        //save all of the music player state
+        outState.putBoolean("songPlaying", musicPlayerState.isSongPlaying());
+        outState.putBoolean("songPaused", musicPlayerState.isSongPaused());
+//        outState.putString("currentSong", musicPlayerState.getCurrentlyPlayingSong().getName());
+        outState.putInt("pausedPosition", musicPlayerState.getPausedPosition());
+        outState.putStringArray("currentSongList", songNamesToDisplay);
+       // Toast.makeText(this, "saving music player state...", Toast.LENGTH_SHORT).show();
+
+    }
 
     public void showSongListFragment(){
 
@@ -117,6 +149,7 @@ public class HomeActivity extends BaseActivity  {
 
     }
 
+
     public void showSearchResultsFragment(){
 
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
@@ -130,10 +163,6 @@ public class HomeActivity extends BaseActivity  {
 
         fragmentTransaction.commit();
     }
-
-
-
-
 
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -172,7 +201,6 @@ public class HomeActivity extends BaseActivity  {
 
     //RESUME BUTTON
     public void onClickResume(View view) {
-
         //make sure a song is actually paused
         if (musicPlayerState.isSongPaused()) {
             Song pausedSong = musicPlayerState.getCurrentlyPlayingSong();   //get the current playing song from the app state
@@ -213,8 +241,9 @@ public class HomeActivity extends BaseActivity  {
             for(int i=0; i<sResult.size();i++)
                 ss.add(sResult.get(i));
             result = getSongNames(ss); //get the names of the songs in order to populate the listview in the results fragment
-            Toast.makeText(this, "results should be "+result.length, Toast.LENGTH_LONG).show();
             showSearchResultsFragment(); //show search fragment
         }
     }
+
+
 }
