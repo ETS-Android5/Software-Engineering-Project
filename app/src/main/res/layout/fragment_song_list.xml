@@ -95,7 +95,7 @@
             android:id="@+id/song_name"
             android:layout_height="wrap_content"
             android:textSize = "17dp"
-            android:text="SongName"/>
+            />
     </LinearLayout>
 
 
