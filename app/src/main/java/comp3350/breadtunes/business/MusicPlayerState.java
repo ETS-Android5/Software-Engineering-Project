@@ -19,6 +19,9 @@ public class MusicPlayerState {
 
     private SongObservable songObservable;
 
+    //march 5
+    private String currentPlayingSongName; //the name of the current song, must be saved and restored in main activity
+
     public MusicPlayerState(List<Song> initialSongList){
 
         songPlaying = false;
@@ -29,10 +32,12 @@ public class MusicPlayerState {
         nextSong = null;
         previousSong = null;
         songObservable = new SongObservable();
+        currentPlayingSongName = "";
     }
 
 
     //state getters
+    public String getCurrentlyPlayingSongName(){if(currentSong == null){return "";}else{return currentPlayingSongName;}}
     public boolean isSongPlaying() { return songPlaying; }
     public void setPausedPosition(int pausedPosition) { this.pausedPosition = pausedPosition; }
     public boolean isSongPaused() { return songPaused; }
@@ -50,10 +55,12 @@ public class MusicPlayerState {
     public void setIsSongPlaying(boolean songPlaying) { this.songPlaying = songPlaying; }
     public void setIsSongPaused(boolean songPaused) { this.songPaused = songPaused; }
     public void setCurrentSongList(List<Song> newSongList){currentSongList = newSongList;}
+    public void setCurrentSongPlayingName(String name){this.currentPlayingSongName = name;}
 
     //update the song playing
     public void setCurrentSong(Song newCurrentSong) {
         this.currentSong = newCurrentSong; //when the song is changed, update the new next and previous
+        currentPlayingSongName = currentSong.getName();
         updateNextSong();
         updatePreviousSong();
 
