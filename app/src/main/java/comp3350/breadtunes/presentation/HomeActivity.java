@@ -5,7 +5,7 @@ import comp3350.breadtunes.presentation.MediaController.MediaPlayerController;
 import comp3350.breadtunes.services.ServiceGateway;
 import comp3350.breadtunes.business.MusicPlayerState;
 import comp3350.breadtunes.objects.Song;
-import comp3350.breadtunes.presentation.base.BaseActivity;
+import comp3350.breadtunes.presentation.AbstractActivities.BaseActivity;
 
 import android.app.SearchManager;
 import android.content.Context;
