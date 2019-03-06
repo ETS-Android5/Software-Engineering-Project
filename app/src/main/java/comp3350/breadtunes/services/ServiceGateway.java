@@ -2,7 +2,7 @@ package comp3350.breadtunes.services;
 
 import comp3350.breadtunes.business.interfaces.MediaManager;
 import comp3350.breadtunes.persistence.*;
-import comp3350.breadtunes.persistence.stubs.*;
+import comp3350.breadtunes.persistence.hsql.*;
 
 public class ServiceGateway
 {
@@ -21,7 +21,7 @@ public class ServiceGateway
 
     public static synchronized SongPersistence getSongPersistence() {
         if (songPersistence == null) {
-            songPersistence = new SongPersistenceStub();
+            songPersistence = new SongPersistenceHSQL(AppState.databasePath);
         }
 
         return songPersistence;
@@ -29,7 +29,7 @@ public class ServiceGateway
 
     public static synchronized AlbumPersistence getAlbumPersistence() {
         if (albumPersistence == null) {
-            albumPersistence = new AlbumPersistenceStub();
+            albumPersistence = new AlbumPersistenceHSQL(AppState.databasePath);
         }
 
         return albumPersistence;
@@ -37,7 +37,7 @@ public class ServiceGateway
 
     public static synchronized ArtistPersistence getArtistPersistence() {
         if (artistPersistence == null) {
-            artistPersistence = new ArtistPersistenceStub();
+            artistPersistence = new ArtistPersistenceHSQL(AppState.databasePath);
         }
 
         return artistPersistence;
