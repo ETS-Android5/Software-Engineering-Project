@@ -79,7 +79,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:background="@color/colorPrimaryDark"
+        android:background="@color/lightGray"
         app:layout_constraintTop_toBottomOf="@id/pause_button"
         tools:layout_editor_absoluteX="38dp" />
 
@@ -94,8 +94,7 @@
             android:layout_width="match_parent"
             android:id="@+id/song_name"
             android:layout_height="wrap_content"
-            android:textSize = "17dp"
-            />
+            android:textSize = "17dp" />
     </LinearLayout>
 
 

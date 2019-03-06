@@ -12,6 +12,7 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import org.w3c.dom.Text;
 
@@ -35,7 +36,7 @@ public class SongListFragment extends Fragment implements Observer {
 
 
     public HomeActivity homeActivity;
-    private final String TAG = "Song list fragment: ";
+    private final String TAG = "HomeActivity";
 
     public static Button nowPlayingSongGui;
 
@@ -65,8 +66,6 @@ public class SongListFragment extends Fragment implements Observer {
         //get reference to the now playing song gui
         nowPlayingSongGui = (Button) view.findViewById(R.id.song_name);
 
-        //@// TODO: 28/02/19 //add on click listener for the above views to launch the now playing fragment
-
         nowPlayingSongGui.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
@@ -74,8 +73,6 @@ public class SongListFragment extends Fragment implements Observer {
                     homeActivity.showNowPlayingFragment();
             }
         });
-
-
 
         //set on item click listener to react to list clicks
         activitySongList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
@@ -96,20 +93,37 @@ public class SongListFragment extends Fragment implements Observer {
 
     }
 
+    //save the fragment state so it can be restored
+    public void onSaveInstanceState(Bundle outState){
+        super.onSaveInstanceState(outState);
+        //Toast.makeText(homeActivity, "on saved instance state called in song list fragment...", Toast.LENGTH_SHORT).show();
+
+    }
+    //only called when you press home button, but not back button
+
+    //restore the fragments state
+    public void onActivityCreated(Bundle savedInstanceState){
+        super.onActivityCreated(savedInstanceState);
+        //Toast.makeText(homeActivity, "on activity created called in song list fragment...", Toast.LENGTH_SHORT).show();
+    }
+
+    //when pressing back button and launching app again, the onactivity created
 
     @Override
     public void update(Observable observable, Object o) {
         SongObservable songObservable = (SongObservable) observable;
-
         Song song = songObservable.getSong();
-
         String songName = song.getName();
-
-        String artistName = song.getArtistName();
-
         nowPlayingSongGui.setText(songName);
 
     }
+
+    public void onStart(){
+        super.onStart();
+        nowPlayingSongGui.setText(homeActivity.musicPlayerState.getCurrentlyPlayingSongName());
+    }
+
+
 
 
 
