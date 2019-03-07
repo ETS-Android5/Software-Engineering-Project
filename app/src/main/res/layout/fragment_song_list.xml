@@ -20,29 +20,29 @@
         android:id="@+id/pause_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="80dp"
         android:layout_marginTop="8dp"
+        android:focusable="false"
         android:onClick="onClickPause"
         android:text="Pause"
         android:textSize="15sp"
         android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@id/textTitle"
-        tools:layout_editor_absoluteX="0dp"
-        android:focusable="false" />
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textTitle" />
 
     <Button
         android:id="@+id/resume_button"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="104dp"
+        android:layout_marginLeft="16dp"
         android:layout_marginTop="8dp"
+        android:focusable="false"
         android:onClick="onClickResume"
         android:text="Resume"
         android:textSize="15sp"
         android:textStyle="bold"
         app:layout_constraintLeft_toRightOf="@id/pause_button"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textTitle"
-        android:focusable="false" />
+        app:layout_constraintTop_toBottomOf="@id/textTitle" />
 
 
 
@@ -84,17 +84,18 @@
         tools:layout_editor_absoluteX="38dp" />
 
 
-    <LinearLayout
-        xmlns:android="http://schemas.android.com/apk/res/android"
+    <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:gravity="bottom|end"
         android:orientation="vertical"
-        android:gravity="bottom|end">
+        app:layout_constraintStart_toStartOf="parent">
+
         <Button
-            android:layout_width="match_parent"
             android:id="@+id/song_name"
+            android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:textSize = "17dp" />
+            android:textSize="17dp" />
     </LinearLayout>
 
 
