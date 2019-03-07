@@ -76,7 +76,8 @@ public class SongListFragment extends Fragment implements Observer {
         populateSongListView();
         registerOnClickForSonglist();
         registerOnClickForNowPlayingButton();
-        nowPlayingSongGui.setText(MusicPlayerState.getInstance().getCurrentlyPlayingSongName());
+        nowPlayingSongGui.setText(MusicPlayerState.getInstance().getCurrentlyPlayingSongName()+" "+MusicPlayerState.getInstance().getShuffleStatus()+" "+
+        MusicPlayerState.getInstance().getRepeatStatus());
 
     }
 
@@ -113,7 +114,8 @@ public class SongListFragment extends Fragment implements Observer {
         SongObservable songObservable = (SongObservable) observable;
         Song song = songObservable.getSong();
         String songName = song.getName();
-        nowPlayingSongGui.setText(songName);
+        nowPlayingSongGui.setText(songName+" "+MusicPlayerState.getInstance().getShuffleStatus()+" "+
+                MusicPlayerState.getInstance().getRepeatStatus());
 
     }
 
