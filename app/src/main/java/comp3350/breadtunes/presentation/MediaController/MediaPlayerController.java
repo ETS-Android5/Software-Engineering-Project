@@ -1,9 +1,7 @@
 package comp3350.breadtunes.presentation.MediaController;
 import android.content.Context;
 import android.media.MediaPlayer;
-
 import comp3350.breadtunes.business.MusicPlayerState;
-import comp3350.breadtunes.business.interfaces.MediaManager;
 import comp3350.breadtunes.objects.Song;
 import comp3350.breadtunes.services.ServiceGateway;
 
@@ -29,8 +27,16 @@ public class MediaPlayerController{
             ServiceGateway.getMediaManager().startPlayingSong(context, resourceId);
             ServiceGateway.getMediaManager().setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 public void onCompletion(MediaPlayer mediaPlayer) {
+
                     //get reference to next from app state
-                    Song nextSong = MusicPlayerState.getInstance().getNextSong();
+                    Song nextSong;
+
+                    if(MusicPlayerState.getInstance().getRepeatMode()){ //if repeat mode is on, the next song is the same song
+                        nextSong = song;
+                    }else{
+                        nextSong = MusicPlayerState.getInstance().getNextSong(); //if repeat mode not on, next song is as usual
+                    }
+
                     if(nextSong != null){
                         int songId = context.getResources().getIdentifier(nextSong.getRawName(), "raw", context.getPackageName());
                         playSong(nextSong, songId, context);
@@ -79,6 +85,10 @@ public class MediaPlayerController{
     public String playNextSong(Context context){
         String response;
         if(MusicPlayerState.getInstance().getCurrentlyPlayingSong() != null && MusicPlayerState.getInstance().getCurrentSongList()!= null){ //make sure there is a song playing
+
+            boolean repeatModeIsOn = MusicPlayerState.getInstance().getRepeatMode();
+
+
             Song nextSong = MusicPlayerState.getInstance().getNextSong();
 
             if(nextSong != null) {
@@ -131,6 +141,43 @@ public class MediaPlayerController{
             }
         }catch(Exception e){
             response = e.toString();
+        }
+        return response;
+    }
+
+    public String setShuffle(){
+        String response;
+        if(MusicPlayerState.getInstance().isSongPlaying() || MusicPlayerState.getInstance().isSongPaused()){
+
+            boolean shuffleOn = MusicPlayerState.getInstance().getShuffleMode();
+            if(shuffleOn){
+                MusicPlayerState.getInstance().setShuffleMode(false);
+                response = "set shuffle mode to false";
+            }else{
+                MusicPlayerState.getInstance().setShuffleMode(true);
+                response = "set shuffle mode to true";
+            }
+        }else{
+            response = "No song playing or paused";
+        }
+
+        return response;
+    }
+
+    public String setRepeat(){
+        String response;
+        if(MusicPlayerState.getInstance().isSongPlaying() || MusicPlayerState.getInstance().isSongPaused()){
+
+            boolean repeatOn = MusicPlayerState.getInstance().getRepeatMode();
+            if(repeatOn){
+                MusicPlayerState.getInstance().setRepeatMode(false);
+                response = "set repeat mode to false";
+            }else{
+                MusicPlayerState.getInstance().setRepeatMode(true);
+                response = "set repeat mode to true";
+            }
+        }else{
+            response = "No song playing or paused";
         }
         return response;
     }

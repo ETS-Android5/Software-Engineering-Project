@@ -6,7 +6,6 @@ import comp3350.breadtunes.services.ServiceGateway;
 import comp3350.breadtunes.business.MusicPlayerState;
 import comp3350.breadtunes.objects.Song;
 import comp3350.breadtunes.presentation.base.BaseActivity;
-
 import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
@@ -247,6 +246,18 @@ public class HomeActivity extends BaseActivity  {
     public void onClickPlayPrevious(View view){
         mediaPlayerController.pauseSong();
         String response = mediaPlayerController.playPreviousSong(HomeActivity.this);
+        Log.i(TAG, response);
+    }
+
+    //SHUFFLE Button
+    public void onClickShuffle(View view){
+        String response = mediaPlayerController.setShuffle();
+        Log.i(TAG, response);
+    }
+
+    //REPEAT button
+    public void onClickRepeat(View view){
+        String response = mediaPlayerController.setRepeat();
         Log.i(TAG, response);
     }
 
