@@ -131,6 +131,7 @@ public class HomeActivity extends BaseActivity  {
     public void playSong(Song song){
         int songId = getResources().getIdentifier(song.getRawName(), "raw", this.getPackageName());
         String playStatus = mediaPlayerController.playSong(song, songId,this);
+        Log.i(TAG, playStatus);
     }
 
 
