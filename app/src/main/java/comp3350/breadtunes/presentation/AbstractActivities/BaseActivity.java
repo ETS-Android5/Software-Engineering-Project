@@ -6,7 +6,6 @@ import android.content.pm.PackageManager;
 import android.content.res.AssetManager;
 import android.os.Build;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v7.app.AppCompatActivity;
 import android.util.Log;
 import android.widget.Toast;
@@ -32,7 +31,7 @@ import java8.util.concurrent.CompletableFuture;
  */
 public abstract class BaseActivity extends AppCompatActivity {
     private static final int MY_PERMISSION_READ_EXTERNAL_REQUEST = 60000;
-    private static boolean appInitialized = false;
+    private static boolean baseInitialized = false;
 
     private static List<Song> songs;
     private static List<Album> albums;
@@ -41,20 +40,19 @@ public abstract class BaseActivity extends AppCompatActivity {
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-    }
 
-    @Override
-    protected void onPostCreate(@Nullable Bundle savedInstanceState) {
-        super.onPostCreate(savedInstanceState);
-
-        if (appInitialized == false){
-            return;
-        }
+        if (baseInitialized == true) return;
 
         requestReadExternalStoragePermission();
         prepareDatabase();
-        notifyDatabaseUpdateAsync(updateMediaDatabaseAsync(loadMediaAsync()));
-        appInitialized = true;
+
+        if (AppState.externalReadAccessAllowed) {
+            notifyDatabaseUpdateAsync(updateMediaDatabaseAsync(loadMediaAsync()));
+        } else {
+            Toast.makeText(this, "External Read Access has been Denied", Toast.LENGTH_LONG);
+        }
+
+        baseInitialized = true;
     }
 
     protected void requestReadExternalStoragePermission() {
@@ -86,6 +84,7 @@ public abstract class BaseActivity extends AppCompatActivity {
                 // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // We can now read the external storage
+                    AppState.externalReadAccessAllowed = true;
                 }
             }
         }
