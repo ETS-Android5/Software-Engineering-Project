@@ -56,7 +56,6 @@ public class HomeActivity extends BaseActivity  {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        //Toast.makeText(this, "on resume called in main activity...", Toast.LENGTH_LONG).show();
 
         if(savedInstanceState == null){
             nowPlayingFragment = new NowPlayingFragment();
@@ -64,7 +63,6 @@ public class HomeActivity extends BaseActivity  {
             songListFragment = new SongListFragment();
         }else{
             //retrieve the state of the fragment
-           // Toast.makeText(this, "restoring song list fragment in on create of main activity", Toast.LENGTH_LONG).show();
             songListFragment = (SongListFragment) getSupportFragmentManager().getFragment(savedInstanceState, "songlist_fragment");
         }
 
@@ -97,44 +95,36 @@ public class HomeActivity extends BaseActivity  {
         super.onResume();
         getSongsFromPersistance();
         refreshSongList();
-       // Toast.makeText(this, "on resume called in main activity...", Toast.LENGTH_LONG).show();
     }
 
     protected void onStart(){
         super.onStart();
-        //Toast.makeText(this, "on start called in main activity...", Toast.LENGTH_LONG).show();
     }
 
     protected void onRestart(){
         super.onRestart();
-       // Toast.makeText(this, "on restart...", Toast.LENGTH_LONG).show();
     }
 
     protected void onPause(){
         super.onPause();
-        //Toast.makeText(this, "on pause called in main activity...", Toast.LENGTH_LONG).show();
     }
 
     protected void onStop(){
         super.onStop();
-       // Toast.makeText(this, "on stop...", Toast.LENGTH_LONG).show();
     }
 
 
     protected void onDestroy(){
         super.onDestroy();
-        //Toast.makeText(this, "On destroy...", Toast.LENGTH_LONG).show();
     }
 
 
     protected void onRestoreInstanceState(Bundle savedInstanceState){
         super.onRestoreInstanceState(savedInstanceState);
-        //Toast.makeText(this, "On restore...", Toast.LENGTH_LONG).show();
     }
 
     protected void onSaveInstanceState(Bundle outState){
         super.onSaveInstanceState(outState);
-        //Toast.makeText(this, "On save instance state...", Toast.LENGTH_LONG).show();
     }
 
 
@@ -142,7 +132,6 @@ public class HomeActivity extends BaseActivity  {
     public void playSong(Song song){
         int songId = getResources().getIdentifier(song.getRawName(), "raw", this.getPackageName());
         String playStatus = mediaPlayerController.playSong(song, songId,this);
-        Toast.makeText(this, MusicPlayerState.getInstance().getMusicPlayerState(),Toast.LENGTH_LONG).show();
     }
 
 
@@ -230,7 +219,6 @@ public class HomeActivity extends BaseActivity  {
     // PAUSE BUTTON
     public void onClickPause(View view){
         String response = mediaPlayerController.pauseSong();
-        Toast.makeText(this, MusicPlayerState.getInstance().getMusicPlayerState(), Toast.LENGTH_LONG).show();
         Log.i(TAG, response);
 
     }
@@ -244,7 +232,6 @@ public class HomeActivity extends BaseActivity  {
             String response = mediaPlayerController.resumeSong(resourceId);                 // ask  media controller to resume
             Log.i(TAG, response); //display result of operation to log
         }else{
-            Toast.makeText(this, MusicPlayerState.getInstance().getMusicPlayerState(), Toast.LENGTH_LONG).show();
             Log.i(TAG,MusicPlayerState.getInstance().getMusicPlayerState());
         }
 
@@ -284,9 +271,6 @@ public class HomeActivity extends BaseActivity  {
         }
     }
 
-    public MediaPlayerController getMediaPlayerController(){
-        return mediaPlayerController;
-    }
 
 
 

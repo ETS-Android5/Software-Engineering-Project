@@ -48,18 +48,15 @@ public class SongListFragment extends Fragment implements Observer {
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         homeActivity = (HomeActivity) getActivity();
-        setHasOptionsMenu(true);Toast.makeText(homeActivity, "on create called in song list..", Toast.LENGTH_SHORT).show();
+        setHasOptionsMenu(true);
 
 
     }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
         MusicPlayerState.getInstance().subscribeToSongChange(this);
-        Toast.makeText(homeActivity, "on create view called in song list", Toast.LENGTH_LONG).show();
         return inflater.inflate(R.layout.fragment_song_list, container, false);
-
     }
 
 
@@ -79,51 +76,35 @@ public class SongListFragment extends Fragment implements Observer {
         populateSongListView();
         registerOnClickForSonglist();
         registerOnClickForNowPlayingButton();
-        Toast.makeText(homeActivity, "on resume in song list fragment...", Toast.LENGTH_SHORT).show();
-
-        Toast.makeText(homeActivity, MusicPlayerState.getInstance().getMusicPlayerState(), Toast.LENGTH_SHORT).show();
         nowPlayingSongGui.setText(MusicPlayerState.getInstance().getCurrentlyPlayingSongName());
 
     }
 
     public void onStop(){
         super.onStop();
-       /// Toast.makeText(homeActivity, "on stop called in song list fragment...", Toast.LENGTH_SHORT).show();
     }
 
     public void onPause(){
         super.onPause();
-        //Toast.makeText(homeActivity, "on pause in song list fragment...", Toast.LENGTH_SHORT).show();
     }
 
     public void onDestroyView(){
         super.onDestroyView();
-       // Toast.makeText(homeActivity, "on destroy view called song list fragment...", Toast.LENGTH_SHORT).show();
     }
 
 
-
-    //save the fragment state so it can be restored
     public void onSaveInstanceState(Bundle outState){
         super.onSaveInstanceState(outState);
-        //Toast.makeText(homeActivity, "on saved instance state called in song list fragment...", Toast.LENGTH_SHORT).show();
 
     }
-    //only called when you press home button, but not back button
 
-    //restore the fragments state
     public void onActivityCreated(Bundle savedInstanceState){
         super.onActivityCreated(savedInstanceState);
-       // Toast.makeText(homeActivity, "on activity created called in song list fragment...", Toast.LENGTH_SHORT).show();
     }
-
-    //when pressing back button and launching app again, the onactivity created
-
 
 
     public void onStart(){
         super.onStart();
-        Toast.makeText(homeActivity, "onStart in song list fragment...", Toast.LENGTH_SHORT).show();
 
     }
 
