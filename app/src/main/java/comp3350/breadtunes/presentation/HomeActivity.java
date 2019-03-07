@@ -34,7 +34,6 @@ public class HomeActivity extends BaseActivity  {
 
 
     MediaPlayerController mediaPlayerController;  // controls playback operations
-    MusicPlayerState musicPlayerState ; //business layer object that contains the current state of the music player
     public static ArrayList<Song> sList = new ArrayList<>();
     String[] songNamesToDisplay;
     private final String TAG = "HomeActivity";
@@ -72,8 +71,8 @@ public class HomeActivity extends BaseActivity  {
 
         getSongsFromPersistance();
 
-        musicPlayerState = new MusicPlayerState(songList);
-        mediaPlayerController = new MediaPlayerController(HomeActivity.this, musicPlayerState, ServiceGateway.getMediaManager());
+
+        mediaPlayerController = new MediaPlayerController();
         findSong = new LookUpSongs(songList);
 
 
@@ -142,55 +141,9 @@ public class HomeActivity extends BaseActivity  {
     //method called by fragments to avoid context issues
     public void playSong(Song song){
         int songId = getResources().getIdentifier(song.getRawName(), "raw", this.getPackageName());
-        String playStatus = mediaPlayerController.playSong(song, songId);
-        Toast.makeText(this, musicPlayerState.getMusicPlayerState(),Toast.LENGTH_LONG).show();
+        String playStatus = mediaPlayerController.playSong(song, songId,this);
+        Toast.makeText(this, MusicPlayerState.getInstance().getMusicPlayerState(),Toast.LENGTH_LONG).show();
     }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 
 
@@ -277,7 +230,7 @@ public class HomeActivity extends BaseActivity  {
     // PAUSE BUTTON
     public void onClickPause(View view){
         String response = mediaPlayerController.pauseSong();
-        Toast.makeText(this, musicPlayerState.getMusicPlayerState(), Toast.LENGTH_LONG).show();
+        Toast.makeText(this, MusicPlayerState.getInstance().getMusicPlayerState(), Toast.LENGTH_LONG).show();
         Log.i(TAG, response);
 
     }
@@ -285,14 +238,14 @@ public class HomeActivity extends BaseActivity  {
     //RESUME BUTTON
     public void onClickResume(View view) {
         //make sure a song is actually paused
-        if (musicPlayerState.isSongPaused()) {
-            Song pausedSong = musicPlayerState.getCurrentlyPlayingSong();   //get the current playing song from the app state
+        if (MusicPlayerState.getInstance().isSongPaused()) {
+            Song pausedSong = MusicPlayerState.getInstance().getCurrentlyPlayingSong();   //get the current playing song from the app state
             int resourceId = getResources().getIdentifier(pausedSong.getRawName(), "raw", getPackageName());    //get the resource pointer
             String response = mediaPlayerController.resumeSong(resourceId);                 // ask  media controller to resume
             Log.i(TAG, response); //display result of operation to log
         }else{
-            Toast.makeText(this, musicPlayerState.getMusicPlayerState(), Toast.LENGTH_LONG).show();
-            Log.i(TAG, musicPlayerState.getMusicPlayerState());
+            Toast.makeText(this, MusicPlayerState.getInstance().getMusicPlayerState(), Toast.LENGTH_LONG).show();
+            Log.i(TAG,MusicPlayerState.getInstance().getMusicPlayerState());
         }
 
     }

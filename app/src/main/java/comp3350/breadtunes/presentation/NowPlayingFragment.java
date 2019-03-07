@@ -20,6 +20,7 @@ import java.util.Observable;
 import java.util.Observer;
 
 import comp3350.breadtunes.R;
+import comp3350.breadtunes.business.MusicPlayerState;
 import comp3350.breadtunes.business.observables.SongObservable;
 import comp3350.breadtunes.objects.Song;
 
@@ -48,7 +49,7 @@ public class NowPlayingFragment extends Fragment implements Observer {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         homeActivity = (HomeActivity) getActivity();
-        homeActivity.musicPlayerState.subscribeToSongChange(this);
+        MusicPlayerState.getInstance().subscribeToSongChange(this);
         return inflater.inflate(R.layout.fragment_now_playing, container, false);
     }
 
@@ -58,9 +59,9 @@ public class NowPlayingFragment extends Fragment implements Observer {
         nowPlayingAlbumGui = (TextView) view.findViewById(R.id.album_name);
 
         //populate the fields in the fragment
-        nowPlayingSongGui.setText(homeActivity.musicPlayerState.getCurrentlyPlayingSong().getName());
-        nowPlayingAlbumGui.setText(homeActivity.musicPlayerState.getCurrentlyPlayingSong().getAlbumName());
-        nowPlayingArtistGui.setText(homeActivity.musicPlayerState.getCurrentlyPlayingSong().getArtistName());
+        nowPlayingSongGui.setText(MusicPlayerState.getInstance().getCurrentlyPlayingSong().getName());
+        nowPlayingAlbumGui.setText(MusicPlayerState.getInstance().getCurrentlyPlayingSong().getAlbumName());
+        nowPlayingArtistGui.setText(MusicPlayerState.getInstance().getCurrentlyPlayingSong().getArtistName());
 
     }
 

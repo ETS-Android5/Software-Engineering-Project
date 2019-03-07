@@ -22,6 +22,7 @@ import java.util.Observable;
 import java.util.Observer;
 import comp3350.breadtunes.R;
 import comp3350.breadtunes.business.LookUpSongs;
+import comp3350.breadtunes.business.MusicPlayerState;
 import comp3350.breadtunes.business.observables.SongObservable;
 import comp3350.breadtunes.objects.Song;
 
@@ -55,7 +56,7 @@ public class SongListFragment extends Fragment implements Observer {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
-        homeActivity.musicPlayerState.subscribeToSongChange(this);
+        MusicPlayerState.getInstance().subscribeToSongChange(this);
         Toast.makeText(homeActivity, "on create view called in song list", Toast.LENGTH_LONG).show();
         return inflater.inflate(R.layout.fragment_song_list, container, false);
 
@@ -73,15 +74,15 @@ public class SongListFragment extends Fragment implements Observer {
 
     public void onResume(){
         super.onResume();
-        homeActivity.musicPlayerState.subscribeToSongChange(this);
+        MusicPlayerState.getInstance().subscribeToSongChange(this);
         getSongNames();
         populateSongListView();
         registerOnClickForSonglist();
         registerOnClickForNowPlayingButton();
         Toast.makeText(homeActivity, "on resume in song list fragment...", Toast.LENGTH_SHORT).show();
 
-        Toast.makeText(homeActivity, homeActivity.musicPlayerState.getMusicPlayerState(), Toast.LENGTH_SHORT).show();
-        nowPlayingSongGui.setText(homeActivity.musicPlayerState.getCurrentlyPlayingSongName());
+        Toast.makeText(homeActivity, MusicPlayerState.getInstance().getMusicPlayerState(), Toast.LENGTH_SHORT).show();
+        nowPlayingSongGui.setText(MusicPlayerState.getInstance().getCurrentlyPlayingSongName());
 
     }
 
@@ -183,7 +184,7 @@ public class SongListFragment extends Fragment implements Observer {
         nowPlayingSongGui.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                if(homeActivity.musicPlayerState.isSongPaused() || homeActivity.musicPlayerState.isSongPlaying()) {
+                if(MusicPlayerState.getInstance().isSongPaused() || MusicPlayerState.getInstance().isSongPlaying()) {
                     homeActivity.showNowPlayingFragment();
                 }else{
                     Log.e(TAG, "no song playing or paused");
