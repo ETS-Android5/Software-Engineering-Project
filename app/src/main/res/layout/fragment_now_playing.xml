@@ -62,20 +62,21 @@
 
     <!-- playback buttons! -->
 
-    <Button
+    <ImageButton
         android:id="@+id/pause_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="80dp"
+        android:layout_marginStart="152dp"
         android:layout_marginTop="32dp"
         android:onClick="onClickPause"
+        android:src="@drawable/pause"
         android:text="Pause"
         android:textSize="15sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/artist_name" />
 
-    <Button
+    <ImageButton
         android:id="@+id/resume_button"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
@@ -86,10 +87,11 @@
         android:textSize="15sp"
         android:textStyle="bold"
         app:layout_constraintLeft_toRightOf="@id/pause_button"
-        app:layout_constraintTop_toBottomOf="@id/artist_name" />
+        app:layout_constraintTop_toBottomOf="@id/artist_name"
+        android:src="@drawable/play"/>
 
 
-    <Button
+    <ImageButton
         android:id="@+id/play_previous_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -100,9 +102,10 @@
         android:textSize="15sp"
         android:textStyle="bold"
         app:layout_constraintLeft_toRightOf="@id/resume_button"
-        app:layout_constraintTop_toBottomOf="@id/artist_name" />
+        app:layout_constraintTop_toBottomOf="@id/artist_name"
+        android:src="@drawable/previous"/>
 
-    <Button
+    <ImageButton
         android:id="@+id/play_next_button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -113,7 +116,35 @@
         android:textSize="15sp"
         android:textStyle="bold"
         app:layout_constraintLeft_toRightOf="@id/play_previous_button"
-        app:layout_constraintTop_toBottomOf="@id/artist_name" />
+        app:layout_constraintTop_toBottomOf="@id/artist_name"
+        android:src="@drawable/next"/>
+
+    <ImageButton
+        android:id="@+id/shuffle_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="220dp"
+        android:layout_marginTop="32dp"
+        android:onClick="onClickShuffle"
+        android:src="@drawable/shuffle"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/play_next_button"
+        />
+
+    <ImageButton
+        android:id="@+id/repeat_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="36dp"
+        android:layout_marginTop="32dp"
+        android:onClick="onClickRepeat"
+        android:src="@drawable/repeat"
+        android:textSize="15sp"
+        android:textStyle="bold"
+        app:layout_constraintLeft_toRightOf="@id/shuffle_button"
+        app:layout_constraintTop_toBottomOf="@id/play_next_button" />
 
 
 </android.support.constraint.ConstraintLayout>
