@@ -3,30 +3,22 @@ package comp3350.breadtunes.presentation;
 
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-
-import java.util.Observable;
-import java.util.Observer;
-
+import android.widget.Toast;
 import comp3350.breadtunes.R;
 import comp3350.breadtunes.business.LookUpSongs;
-import comp3350.breadtunes.business.observables.SongObservable;
 import comp3350.breadtunes.objects.Song;
 
 import static comp3350.breadtunes.presentation.HomeActivity.sList;
 
-/**
- * A simple {@link Fragment} subclass.
- */
+
 public class SearchResultsFragment extends Fragment  {
 
     public HomeActivity homeActivity;
-    private final String TAG = "HomeActivity";
 
     public SearchResultsFragment() {
         // Required empty public constructor
@@ -50,15 +42,12 @@ public class SearchResultsFragment extends Fragment  {
         //set on item click listener to react to list clicks
         activitySongList.setOnItemClickListener((adapterView, view1, i, l) -> {
             String selectedSongName = (String) adapterView.getItemAtPosition(i);     //get the name of the song being played
-            Log.i(TAG, "Clicked on " + selectedSongName);
             //get the song object associated with the song name that was clicked
             Song selectedSong = LookUpSongs.getSong(sList, selectedSongName);
 
-            if (selectedSong != null) {
-                int songId = getResources().getIdentifier(selectedSong.getRawName(), "raw", getContext().getPackageName());
-                String playStatus = homeActivity.mediaPlayerController.playSong(selectedSong, songId); //play the song!
-                Log.e(TAG, playStatus);
-            }
+            homeActivity.playSong(selectedSong);
+
+
         });// on item click listener for listview
 
     }

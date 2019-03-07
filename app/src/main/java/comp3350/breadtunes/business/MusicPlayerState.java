@@ -99,4 +99,16 @@ public class MusicPlayerState {
     public void subscribeToSongChange(Observer observer) {
         songObservable.addObserver(observer);
     }
+
+    public String getMusicPlayerState(){
+        String state;
+
+        if(currentSong!=null){
+            state = "Current song not null song is "+currentSong.getName()+" song paused: "+songPaused+" song playing "+songPlaying+"variable currentSongname is "+currentPlayingSongName;
+        }else{
+            state = "Current song is null, current song name variable: "+currentPlayingSongName+" song paused: "+songPaused+" song playing: "+songPlaying;
+        }
+
+        return state;
+    }
 }

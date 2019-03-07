@@ -3,7 +3,6 @@ package comp3350.breadtunes.presentation;
 
 import android.app.SearchManager;
 import android.content.Context;
-import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -18,16 +17,9 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SearchView;
-import android.widget.TextView;
 import android.widget.Toast;
-
-import org.w3c.dom.Text;
-
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
-
 import comp3350.breadtunes.R;
 import comp3350.breadtunes.business.LookUpSongs;
 import comp3350.breadtunes.business.observables.SongObservable;
@@ -35,9 +27,6 @@ import comp3350.breadtunes.objects.Song;
 
 import static comp3350.breadtunes.presentation.HomeActivity.sList;
 
-/**
- * A simple {@link Fragment} subclass.
- */
 
 // REFERENCE : https://github.com/codepath/android_guides/wiki/Creating-and-Using-Fragments
 
@@ -58,7 +47,8 @@ public class SongListFragment extends Fragment implements Observer {
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         homeActivity = (HomeActivity) getActivity();
-        setHasOptionsMenu(true);
+        setHasOptionsMenu(true);Toast.makeText(homeActivity, "on create called in song list..", Toast.LENGTH_SHORT).show();
+
 
     }
 
@@ -66,14 +56,19 @@ public class SongListFragment extends Fragment implements Observer {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
 
         homeActivity.musicPlayerState.subscribeToSongChange(this);
+        Toast.makeText(homeActivity, "on create view called in song list", Toast.LENGTH_LONG).show();
         return inflater.inflate(R.layout.fragment_song_list, container, false);
+
     }
+
+
 
     public void onViewCreated(View view, Bundle savedInstanceState){
 
         populateSongListView();
         registerOnClickForSonglist();
         registerOnClickForNowPlayingButton();
+
     }
 
     public void onResume(){
@@ -83,6 +78,76 @@ public class SongListFragment extends Fragment implements Observer {
         populateSongListView();
         registerOnClickForSonglist();
         registerOnClickForNowPlayingButton();
+        Toast.makeText(homeActivity, "on resume in song list fragment...", Toast.LENGTH_SHORT).show();
+
+        Toast.makeText(homeActivity, homeActivity.musicPlayerState.getMusicPlayerState(), Toast.LENGTH_SHORT).show();
+        nowPlayingSongGui.setText(homeActivity.musicPlayerState.getCurrentlyPlayingSongName());
+
+    }
+
+    public void onStop(){
+        super.onStop();
+       /// Toast.makeText(homeActivity, "on stop called in song list fragment...", Toast.LENGTH_SHORT).show();
+    }
+
+    public void onPause(){
+        super.onPause();
+        //Toast.makeText(homeActivity, "on pause in song list fragment...", Toast.LENGTH_SHORT).show();
+    }
+
+    public void onDestroyView(){
+        super.onDestroyView();
+       // Toast.makeText(homeActivity, "on destroy view called song list fragment...", Toast.LENGTH_SHORT).show();
+    }
+
+
+
+    //save the fragment state so it can be restored
+    public void onSaveInstanceState(Bundle outState){
+        super.onSaveInstanceState(outState);
+        //Toast.makeText(homeActivity, "on saved instance state called in song list fragment...", Toast.LENGTH_SHORT).show();
+
+    }
+    //only called when you press home button, but not back button
+
+    //restore the fragments state
+    public void onActivityCreated(Bundle savedInstanceState){
+        super.onActivityCreated(savedInstanceState);
+       // Toast.makeText(homeActivity, "on activity created called in song list fragment...", Toast.LENGTH_SHORT).show();
+    }
+
+    //when pressing back button and launching app again, the onactivity created
+
+
+
+    public void onStart(){
+        super.onStart();
+        Toast.makeText(homeActivity, "onStart in song list fragment...", Toast.LENGTH_SHORT).show();
+
+    }
+
+    @Override
+    public void update(Observable observable, Object o) {
+        SongObservable songObservable = (SongObservable) observable;
+        Song song = songObservable.getSong();
+        String songName = song.getName();
+        nowPlayingSongGui.setText(songName);
+
+    }
+
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
+        inflater.inflate(R.menu.options_menu, menu);
+        SearchManager searchManager = (SearchManager) homeActivity.getSystemService(Context.SEARCH_SERVICE);
+        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
+        searchView.setSearchableInfo(searchManager.getSearchableInfo(homeActivity.getComponentName()));
+    }
+
+    public boolean onOptionsItemSelected(MenuItem item) {
+        // Handle action bar item clicks here. The action bar will
+        // automatically handle clicks on the Home/Up button, so long
+        // as you specify a parent activity in AndroidManifest.xml.
+        int id = item.getItemId();
+        return super.onOptionsItemSelected(item);
     }
 
     public void getSongNames(){
@@ -98,18 +163,14 @@ public class SongListFragment extends Fragment implements Observer {
 
     public void registerOnClickForSonglist(){
         activitySongList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 String selectedSongName = (String) adapterView.getItemAtPosition(i);     //get the name of the song being played
                 Log.i(TAG, "Clicked on "+selectedSongName);
                 //get the song object associated with the song name that was clicked
                 Song selectedSong = LookUpSongs.getSong(sList, selectedSongName);
 
-                if(selectedSong != null) {
-                    int songId = getResources().getIdentifier(selectedSong.getRawName(), "raw", getContext().getPackageName());
-                    String playStatus = homeActivity.mediaPlayerController.playSong(selectedSong, songId); //                             play the song!
-                    Log.e(TAG, playStatus);
-                }
+                homeActivity.playSong(selectedSong);
+
             }
         });// on item click listener for listview
     }
@@ -131,51 +192,5 @@ public class SongListFragment extends Fragment implements Observer {
         });
     }
 
-
-
-    //save the fragment state so it can be restored
-    public void onSaveInstanceState(Bundle outState){
-        super.onSaveInstanceState(outState);
-        //Toast.makeText(homeActivity, "on saved instance state called in song list fragment...", Toast.LENGTH_SHORT).show();
-
-    }
-    //only called when you press home button, but not back button
-
-    //restore the fragments state
-    public void onActivityCreated(Bundle savedInstanceState){
-        super.onActivityCreated(savedInstanceState);
-        //Toast.makeText(homeActivity, "on activity created called in song list fragment...", Toast.LENGTH_SHORT).show();
-    }
-
-    //when pressing back button and launching app again, the onactivity created
-
-    @Override
-    public void update(Observable observable, Object o) {
-        SongObservable songObservable = (SongObservable) observable;
-        Song song = songObservable.getSong();
-        String songName = song.getName();
-        nowPlayingSongGui.setText(songName);
-
-    }
-
-    public void onStart(){
-        super.onStart();
-        nowPlayingSongGui.setText(homeActivity.musicPlayerState.getCurrentlyPlayingSongName());
-    }
-
-    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){
-        inflater.inflate(R.menu.options_menu, menu);
-        SearchManager searchManager = (SearchManager) homeActivity.getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(homeActivity.getComponentName()));
-    }
-
-    public boolean onOptionsItemSelected(MenuItem item) {
-        // Handle action bar item clicks here. The action bar will
-        // automatically handle clicks on the Home/Up button, so long
-        // as you specify a parent activity in AndroidManifest.xml.
-        int id = item.getItemId();
-        return super.onOptionsItemSelected(item);
-    }
 
 }
