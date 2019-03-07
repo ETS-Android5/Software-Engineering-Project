@@ -23,6 +23,7 @@ import java.util.Observer;
 import comp3350.breadtunes.R;
 import comp3350.breadtunes.business.LookUpSongs;
 import comp3350.breadtunes.business.MusicPlayerState;
+import comp3350.breadtunes.business.observables.PlayModeObservable;
 import comp3350.breadtunes.business.observables.SongObservable;
 import comp3350.breadtunes.objects.Song;
 
@@ -56,6 +57,7 @@ public class SongListFragment extends Fragment implements Observer {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         MusicPlayerState.getInstance().subscribeToSongChange(this);
+        MusicPlayerState.getInstance().subscribeToPlayModeChange(this);
         return inflater.inflate(R.layout.fragment_song_list, container, false);
     }
 
@@ -76,8 +78,7 @@ public class SongListFragment extends Fragment implements Observer {
         populateSongListView();
         registerOnClickForSonglist();
         registerOnClickForNowPlayingButton();
-        nowPlayingSongGui.setText(MusicPlayerState.getInstance().getCurrentlyPlayingSongName()+" "+MusicPlayerState.getInstance().getShuffleStatus()+" "+
-        MusicPlayerState.getInstance().getRepeatStatus());
+        nowPlayingSongGui.setText(MusicPlayerState.getInstance().getCurrentlyPlayingSongName()+"\n"+MusicPlayerState.getInstance().getPlayMode());
 
     }
 
@@ -111,12 +112,18 @@ public class SongListFragment extends Fragment implements Observer {
 
     @Override
     public void update(Observable observable, Object o) {
-        SongObservable songObservable = (SongObservable) observable;
-        Song song = songObservable.getSong();
-        String songName = song.getName();
-        nowPlayingSongGui.setText(songName+" "+MusicPlayerState.getInstance().getShuffleStatus()+" "+
-                MusicPlayerState.getInstance().getRepeatStatus());
 
+        if(observable instanceof SongObservable){
+            SongObservable songObservable = (SongObservable) observable;
+            Song song = songObservable.getSong();
+            String songName = song.getName();
+            nowPlayingSongGui.setText(songName+"\n"+MusicPlayerState.getInstance().getPlayMode());
+        }else{
+            PlayModeObservable playModeObservable = (PlayModeObservable) observable;
+            String playMode = playModeObservable.getPlayMode();;
+            String songName = MusicPlayerState.getInstance().getCurrentlyPlayingSong().getName();
+            nowPlayingSongGui.setText(songName+"\n"+playMode);
+        }
     }
 
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater){

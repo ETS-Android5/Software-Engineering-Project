@@ -2,6 +2,8 @@ package comp3350.breadtunes.business;
 import java.util.List;
 import java.util.Observer;
 import java.util.Random;
+
+import comp3350.breadtunes.business.observables.PlayModeObservable;
 import comp3350.breadtunes.business.observables.SongObservable;
 import comp3350.breadtunes.exception.InvalidSongIndex;
 import comp3350.breadtunes.objects.Song;
@@ -23,6 +25,7 @@ public class MusicPlayerState {
     private boolean repeatModeOn;           //is the repeat mode on
 
     private SongObservable songObservable;
+    private PlayModeObservable playModeObservable;
 
     private static MusicPlayerState musicPlayerState;
 
@@ -44,6 +47,7 @@ public class MusicPlayerState {
             musicPlayerState. nextSong = null;
             musicPlayerState.previousSong = null;
             musicPlayerState.songObservable = new SongObservable();
+            musicPlayerState.playModeObservable = new PlayModeObservable();
             musicPlayerState.currentPlayingSongName = "";
             musicPlayerState.shuffleModeOn = false;
             musicPlayerState.repeatModeOn = false;
@@ -76,11 +80,16 @@ public class MusicPlayerState {
     public void setIsSongPaused(boolean songPaused) { musicPlayerState.songPaused = songPaused; }
     public void setCurrentSongList(List<Song> newSongList){musicPlayerState.currentSongList = newSongList;}
     public void setCurrentSongPlayingName(String name){musicPlayerState.currentPlayingSongName = name;}
-    public void setRepeatMode(boolean mode){ musicPlayerState.repeatModeOn = mode;}
+
+    public void setRepeatMode(boolean mode){
+        musicPlayerState.repeatModeOn = mode;
+        musicPlayerState.playModeObservable.setPlayMode(musicPlayerState.getPlayMode());
+    }
 
     public void setShuffleMode(boolean mode){
         musicPlayerState.shuffleModeOn = mode;
         musicPlayerState.updateNextSong();
+        musicPlayerState.playModeObservable.setPlayMode(musicPlayerState.getPlayMode());
     }
 
 
@@ -140,6 +149,10 @@ public class MusicPlayerState {
         musicPlayerState.songObservable.addObserver(observer);
     }
 
+    public void subscribeToPlayModeChange(Observer observer){
+        musicPlayerState.playModeObservable.addObserver(observer);;
+    }
+
     public String getMusicPlayerState(){
         String state;
 
@@ -179,18 +192,28 @@ public class MusicPlayerState {
         return randomIndex;
     }
 
-    public String getShuffleStatus(){
+    public String getPlayMode(){
+        String playMode = getShuffleStatus()+getRepeatStatus();
+        String shuffleStatus = getShuffleStatus();
+        String repeatStatus = getRepeatStatus();
+
+        if(shuffleStatus.equals("") && repeatStatus.equals(""))
+            playMode = "";
+        return playMode;
+    }
+
+    private String getShuffleStatus(){
         String status ="";
         if(musicPlayerState.getShuffleMode()){
-            status = "(Shuffle on)";
+            status = "Shuffle on ";
         }
         return status;
     }
 
-    public String getRepeatStatus(){
+    private String getRepeatStatus(){
         String status = "";
         if(musicPlayerState.getRepeatMode()){
-            status = "(Repeat on)";
+            status = "- Repeat on";
         }
         return status;
     }
