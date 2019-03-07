@@ -8,18 +8,14 @@ import comp3350.breadtunes.objects.Song;
 import comp3350.breadtunes.presentation.base.BaseActivity;
 
 import android.app.SearchManager;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
-import android.support.annotation.Nullable;
 import android.support.v4.app.FragmentTransaction;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.SearchView;
 import android.widget.Toast;
-
 import java.util.ArrayList;
 import java.util.List;
 
@@ -55,9 +51,10 @@ public class HomeActivity extends BaseActivity  {
     List<Song> sResult;
     String[] result;
 
-    @Override
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Toast.makeText(this, "on resume called in main activity...", Toast.LENGTH_LONG).show();
         setContentView(R.layout.activity_home);
 
 
@@ -67,7 +64,7 @@ public class HomeActivity extends BaseActivity  {
             songListFragment = new SongListFragment();
         }else{
             //retrieve the state of the fragment
-            //Toast.makeText(this, "restoring song list fragment in on create of main activity", Toast.LENGTH_LONG).show();
+            Toast.makeText(this, "restoring song list fragment in on create of main activity", Toast.LENGTH_LONG).show();
             songListFragment = (SongListFragment) getSupportFragmentManager().getFragment(savedInstanceState, "songlist_fragment");
         }
 
@@ -77,12 +74,10 @@ public class HomeActivity extends BaseActivity  {
         musicPlayerState = new MusicPlayerState(songList);
         mediaPlayerController = new MediaPlayerController(HomeActivity.this, musicPlayerState, ServiceGateway.getMediaManager());
         findSong = new LookUpSongs(songList);
-        //initialize the songNamestoDisplay so that the fragment can populate its list
-        sList.addAll(songList);
-        songNamesToDisplay = getSongNames(sList);
 
-        //put the song list fragment on top of the main activity
-        showSongListFragment();
+
+        refreshSongList();
+        showSongListFragment(); //put the song list fragment on top of the main activity
         handleIntent(getIntent());
     }//on create
 
@@ -105,30 +100,94 @@ public class HomeActivity extends BaseActivity  {
         Toast.makeText(this, "on resume called in main activity...", Toast.LENGTH_LONG).show();
     }
 
-    //restore the activitie state
+    protected void onStart(){
+        super.onStart();
+        Toast.makeText(this, "on start called in main activity...", Toast.LENGTH_LONG).show();
+    }
+
+    protected void onRestart(){
+        super.onRestart();
+        Toast.makeText(this, "on restart...", Toast.LENGTH_LONG).show();
+    }
+
+    protected void onPause(){
+        super.onPause();
+        Toast.makeText(this, "on pause called in main activity...", Toast.LENGTH_LONG).show();
+    }
+
+    protected void onStop(){
+        super.onStop();
+        Toast.makeText(this, "on stop...", Toast.LENGTH_LONG).show();
+    }
+
+
+    protected void onDestroy(){
+        super.onDestroy();
+        Toast.makeText(this, "On destroy...", Toast.LENGTH_LONG).show();
+    }
+
+
     protected void onRestoreInstanceState(Bundle savedInstanceState){
         super.onRestoreInstanceState(savedInstanceState);
-
-        musicPlayerState.setIsSongPlaying(savedInstanceState.getBoolean("songPlaying"));
-        musicPlayerState.setIsSongPaused(savedInstanceState.getBoolean("songPaused"));
-        musicPlayerState.setCurrentSongPlayingName(savedInstanceState.getString("currentSong"));
-        musicPlayerState.setPausedPosition(savedInstanceState.getInt("pausedPosition"));
-        songNamesToDisplay = savedInstanceState.getStringArray("currentSongList");
-        Toast.makeText(this, "on restore instance state in main act called...", Toast.LENGTH_LONG).show();
+        Toast.makeText(this, "On restore...", Toast.LENGTH_LONG).show();
     }
 
-    //save the activities state
     protected void onSaveInstanceState(Bundle outState){
         super.onSaveInstanceState(outState);
-
-        //save all of the music player state
-        outState.putBoolean("songPlaying", musicPlayerState.isSongPlaying());
-        outState.putBoolean("songPaused", musicPlayerState.isSongPaused());
-        outState.putInt("pausedPosition", musicPlayerState.getPausedPosition());
-        outState.putStringArray("currentSongList", songNamesToDisplay);
-        Toast.makeText(this, "on save instance in main act called..", Toast.LENGTH_LONG).show();
-
+        Toast.makeText(this, "On save instance state...", Toast.LENGTH_LONG).show();
     }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
     public void showSongListFragment(){
 
@@ -257,7 +316,6 @@ public class HomeActivity extends BaseActivity  {
             for(int i=0; i<sResult.size();i++)
                 ss.add(sResult.get(i));
             result = getSongNames(ss); //get the names of the songs in order to populate the listview in the results fragment
-            Toast.makeText(this, "results should be "+result.length, Toast.LENGTH_LONG).show();
             showSearchResultsFragment(); //show search fragment
         }
     }
