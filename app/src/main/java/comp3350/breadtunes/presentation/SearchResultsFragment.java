@@ -55,9 +55,7 @@ public class SearchResultsFragment extends Fragment  {
             Song selectedSong = LookUpSongs.getSong(sList, selectedSongName);
 
             if (selectedSong != null) {
-                int songId = getResources().getIdentifier(selectedSong.getRawName(), "raw", getContext().getPackageName());
-                //homeActivity.showNowPlayingFragment();
-                String playStatus = homeActivity.mediaPlayerController.playSong(selectedSong, songId); //play the song!
+                String playStatus = homeActivity.mediaPlayerController.playSong(selectedSong);
                 Log.e(TAG, playStatus);
             }
         });// on item click listener for listview

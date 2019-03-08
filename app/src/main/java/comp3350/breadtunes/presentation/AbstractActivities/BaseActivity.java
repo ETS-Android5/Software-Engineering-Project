@@ -16,6 +16,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.List;
 
+import comp3350.breadtunes.business.enums.DatabaseState;
+import comp3350.breadtunes.business.observables.DatabaseUpdatedObservable;
 import comp3350.breadtunes.objects.*;
 import comp3350.breadtunes.R;
 import comp3350.breadtunes.persistence.SongPersistence;
@@ -50,8 +52,6 @@ public abstract class BaseActivity extends AppCompatActivity {
 
         if (AppState.externalReadAccessAllowed) {
             notifyDatabaseUpdateAsync(updateMediaDatabaseAsync(loadMediaAsync()));
-        } else {
-            Toast.makeText(this, "External Read Access has been Denied", Toast.LENGTH_LONG);
         }
 
         baseInitialized = true;
@@ -76,6 +76,9 @@ public abstract class BaseActivity extends AppCompatActivity {
                     requestPermissions(permissions, MY_PERMISSION_READ_EXTERNAL_REQUEST);
                 }
             }
+            else {
+                AppState.externalReadAccessAllowed = true;
+            }
         }
     }
 
@@ -87,6 +90,7 @@ public abstract class BaseActivity extends AppCompatActivity {
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
                     // We can now read the external storage
                     AppState.externalReadAccessAllowed = true;
+                    notifyDatabaseUpdateAsync(updateMediaDatabaseAsync(loadMediaAsync()));
                 }
             }
         }
@@ -161,13 +165,8 @@ public abstract class BaseActivity extends AppCompatActivity {
     private CompletableFuture<Boolean> updateMediaDatabaseAsync(CompletableFuture<Void> cf) {
         return cf.thenApply(x -> {
             // Update database with just Songs for now
-            boolean databaseUpdated = false;
             SongPersistence songPersistence = ServiceGateway.getSongPersistence();
-
-            for (Song song: BaseActivity.songs) {
-                databaseUpdated = songPersistence.insertNoDuplicates(song);
-            }
-
+            boolean databaseUpdated = songPersistence.insertSongsNoDuplicates(BaseActivity.songs);
             return databaseUpdated;
         });
     }
@@ -175,9 +174,9 @@ public abstract class BaseActivity extends AppCompatActivity {
     private CompletableFuture<Void> notifyDatabaseUpdateAsync(CompletableFuture<Boolean> cf) {
         return cf.thenAccept(databaseUpdated -> {
             if (databaseUpdated) {
-                // Notify
+                ServiceGateway.updateDatabaseState(DatabaseState.DatabaseUpdated);
             } else if (songs == null || songs.isEmpty()) {
-                // If there was no music, notify that the mock song list should be used
+                ServiceGateway.updateDatabaseState(DatabaseState.DatabaseEmpty);
             }
         });
     }

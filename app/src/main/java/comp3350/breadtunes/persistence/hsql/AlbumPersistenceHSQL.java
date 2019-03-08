@@ -1,13 +1,13 @@
 package comp3350.breadtunes.persistence.hsql;
 
+import java.sql.Connection;
+import java.sql.DriverManager;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java8.util.stream.*;
 
 import comp3350.breadtunes.persistence.AlbumPersistence;
 import comp3350.breadtunes.objects.Album;
-
-import static java8.util.stream.StreamSupport.stream;
 
 public class AlbumPersistenceHSQL implements AlbumPersistence {
 
@@ -17,10 +17,12 @@ public class AlbumPersistenceHSQL implements AlbumPersistence {
         this.databasePath = databasePath;
     }
 
+    private Connection connection() throws SQLException {
+        String connectionUrl = String.format("jdbc:hsqldb:file:%s;shutdown=true", databasePath);
+        return DriverManager.getConnection(connectionUrl, "SA", "");
+    }
+
     public List<Album> getAll() {
-        // TODO: REMOVE
-        // Stream<Album> albumStream = stream(albums);
-        // Album[] filtered = (Album[]) albumStream.filter(album -> album.getName().contains("1")).toArray();
         return new ArrayList<>();
     }
 

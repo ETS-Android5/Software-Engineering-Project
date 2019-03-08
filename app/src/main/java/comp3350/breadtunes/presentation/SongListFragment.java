@@ -20,8 +20,10 @@ import java.util.Observer;
 
 import comp3350.breadtunes.R;
 import comp3350.breadtunes.business.LookUpSongs;
+import comp3350.breadtunes.business.observables.DatabaseUpdatedObservable;
 import comp3350.breadtunes.business.observables.SongObservable;
 import comp3350.breadtunes.objects.Song;
+import comp3350.breadtunes.services.ServiceGateway;
 
 import static comp3350.breadtunes.presentation.HomeActivity.sList;
 
@@ -36,7 +38,7 @@ public class SongListFragment extends Fragment implements Observer {
 
     public HomeActivity homeActivity;
     private final String TAG = "Song list fragment: ";
-
+    private ListView activitySongList;
     public static Button nowPlayingSongGui;
 
 
@@ -50,7 +52,6 @@ public class SongListFragment extends Fragment implements Observer {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-
         homeActivity = (HomeActivity) getActivity();
         homeActivity.musicPlayerState.subscribeToSongChange(this);
         return inflater.inflate(R.layout.fragment_song_list, container, false);
@@ -59,7 +60,7 @@ public class SongListFragment extends Fragment implements Observer {
     public void onViewCreated(View view, Bundle savedInstanceState){
         //populate the list of songs
         ArrayAdapter adapter = new ArrayAdapter<String>(getContext(), R.layout.songlist_element, homeActivity.songNamesToDisplay);
-        final ListView activitySongList = (ListView) view.findViewById(R.id.songList);
+        activitySongList = (ListView) view.findViewById(R.id.songList);
         activitySongList.setAdapter(adapter);
 
         //get reference to the now playing song gui
@@ -87,8 +88,7 @@ public class SongListFragment extends Fragment implements Observer {
                 Song selectedSong = LookUpSongs.getSong(sList, selectedSongName);
 
                 if(selectedSong != null) {
-                    int songId = getResources().getIdentifier(selectedSong.getRawName(), "raw", getContext().getPackageName());
-                    String playStatus = homeActivity.mediaPlayerController.playSong(selectedSong, songId); //                             play the song!
+                    String playStatus = homeActivity.mediaPlayerController.playSong(selectedSong);
                     Log.e(TAG, playStatus);
                 }
             }
@@ -108,9 +108,5 @@ public class SongListFragment extends Fragment implements Observer {
         String artistName = song.getArtistName();
 
         nowPlayingSongGui.setText(songName);
-
     }
-
-
-
 }

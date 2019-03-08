@@ -1,6 +1,7 @@
 package comp3350.breadtunes.presentation;
 import comp3350.breadtunes.R;
 import comp3350.breadtunes.business.LookUpSongs;
+import comp3350.breadtunes.business.observables.DatabaseUpdatedObservable;
 import comp3350.breadtunes.presentation.MediaController.MediaPlayerController;
 import comp3350.breadtunes.services.ServiceGateway;
 import comp3350.breadtunes.business.MusicPlayerState;
@@ -8,6 +9,7 @@ import comp3350.breadtunes.objects.Song;
 import comp3350.breadtunes.presentation.AbstractActivities.BaseActivity;
 
 import android.app.SearchManager;
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,6 +23,8 @@ import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Observable;
+import java.util.Observer;
 
 //==============================
 // HELPFUL DOCUMENTATION
@@ -31,9 +35,7 @@ import java.util.List;
 //==============================
 
 
-public class HomeActivity extends BaseActivity  {
-
-
+public class HomeActivity extends BaseActivity implements Observer {
     MediaPlayerController mediaPlayerController;  // controls playback operations
     MusicPlayerState musicPlayerState ; //business layer object that contains the current state of the music player
     public static ArrayList<Song> sList = new ArrayList<>();
@@ -53,6 +55,7 @@ public class HomeActivity extends BaseActivity  {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        ServiceGateway.subscribeToDatabaseStateChanges(this);
 
         if(savedInstanceState == null){
             nowPlayingFragment = new NowPlayingFragment();
@@ -73,8 +76,18 @@ public class HomeActivity extends BaseActivity  {
         showSongListFragment();
 
         handleIntent(getIntent());
-
     }//on create
+
+    public void updateSongList() {
+        List<Song> songList = ServiceGateway.getSongPersistence().getAll();
+
+        if (!sList.isEmpty()) {
+            sList.clear();
+        }
+
+        sList.addAll(songList);
+        songNamesToDisplay = getSongNames(sList);
+    }
 
     public void showSongListFragment(){
 
@@ -131,10 +144,6 @@ public class HomeActivity extends BaseActivity  {
         fragmentTransaction.commit();
     }
 
-
-
-
-
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.options_menu, menu);
@@ -146,7 +155,6 @@ public class HomeActivity extends BaseActivity  {
         return true;
     }
 
-
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -154,7 +162,6 @@ public class HomeActivity extends BaseActivity  {
         int id = item.getItemId();
         return super.onOptionsItemSelected(item);
     }
-
 
     private String[] getSongNames(ArrayList<Song> songList){
         String[] songNames = new String[songList.size()];
@@ -175,25 +182,24 @@ public class HomeActivity extends BaseActivity  {
 
         //make sure a song is actually paused
         if (musicPlayerState.isSongPaused()) {
-            Song pausedSong = musicPlayerState.getCurrentlyPlayingSong();   //get the current playing song from the app state
-            int resourceId = getResources().getIdentifier(pausedSong.getRawName(), "raw", getPackageName());    //get the resource pointer
-            String response = mediaPlayerController.resumeSong(resourceId);                 // ask  media controller to resume
-            Log.i(TAG, response); //display result of operation to log
-        }else{
+            String response = mediaPlayerController.resumeSong();
+            Log.i(TAG, response); // Log response
+        }
+        else {
             Log.i(TAG, "Cannot resume, no song is paused");
         }
     }
 
     //NEXT BUTTON
     public void onClickPlayNext(View view){
-        String response = mediaPlayerController.playNextSong(HomeActivity.this);
+        String response = mediaPlayerController.playNextSong();
         Log.i(TAG, response);
     }
 
     //PREVIOUS BUTTON
     public void onClickPlayPrevious(View view){
         mediaPlayerController.pauseSong();
-        String response = mediaPlayerController.playPreviousSong(HomeActivity.this);
+        String response = mediaPlayerController.playPreviousSong();
         Log.i(TAG, response);
     }
 
@@ -215,6 +221,18 @@ public class HomeActivity extends BaseActivity  {
             result = getSongNames(ss); //get the names of the songs in order to populate the listview in the results fragment
             Toast.makeText(this, "results should be "+result.length, Toast.LENGTH_LONG).show();
             showSearchResultsFragment(); //show search fragment
+        }
+    }
+
+    public void update(Observable observable, Object o) {
+        if (observable instanceof DatabaseUpdatedObservable) {
+            switch(((DatabaseUpdatedObservable) observable).getState()) {
+                case DatabaseUpdated:
+                    updateSongList();
+                    break;
+                case DatabaseEmpty:
+                    break;
+            }
         }
     }
 }

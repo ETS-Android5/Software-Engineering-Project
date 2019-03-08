@@ -19,25 +19,22 @@ public class MediaPlayerController{
     }
 
     //plays a song, returns a string "succesful" or "failed to find resource" so that activity that calls this metjod can display toast message
-    public String playSong(Song song, int resourceId){
+    public String playSong(Song song){
 
         String response;
-        if(resourceId == 0){
-            response = "Failed to find resource";
-        }else{
+        if (song.getSongUri() == null){
+            response = "Could not find location of song";
+        }
+        else {
             if(mediaManager != null && mediaManager.isPlaying()) {
                 mediaManager.stopPlayingSong();
             }
 
-            mediaManager.startPlayingSong(context, resourceId);
-            mediaManager.setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                public void onCompletion(MediaPlayer mediaPlayer) {
-                    //get reference to next from app state
-                    Song nextSong = appState.getNextSong();
-                    if(nextSong != null){
-                        int songId = context.getResources().getIdentifier(nextSong.getRawName(), "raw", context.getPackageName());
-                        playSong(nextSong, songId);
-                    }
+            mediaManager.startPlayingSong(context, song.getSongUri());
+            mediaManager.setOnCompletionListener(mediaPlayer -> {
+                Song nextSong = appState.getNextSong();
+                if(appState.getNextSong() != null){
+                    playSong(nextSong);
                 }
             });
 
@@ -76,17 +73,14 @@ public class MediaPlayerController{
     // WHAT TO DO WHEN THE CURRENT SONG PLAYING FINISHES
     //https://developer.android.com/reference/android/media/MediaPlayer.OnCompletionListener
 
-
-
     // play next song button
-    public String playNextSong(Context context){
+    public String playNextSong() {
         String response;
         if(appState.getCurrentlyPlayingSong() != null && appState.getCurrentSongList()!= null){ //make sure there is a song playing
             Song nextSong = appState.getNextSong();
 
             if(nextSong != null) {
-                int nextSongId = context.getResources().getIdentifier(nextSong.getRawName(), "raw", context.getPackageName());    //get the resource pointer
-                playSong(nextSong, nextSongId); //play the new song
+                playSong(nextSong);
                 response = "playing " + nextSong.getName();
             }else{
                 response = "no next song";
@@ -98,14 +92,13 @@ public class MediaPlayerController{
     }
 
     //play previous song button
-    public String playPreviousSong(Context context){
+    public String playPreviousSong(){
         String response;
         if(appState.getCurrentlyPlayingSong() != null && appState.getCurrentSongList()!= null){ //make sure there is a song playing
             Song previousSong = appState.getPreviousSong();
 
             if(previousSong != null) {
-                int nextSongId = context.getResources().getIdentifier(previousSong.getRawName(), "raw", context.getPackageName());    //get the resource pointer
-                playSong(previousSong, nextSongId); //play the new song
+                playSong(previousSong);
                 response = "playing " + previousSong.getName();
             }else{
                 response = "no previous song";
@@ -118,7 +111,7 @@ public class MediaPlayerController{
     }
 
     // resume the playing of a song
-    public String resumeSong(int resourceId){
+    public String resumeSong(){
      String response;
         try{
             if(appState.isSongPaused()) {
