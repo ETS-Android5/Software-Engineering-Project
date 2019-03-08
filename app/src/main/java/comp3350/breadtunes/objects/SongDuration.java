@@ -1,8 +1,9 @@
 package comp3350.breadtunes.objects;
 
+import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
 
-public class SongDuration {
+public class SongDuration implements Serializable {
     private int hours;
     private int minutes;
     private int seconds;
