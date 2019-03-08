@@ -38,9 +38,13 @@ public class SongDurationTest extends TestLogger {
         duration.setMinutes(10);
         duration.setSeconds(10);
 
+        int h = duration.getHours();
+        int m = duration.getMinutes();
+        int s = duration.getSeconds();
+
         // Assert
-        assertTrue(duration.getHours() == 10);
-        assertTrue(duration.getMinutes() == 10);
-        assertTrue(duration.getSeconds() == 10);
+        assertTrue(h == 10);
+        assertTrue(m == 10);
+        assertTrue(s == 10);
     }
 }
