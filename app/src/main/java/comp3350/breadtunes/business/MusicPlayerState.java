@@ -150,7 +150,7 @@ public class MusicPlayerState {
     }
 
     public void subscribeToPlayModeChange(Observer observer){
-        musicPlayerState.playModeObservable.addObserver(observer);;
+        musicPlayerState.playModeObservable.addObserver(observer);
     }
 
     public String getMusicPlayerState(){

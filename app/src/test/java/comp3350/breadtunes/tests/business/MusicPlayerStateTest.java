@@ -13,6 +13,9 @@ import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
 import static junit.framework.TestCase.assertEquals;
+import static org.mockito.Mockito.times;
+import static org.mockito.Mockito.verify;
+
 import comp3350.breadtunes.objects.Song;
 import comp3350.breadtunes.tests.watchers.TestLogger;
 
@@ -159,4 +162,62 @@ public class MusicPlayerStateTest extends TestLogger {
 
         mps.getInstance().subscribeToSongChange(mockObserver);
     }
+
+    @Test
+    public void subscribeToPlayModeChangeTest()
+    {
+        MusicPlayerState mps = new MusicPlayerState();
+        Observer mockObserver = Mockito.mock(Observer.class);
+
+        mps.getInstance().subscribeToPlayModeChange(mockObserver);
+    }
+
+    @Test
+    public void getMusicPlayerStateTest()
+    {
+        MusicPlayerState mps = new MusicPlayerState();
+
+        mps.getInstance().setCurrentSong(a);
+
+        System.out.println(mps.getInstance().getMusicPlayerState());
+        assertEquals( "Current song not null song is null song paused: false song playing falsevariable currentSongname is null",
+
+        mps.getInstance().getMusicPlayerState());
+    }
+
+    @Test
+    public void getPlayModeTest()
+    {
+        MusicPlayerState mps = new MusicPlayerState();
+        List<Song> songList = Arrays.asList(a, b, c, d);
+
+        mps.getInstance().setCurrentSongList(songList);
+
+        assertEquals("", mps.getInstance().getPlayMode());
+
+        mps.getInstance().setShuffleMode(true);
+        mps.getInstance().updateNextSong();
+        mps.getInstance().setRepeatMode(true);
+
+        assertEquals("Shuffle on - Repeat on", mps.getInstance().getPlayMode());
+
+        mps.getInstance().setShuffleMode(false);
+        mps.getInstance().setRepeatMode(false);
+
+        assertEquals("", mps.getInstance().getPlayMode());
+
+    }
+
+    @Test
+    public void testCurrentlyPlayingSongNameMutator()
+    {
+        MusicPlayerState mps = new MusicPlayerState();
+
+        mps.getInstance().setCurrentSong(a);
+        mps.getInstance().setCurrentSongPlayingName("test");
+
+        assertEquals("test", mps.getInstance().getCurrentlyPlayingSongName());
+    }
+
+
 }
