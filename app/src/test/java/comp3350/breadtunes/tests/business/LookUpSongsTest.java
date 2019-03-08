@@ -160,4 +160,15 @@ public class LookUpSongsTest extends TestLogger {
         // Assert
         assertTrue(artistList.size() == 0);
     }
+
+    @Test
+    public void getSongTest()
+    {
+        // Act
+        ArrayList<Song> testList = new ArrayList<Song>();
+        testList.add(mockSongList.get(0));
+
+        // Assert
+        assertEquals(mockSongList.get(0), testTarget.getSong(testList, "Bloch Prayer"));
+    }
 }
