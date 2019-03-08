@@ -9,6 +9,10 @@ public interface MediaManager {
 
     void startPlayingSong(Context context, Uri songUri);
 
+    MediaPlayer create(Context context, Uri songUri);
+
+    MediaPlayer create(Context context, int resourceId);
+
     void stopPlayingSong();
 
     void pausePlayingSong();

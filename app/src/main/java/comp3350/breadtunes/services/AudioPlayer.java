@@ -22,7 +22,8 @@ public class AudioPlayer implements MediaManager {
             player.release();
         }
 
-        player = MediaPlayer.create(context, resourceId);
+        //player = MediaPlayer.create(context, resourceId);
+        player = create(context, resourceId);
         player.start();
     }
 
@@ -33,7 +34,7 @@ public class AudioPlayer implements MediaManager {
             player.release();
         }
 
-        player = MediaPlayer.create(context, songUri);
+        player = create(context, songUri);
         player.start();
     }
 
@@ -87,6 +88,18 @@ public class AudioPlayer implements MediaManager {
     @Override
     public void setOnCompletionListener(MediaPlayer.OnCompletionListener listener) {
         player.setOnCompletionListener(listener);
+    }
+
+    @Override
+    public MediaPlayer create(Context context, int resourceId){
+        player = MediaPlayer.create(context, resourceId);
+        return player;
+    }
+
+    @Override
+    public MediaPlayer create(Context context, Uri songUri){
+        player = MediaPlayer.create(context, songUri);
+        return player;
     }
 
     @Override

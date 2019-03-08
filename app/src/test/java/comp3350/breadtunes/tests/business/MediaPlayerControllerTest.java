@@ -33,20 +33,22 @@ public class MediaPlayerControllerTest extends TestLogger {
     public void setup()
     {
         mockSongList = MockSongs.getMockSongList();
-        appState = new MusicPlayerState(mockSongList);
-        testTarget = new MediaPlayerController(context, appState, mockManager);
+        appState = new MusicPlayerState();
+        testTarget = new MediaPlayerController();
     }
 
     @Test
     public void playExistingSongTest()
     {
-        testTarget.playSong(mockSongList.get(0), 1);
-        verify(mockManager, times(1)).startPlayingSong(context, 1);
+        //testTarget.playSong(mockSongList.get(0), 1);
+        testTarget.playSong(mockSongList.get(0), 1, any(Context.class));
+        verify(mockManager, times(1)).startPlayingSong(any(Context.class), anyInt());
     }
 
     @Test
     public void playNonexistentSongTest() {
-        testTarget.playSong(new Song.Builder().build(), 0);
+        //testTarget.playSong(new Song.Builder().build(), 0);
+        testTarget.playSong(new Song.Builder().build(), 0, context);
         verify(mockManager, times(0)).startPlayingSong(any(Context.class), anyInt());
     }
 
@@ -60,7 +62,8 @@ public class MediaPlayerControllerTest extends TestLogger {
     @Test
     public void pausePlayingSongTest()
     {
-        testTarget.playSong(mockSongList.get(0), 1);
+        //testTarget.playSong(mockSongList.get(0), 1);
+        testTarget.playSong(new Song.Builder().build(), 1, context);
         testTarget.pauseSong();
         verify(mockManager, times(1)).pausePlayingSong();
     }
@@ -74,7 +77,9 @@ public class MediaPlayerControllerTest extends TestLogger {
         verify(mockManager,times(0)).startPlayingSong(context, 0);
 
         //case we are last on the list and no next song in the list
-        testTarget.playSong(mockSongList.get(3),1);
+        //testTarget.playSong(mockSongList.get(3),1);
+        testTarget.playSong(mockSongList.get(3),1, context);
+
         assertEquals("no next song", testTarget.playNextSong(context));
         verify(mockManager,times(0)).startPlayingSong(context, 0);
     }// playNextSongTest
@@ -87,7 +92,9 @@ public class MediaPlayerControllerTest extends TestLogger {
         verify(mockManager,times(0)).startPlayingSong(context, 0);
 
         //case we are first on the list and no previous song in the list
-        testTarget.playSong(mockSongList.get(0),1);
+        //testTarget.playSong(mockSongList.get(0),1);
+        testTarget.playSong(mockSongList.get(0),1,context);
+
         assertEquals("no previous song", testTarget.playPreviousSong(context));
         verify(mockManager,times(0)).startPlayingSong(context, 0);
     }// playPreviousSongTest
@@ -95,16 +102,11 @@ public class MediaPlayerControllerTest extends TestLogger {
 
     @Test
     public void resumeSongTest() {
-        testTarget.playSong(mockSongList.get(0), 1);
+        //testTarget.playSong(mockSongList.get(0), 1);
+        testTarget.playSong(mockSongList.get(0), 1, context);
         testTarget.pauseSong();
         testTarget.resumeSong(1);
         verify(mockManager, times(1)).resumePlayingSong();
     }
 
-    @Test
-    public void releaseMediaPlayerTest()
-    {
-        testTarget.releaseMediaPlayer();
-        verify(mockManager,times(1)).close();
-    }
 }
