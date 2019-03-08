@@ -20,7 +20,6 @@ import comp3350.breadtunes.tests.objects.*;
         QueueTest.class,
         LookUpSongsTest.class,
         MusicPlayerStateTest.class,
-        MediaPlayerControllerTest.class,
 })
 public class AllTests {
 }
