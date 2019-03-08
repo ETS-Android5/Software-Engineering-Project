@@ -80,17 +80,6 @@ public class HomeActivity extends BaseActivity implements Observer {
         handleIntent(getIntent());
     }//on create
 
-    public void updateSongList() {
-        List<Song> songList = ServiceGateway.getSongPersistence().getAll();
-
-        if (!sList.isEmpty()) {
-            sList.clear();
-        }
-
-        sList.addAll(songList);
-        songNamesToDisplay = getSongNames(sList);
-    }
-
     public void getSongsFromPersistance() {
         songList = new ArrayList<>();
         songList.addAll(ServiceGateway.getSongPersistence().getAll());
@@ -302,8 +291,11 @@ public class HomeActivity extends BaseActivity implements Observer {
         if (observable instanceof DatabaseUpdatedObservable) {
             switch (((DatabaseUpdatedObservable) observable).getState()) {
                 case DatabaseUpdated:
-                    updateSongList();
-                    songListFragment.populateSongListView();
+                    getSongsFromPersistance();
+                    refreshSongList();
+                    songListFragment = new SongListFragment();
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.fragment_placeholder, songListFragment).commit();
                     break;
                 case DatabaseEmpty:
                     break;

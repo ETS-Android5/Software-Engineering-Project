@@ -63,15 +63,9 @@ public class SongListFragment extends Fragment implements Observer {
 
 
     public void onViewCreated(View view, Bundle savedInstanceState){
-        //populate the list of songs
-        ArrayAdapter adapter = new ArrayAdapter<String>(getContext(), R.layout.songlist_element, homeActivity.songNamesToDisplay);
-        activitySongList = (ListView) view.findViewById(R.id.songList);
-        activitySongList.setAdapter(adapter);
-
         populateSongListView();
         registerOnClickForSonglist();
         registerOnClickForNowPlayingButton();
-
     }
 
     public void onResume(){
