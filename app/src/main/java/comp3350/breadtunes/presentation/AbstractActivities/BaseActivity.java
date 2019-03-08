@@ -18,8 +18,10 @@ import java.util.List;
 
 import comp3350.breadtunes.objects.*;
 import comp3350.breadtunes.R;
+import comp3350.breadtunes.persistence.SongPersistence;
 import comp3350.breadtunes.presentation.loaders.*;
 import comp3350.breadtunes.services.AppState;
+import comp3350.breadtunes.services.ServiceGateway;
 import java8.util.concurrent.CompletableFuture;
 
 /**
@@ -44,7 +46,7 @@ public abstract class BaseActivity extends AppCompatActivity {
         if (baseInitialized == true) return;
 
         requestReadExternalStoragePermission();
-        prepareDatabase();
+        copyDatabaseToDevice();
 
         if (AppState.externalReadAccessAllowed) {
             notifyDatabaseUpdateAsync(updateMediaDatabaseAsync(loadMediaAsync()));
@@ -88,11 +90,6 @@ public abstract class BaseActivity extends AppCompatActivity {
                 }
             }
         }
-    }
-
-    private void prepareDatabase() {
-        copyDatabaseToDevice();
-        instantiateDatabaseDriver();
     }
 
     private void copyDatabaseToDevice() {
@@ -147,18 +144,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         }
     }
 
-    public void instantiateDatabaseDriver() {
-        try {
-            Class.forName("org.hsqldb.jdbcDriver").newInstance();
-        } catch (InstantiationException e) {
-            e.printStackTrace();
-        } catch (IllegalAccessException e) {
-            e.printStackTrace();
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
-
     private CompletableFuture<Void> loadMediaAsync() {
         // Get songs from device, which cascades into getting albums and
         return CompletableFuture.supplyAsync(() -> SongLoader.getAllSongs(this))
@@ -175,10 +160,14 @@ public abstract class BaseActivity extends AppCompatActivity {
 
     private CompletableFuture<Boolean> updateMediaDatabaseAsync(CompletableFuture<Void> cf) {
         return cf.thenApply(x -> {
-            // Update database with Songs, Albums, and Artists
+            // Update database with just Songs for now
             boolean databaseUpdated = false;
+            SongPersistence songPersistence = ServiceGateway.getSongPersistence();
 
-            // Return whether anything in the database changed, so the UI knows to update
+            for (Song song: BaseActivity.songs) {
+                databaseUpdated = songPersistence.insertNoDuplicates(song);
+            }
+
             return databaseUpdated;
         });
     }
