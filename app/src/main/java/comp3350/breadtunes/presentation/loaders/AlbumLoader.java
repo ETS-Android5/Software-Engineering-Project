@@ -47,7 +47,7 @@ public class AlbumLoader {
         for (Song song: songs) {
             // If looking at a new album, add the previous album to the list
             if (song.getAlbumId() != prevAlbum) {
-                albums.add(new Album(prevAlbumName, albumSongs));
+                albums.add(new Album(prevAlbum, prevAlbumName, albumSongs));
 
                 // Reset list of songs in album
                 albumSongs = new ArrayList<>();
@@ -61,7 +61,7 @@ public class AlbumLoader {
         }
 
         // Add the last album after the for loop ends
-        albums.add(new Album(prevAlbumName, albumSongs));
+        albums.add(new Album(prevAlbum, prevAlbumName, albumSongs));
 
         return albums;
     }
