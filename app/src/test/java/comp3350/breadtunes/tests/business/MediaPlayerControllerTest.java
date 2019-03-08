@@ -4,6 +4,8 @@ import android.content.Context;
 
 import org.junit.Before;
 import org.junit.Test;
+
+import static junit.framework.Assert.assertEquals;
 import static org.mockito.ArgumentMatchers.*;
 
 import java.util.ArrayList;
@@ -63,29 +65,23 @@ public class MediaPlayerControllerTest extends TestLogger {
         verify(mockManager, times(1)).pausePlayingSong();
     }
 
-    /*
+
     @Test
     public void playNextSongTest()
     {
-        System.out.print("\nStarting playNextSongTest");
-
         //case we are not playing
         assertEquals("no song currently playing", testTarget.playNextSong(context));
         verify(mockManager,times(0)).startPlayingSong(context, 0);
 
         //case we are last on the list and no next song in the list
-        testTarget.playSong(mockSongList.get(1),1);
+        testTarget.playSong(mockSongList.get(3),1);
         assertEquals("no next song", testTarget.playNextSong(context));
         verify(mockManager,times(0)).startPlayingSong(context, 0);
-
-        System.out.println("\nEnding playNextSongTest");
     }// playNextSongTest
 
     @Test
     public void playPreviousSongTest()
     {
-        System.out.print("\nStarting playPreviousSongTest");
-
         //case we are not playing
         assertEquals("no song currently playing", testTarget.playPreviousSong(context));
         verify(mockManager,times(0)).startPlayingSong(context, 0);
@@ -94,10 +90,8 @@ public class MediaPlayerControllerTest extends TestLogger {
         testTarget.playSong(mockSongList.get(0),1);
         assertEquals("no previous song", testTarget.playPreviousSong(context));
         verify(mockManager,times(0)).startPlayingSong(context, 0);
-
-        System.out.println("\nEnding playPreviousSongTest");
     }// playPreviousSongTest
-    */
+
 
     @Test
     public void resumeSongTest() {

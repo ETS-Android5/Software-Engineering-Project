@@ -119,5 +119,9 @@ public class Song {
         public Song build() {
             return new Song(this);
         }
+
+        public boolean equals(Song otherSong){
+            return this.rawName.equals(otherSong.getRawName());
+        }
     }
 }

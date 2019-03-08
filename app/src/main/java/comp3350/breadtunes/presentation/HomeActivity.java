@@ -9,8 +9,6 @@ import comp3350.breadtunes.objects.Song;
 import comp3350.breadtunes.presentation.AbstractActivities.BaseActivity;
 
 import android.app.SearchManager;
-import android.app.Service;
-import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
@@ -18,13 +16,12 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.SearchView;
-import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Observable;
 import java.util.Observer;
+
 
 //==============================
 // HELPFUL DOCUMENTATION
@@ -37,13 +34,10 @@ import java.util.Observer;
 
 public class HomeActivity extends BaseActivity implements Observer {
     MediaPlayerController mediaPlayerController;  // controls playback operations
-    MusicPlayerState musicPlayerState ; //business layer object that contains the current state of the music player
     public static ArrayList<Song> sList = new ArrayList<>();
     String[] songNamesToDisplay;
     private final String TAG = "HomeActivity";
     LookUpSongs findSong;
-    List<Song> sResult;
-    String [] result;
     private FragmentTransaction fragmentTransaction;
 
     // fragments used in the main activity
@@ -51,30 +45,38 @@ public class HomeActivity extends BaseActivity implements Observer {
     private SearchResultsFragment searchSongFragment;
     private SongListFragment songListFragment;
 
-    @Override
+    // the list of songs acquired from Persistance layer
+    List<Song> songList;
+
+    //variables for getting search query and launching search results fragment
+    List<Song> sResult;
+    String[] result;
+
+
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
         ServiceGateway.subscribeToDatabaseStateChanges(this);
 
-        if(savedInstanceState == null){
+        if (savedInstanceState == null) {
             nowPlayingFragment = new NowPlayingFragment();
             searchSongFragment = new SearchResultsFragment();
             songListFragment = new SongListFragment();
+        } else {
+            //retrieve the state of the fragment
+            songListFragment = (SongListFragment) getSupportFragmentManager().getFragment(savedInstanceState, "songlist_fragment");
         }
 
 
-        final List<Song> songList = ServiceGateway.getSongPersistence().getAll();
-        musicPlayerState = new MusicPlayerState(songList);
-        mediaPlayerController = new MediaPlayerController(HomeActivity.this, musicPlayerState, ServiceGateway.getMediaManager());
+        getSongsFromPersistance();
+
+
+        mediaPlayerController = new MediaPlayerController();
         findSong = new LookUpSongs(songList);
-        //initialize the songNamestoDisplay so that the fragment can populate its list
-        sList.addAll(songList);
-        songNamesToDisplay = getSongNames(sList);
 
-        //put the song list fragment on top of the main activity
-        showSongListFragment();
 
+        refreshSongList();
+        showSongListFragment(); //put the song list fragment on top of the main activity
         handleIntent(getIntent());
     }//on create
 
@@ -89,69 +91,128 @@ public class HomeActivity extends BaseActivity implements Observer {
         songNamesToDisplay = getSongNames(sList);
     }
 
-    public void showSongListFragment(){
+    public void getSongsFromPersistance() {
+        songList = new ArrayList<>();
+        songList.addAll(ServiceGateway.getSongPersistence().getAll());
+    }
+
+    public void refreshSongList() {
+        sList.addAll(songList);
+        songNamesToDisplay = new String[songList.size()];
+        for (int i = 0; i < songNamesToDisplay.length; i++)
+            songNamesToDisplay[i] = songList.get(i).getName();
+    }
+
+    protected void onResume() {
+        super.onResume();
+        getSongsFromPersistance();
+        refreshSongList();
+    }
+
+    protected void onStart() {
+        super.onStart();
+    }
+
+    protected void onRestart() {
+        super.onRestart();
+    }
+
+    protected void onPause() {
+        super.onPause();
+    }
+
+    protected void onStop() {
+        super.onStop();
+    }
+
+
+    protected void onDestroy() {
+        super.onDestroy();
+    }
+
+
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
+        super.onRestoreInstanceState(savedInstanceState);
+    }
+
+    protected void onSaveInstanceState(Bundle outState) {
+        super.onSaveInstanceState(outState);
+    }
+
+
+    //method called by fragments to avoid context issues
+    public void playSong(Song song) {
+        String playStatus = mediaPlayerController.playSong(song, this);
+        Log.i(TAG, playStatus);
+    }
+
+    public void showSongListFragment() {
 
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
         //if the fragment is already in the container, show it
-        if(songListFragment.isAdded()){
+        if (songListFragment.isAdded()) {
             fragmentTransaction.show(songListFragment);
-        }else{
+        } else {
             //inflate it if it has not been added
             fragmentTransaction.add(R.id.fragment_placeholder, songListFragment);
         }
 
         //hide the other fragments if they are showing
-        if(nowPlayingFragment.isAdded()){fragmentTransaction.hide(nowPlayingFragment);}
-        if(searchSongFragment.isAdded()){fragmentTransaction.hide(searchSongFragment);}
+        if (nowPlayingFragment.isAdded()) {
+            fragmentTransaction.hide(nowPlayingFragment);
+        }
+        if (searchSongFragment.isAdded()) {
+            fragmentTransaction.hide(searchSongFragment);
+        }
         fragmentTransaction.commit();
 
-        //fragmentTransaction.addToBackStack("nowPlaying");
     }
 
 
     //replace the song list fragment with the now playing fragment
-    public void showNowPlayingFragment(){
+    public void showNowPlayingFragment() {
 
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
         //if the fragment is already in the container, show it
-        if(nowPlayingFragment.isAdded()){
+        if (nowPlayingFragment.isAdded()) {
             fragmentTransaction.show(nowPlayingFragment);
-        }else{
+        } else {
             //inflate it if it has not been added
             fragmentTransaction.add(R.id.fragment_placeholder, nowPlayingFragment);
         }
 
         //hide the other fragments if they are showing
-        if(songListFragment.isAdded()){fragmentTransaction.hide(songListFragment);}
-        if(searchSongFragment.isAdded()){fragmentTransaction.hide(searchSongFragment);}
+        if (songListFragment.isAdded()) {
+            fragmentTransaction.hide(songListFragment);
+        }
+        if (searchSongFragment.isAdded()) {
+            fragmentTransaction.hide(searchSongFragment);
+        }
         fragmentTransaction.addToBackStack(null); //add to back stack so we can return to this fragment
         fragmentTransaction.commit();
 
-
     }
 
-    public void showSearchResultsFragment(){
+
+    public void showSearchResultsFragment() {
 
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
         //if the fragment is already in the container, show it
 
         searchSongFragment = new SearchResultsFragment();
         fragmentTransaction.remove(songListFragment);
-        fragmentTransaction.add(R.id.fragment_placeholder,searchSongFragment);
+        fragmentTransaction.add(R.id.fragment_placeholder, searchSongFragment);
 
-        if(nowPlayingFragment.isAdded()){fragmentTransaction.hide(nowPlayingFragment);}
+        if (nowPlayingFragment.isAdded()) {
+            fragmentTransaction.hide(nowPlayingFragment);
+        }
 
         fragmentTransaction.commit();
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
-        getMenuInflater().inflate(R.menu.options_menu, menu);
-
-        SearchManager searchManager = (SearchManager) getSystemService(Context.SEARCH_SERVICE);
-        SearchView searchView = (SearchView) menu.findItem(R.id.search).getActionView();
-        searchView.setSearchableInfo(searchManager.getSearchableInfo(getComponentName()));
-
+        getMenuInflater().inflate(R.menu.menu_home, menu);
         return true;
     }
 
@@ -163,45 +224,59 @@ public class HomeActivity extends BaseActivity implements Observer {
         return super.onOptionsItemSelected(item);
     }
 
-    private String[] getSongNames(ArrayList<Song> songList){
+    private String[] getSongNames(ArrayList<Song> songList) {
         String[] songNames = new String[songList.size()];
-        for(int i= 0; i<songList.size(); i++){
+        for (int i = 0; i < songList.size(); i++) {
             songNames[i] = songList.get(i).getName();
         }
         return songNames;
     }
 
     // PAUSE BUTTON
-    public void onClickPause(View view){
+    public void onClickPause(View view) {
         String response = mediaPlayerController.pauseSong();
         Log.i(TAG, response);
+
     }
 
     //RESUME BUTTON
     public void onClickResume(View view) {
-
         //make sure a song is actually paused
-        if (musicPlayerState.isSongPaused()) {
+        if (MusicPlayerState.getInstance().isSongPaused()) {
+            Song pausedSong = MusicPlayerState.getInstance().getCurrentlyPlayingSong();   //get the current playing song from the app state
             String response = mediaPlayerController.resumeSong();
-            Log.i(TAG, response); // Log response
+            Log.i(TAG, response); //display result of operation to log
+        } else {
+            Log.i(TAG, MusicPlayerState.getInstance().getMusicPlayerState());
         }
-        else {
-            Log.i(TAG, "Cannot resume, no song is paused");
-        }
+
     }
 
     //NEXT BUTTON
-    public void onClickPlayNext(View view){
-        String response = mediaPlayerController.playNextSong();
+    public void onClickPlayNext(View view) {
+        String response = mediaPlayerController.playNextSong(this);
         Log.i(TAG, response);
     }
 
     //PREVIOUS BUTTON
-    public void onClickPlayPrevious(View view){
+    public void onClickPlayPrevious(View view) {
         mediaPlayerController.pauseSong();
-        String response = mediaPlayerController.playPreviousSong();
+        String response = mediaPlayerController.playPreviousSong(this);
         Log.i(TAG, response);
     }
+
+    //SHUFFLE Button
+    public void onClickShuffle(View view) {
+        String response = mediaPlayerController.setShuffle();
+        Log.i(TAG, response);
+    }
+
+    //REPEAT button
+    public void onClickRepeat(View view) {
+        String response = mediaPlayerController.setRepeat();
+        Log.i(TAG, response);
+    }
+
 
     @Override
     protected void onNewIntent(Intent intent) {
@@ -216,19 +291,19 @@ public class HomeActivity extends BaseActivity implements Observer {
             //use the query to search your data somehow
             sResult = findSong.searchSongs(query);
             ArrayList ss = new ArrayList();
-            for(int i=0; i<sResult.size();i++)
+            for (int i = 0; i < sResult.size(); i++)
                 ss.add(sResult.get(i));
             result = getSongNames(ss); //get the names of the songs in order to populate the listview in the results fragment
-            Toast.makeText(this, "results should be "+result.length, Toast.LENGTH_LONG).show();
             showSearchResultsFragment(); //show search fragment
         }
     }
 
     public void update(Observable observable, Object o) {
         if (observable instanceof DatabaseUpdatedObservable) {
-            switch(((DatabaseUpdatedObservable) observable).getState()) {
+            switch (((DatabaseUpdatedObservable) observable).getState()) {
                 case DatabaseUpdated:
                     updateSongList();
+                    songListFragment.populateSongListView();
                     break;
                 case DatabaseEmpty:
                     break;
