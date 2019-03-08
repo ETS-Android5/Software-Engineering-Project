@@ -17,7 +17,6 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SearchView;
-import android.widget.Toast;
 import java.util.Observable;
 import java.util.Observer;
 import comp3350.breadtunes.R;
@@ -64,11 +63,9 @@ public class SongListFragment extends Fragment implements Observer {
 
 
     public void onViewCreated(View view, Bundle savedInstanceState){
-
         populateSongListView();
         registerOnClickForSonglist();
         registerOnClickForNowPlayingButton();
-
     }
 
     public void onResume(){
@@ -182,6 +179,4 @@ public class SongListFragment extends Fragment implements Observer {
             }
         });
     }
-
-
 }

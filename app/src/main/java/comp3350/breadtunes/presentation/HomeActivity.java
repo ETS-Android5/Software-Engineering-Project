@@ -1,11 +1,13 @@
 package comp3350.breadtunes.presentation;
 import comp3350.breadtunes.R;
 import comp3350.breadtunes.business.LookUpSongs;
+import comp3350.breadtunes.business.observables.DatabaseUpdatedObservable;
 import comp3350.breadtunes.presentation.MediaController.MediaPlayerController;
 import comp3350.breadtunes.services.ServiceGateway;
 import comp3350.breadtunes.business.MusicPlayerState;
 import comp3350.breadtunes.objects.Song;
-import comp3350.breadtunes.presentation.base.BaseActivity;
+import comp3350.breadtunes.presentation.AbstractActivities.BaseActivity;
+
 import android.app.SearchManager;
 import android.content.Intent;
 import android.os.Bundle;
@@ -14,10 +16,11 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Toast;
+
 import java.util.ArrayList;
 import java.util.List;
-
+import java.util.Observable;
+import java.util.Observer;
 
 
 //==============================
@@ -29,9 +32,7 @@ import java.util.List;
 //==============================
 
 
-public class HomeActivity extends BaseActivity  {
-
-
+public class HomeActivity extends BaseActivity implements Observer {
     MediaPlayerController mediaPlayerController;  // controls playback operations
     public static ArrayList<Song> sList = new ArrayList<>();
     String[] songNamesToDisplay;
@@ -55,12 +56,13 @@ public class HomeActivity extends BaseActivity  {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
+        ServiceGateway.subscribeToDatabaseStateChanges(this);
 
-        if(savedInstanceState == null){
+        if (savedInstanceState == null) {
             nowPlayingFragment = new NowPlayingFragment();
             searchSongFragment = new SearchResultsFragment();
             songListFragment = new SongListFragment();
-        }else{
+        } else {
             //retrieve the state of the fragment
             songListFragment = (SongListFragment) getSupportFragmentManager().getFragment(savedInstanceState, "songlist_fragment");
         }
@@ -78,116 +80,121 @@ public class HomeActivity extends BaseActivity  {
         handleIntent(getIntent());
     }//on create
 
-    public void getSongsFromPersistance(){
+    public void getSongsFromPersistance() {
         songList = new ArrayList<>();
         songList.addAll(ServiceGateway.getSongPersistence().getAll());
     }
 
-    public void refreshSongList(){
+    public void refreshSongList() {
         sList.addAll(songList);
         songNamesToDisplay = new String[songList.size()];
-        for(int i=0;i<songNamesToDisplay.length;i++)
+        for (int i = 0; i < songNamesToDisplay.length; i++)
             songNamesToDisplay[i] = songList.get(i).getName();
     }
 
-    protected void onResume(){
+    protected void onResume() {
         super.onResume();
         getSongsFromPersistance();
         refreshSongList();
     }
 
-    protected void onStart(){
+    protected void onStart() {
         super.onStart();
     }
 
-    protected void onRestart(){
+    protected void onRestart() {
         super.onRestart();
     }
 
-    protected void onPause(){
+    protected void onPause() {
         super.onPause();
     }
 
-    protected void onStop(){
+    protected void onStop() {
         super.onStop();
     }
 
 
-    protected void onDestroy(){
+    protected void onDestroy() {
         super.onDestroy();
     }
 
 
-    protected void onRestoreInstanceState(Bundle savedInstanceState){
+    protected void onRestoreInstanceState(Bundle savedInstanceState) {
         super.onRestoreInstanceState(savedInstanceState);
     }
 
-    protected void onSaveInstanceState(Bundle outState){
+    protected void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
     }
 
 
     //method called by fragments to avoid context issues
-    public void playSong(Song song){
-        int songId = getResources().getIdentifier(song.getRawName(), "raw", this.getPackageName());
-        String playStatus = mediaPlayerController.playSong(song, songId,this);
+    public void playSong(Song song) {
+        String playStatus = mediaPlayerController.playSong(song, this);
         Log.i(TAG, playStatus);
     }
 
-
-
-
-
-    public void showSongListFragment(){
+    public void showSongListFragment() {
 
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
         //if the fragment is already in the container, show it
-        if(songListFragment.isAdded()){
+        if (songListFragment.isAdded()) {
             fragmentTransaction.show(songListFragment);
-        }else{
+        } else {
             //inflate it if it has not been added
             fragmentTransaction.add(R.id.fragment_placeholder, songListFragment);
         }
 
         //hide the other fragments if they are showing
-        if(nowPlayingFragment.isAdded()){fragmentTransaction.hide(nowPlayingFragment);}
-        if(searchSongFragment.isAdded()){fragmentTransaction.hide(searchSongFragment);}
+        if (nowPlayingFragment.isAdded()) {
+            fragmentTransaction.hide(nowPlayingFragment);
+        }
+        if (searchSongFragment.isAdded()) {
+            fragmentTransaction.hide(searchSongFragment);
+        }
         fragmentTransaction.commit();
 
     }
 
 
     //replace the song list fragment with the now playing fragment
-    public void showNowPlayingFragment(){
+    public void showNowPlayingFragment() {
 
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
         //if the fragment is already in the container, show it
-        if(nowPlayingFragment.isAdded()){
+        if (nowPlayingFragment.isAdded()) {
             fragmentTransaction.show(nowPlayingFragment);
-        }else{
+        } else {
             //inflate it if it has not been added
             fragmentTransaction.add(R.id.fragment_placeholder, nowPlayingFragment);
         }
 
         //hide the other fragments if they are showing
-        if(songListFragment.isAdded()){fragmentTransaction.hide(songListFragment);}
-        if(searchSongFragment.isAdded()){fragmentTransaction.hide(searchSongFragment);}
+        if (songListFragment.isAdded()) {
+            fragmentTransaction.hide(songListFragment);
+        }
+        if (searchSongFragment.isAdded()) {
+            fragmentTransaction.hide(searchSongFragment);
+        }
         fragmentTransaction.addToBackStack(null); //add to back stack so we can return to this fragment
         fragmentTransaction.commit();
 
     }
 
 
-    public void showSearchResultsFragment(){
+    public void showSearchResultsFragment() {
 
         fragmentTransaction = getSupportFragmentManager().beginTransaction();
         //if the fragment is already in the container, show it
 
         searchSongFragment = new SearchResultsFragment();
         fragmentTransaction.remove(songListFragment);
-        fragmentTransaction.add(R.id.fragment_placeholder,searchSongFragment);
+        fragmentTransaction.add(R.id.fragment_placeholder, searchSongFragment);
 
-        if(nowPlayingFragment.isAdded()){fragmentTransaction.hide(nowPlayingFragment);}
+        if (nowPlayingFragment.isAdded()) {
+            fragmentTransaction.hide(nowPlayingFragment);
+        }
 
         fragmentTransaction.commit();
     }
@@ -198,7 +205,6 @@ public class HomeActivity extends BaseActivity  {
         return true;
     }
 
-
     public boolean onOptionsItemSelected(MenuItem item) {
         // Handle action bar item clicks here. The action bar will
         // automatically handle clicks on the Home/Up button, so long
@@ -207,17 +213,16 @@ public class HomeActivity extends BaseActivity  {
         return super.onOptionsItemSelected(item);
     }
 
-
-    public String[] getSongNames(ArrayList<Song> songList){
+    private String[] getSongNames(ArrayList<Song> songList) {
         String[] songNames = new String[songList.size()];
-        for(int i= 0; i<songList.size(); i++){
+        for (int i = 0; i < songList.size(); i++) {
             songNames[i] = songList.get(i).getName();
         }
         return songNames;
     }
 
     // PAUSE BUTTON
-    public void onClickPause(View view){
+    public void onClickPause(View view) {
         String response = mediaPlayerController.pauseSong();
         Log.i(TAG, response);
 
@@ -228,36 +233,35 @@ public class HomeActivity extends BaseActivity  {
         //make sure a song is actually paused
         if (MusicPlayerState.getInstance().isSongPaused()) {
             Song pausedSong = MusicPlayerState.getInstance().getCurrentlyPlayingSong();   //get the current playing song from the app state
-            int resourceId = getResources().getIdentifier(pausedSong.getRawName(), "raw", getPackageName());    //get the resource pointer
-            String response = mediaPlayerController.resumeSong(resourceId);                 // ask  media controller to resume
+            String response = mediaPlayerController.resumeSong();
             Log.i(TAG, response); //display result of operation to log
-        }else{
-            Log.i(TAG,MusicPlayerState.getInstance().getMusicPlayerState());
+        } else {
+            Log.i(TAG, MusicPlayerState.getInstance().getMusicPlayerState());
         }
 
     }
 
     //NEXT BUTTON
-    public void onClickPlayNext(View view){
-        String response = mediaPlayerController.playNextSong(HomeActivity.this);
+    public void onClickPlayNext(View view) {
+        String response = mediaPlayerController.playNextSong(this);
         Log.i(TAG, response);
     }
 
     //PREVIOUS BUTTON
-    public void onClickPlayPrevious(View view){
+    public void onClickPlayPrevious(View view) {
         mediaPlayerController.pauseSong();
-        String response = mediaPlayerController.playPreviousSong(HomeActivity.this);
+        String response = mediaPlayerController.playPreviousSong(this);
         Log.i(TAG, response);
     }
 
     //SHUFFLE Button
-    public void onClickShuffle(View view){
+    public void onClickShuffle(View view) {
         String response = mediaPlayerController.setShuffle();
         Log.i(TAG, response);
     }
 
     //REPEAT button
-    public void onClickRepeat(View view){
+    public void onClickRepeat(View view) {
         String response = mediaPlayerController.setRepeat();
         Log.i(TAG, response);
     }
@@ -276,14 +280,26 @@ public class HomeActivity extends BaseActivity  {
             //use the query to search your data somehow
             sResult = findSong.searchSongs(query);
             ArrayList ss = new ArrayList();
-            for(int i=0; i<sResult.size();i++)
+            for (int i = 0; i < sResult.size(); i++)
                 ss.add(sResult.get(i));
             result = getSongNames(ss); //get the names of the songs in order to populate the listview in the results fragment
             showSearchResultsFragment(); //show search fragment
         }
     }
 
-
-
-
+    public void update(Observable observable, Object o) {
+        if (observable instanceof DatabaseUpdatedObservable) {
+            switch (((DatabaseUpdatedObservable) observable).getState()) {
+                case DatabaseUpdated:
+                    getSongsFromPersistance();
+                    refreshSongList();
+                    songListFragment = new SongListFragment();
+                    getSupportFragmentManager().beginTransaction()
+                            .replace(R.id.fragment_placeholder, songListFragment).commit();
+                    break;
+                case DatabaseEmpty:
+                    break;
+            }
+        }
+    }
 }
