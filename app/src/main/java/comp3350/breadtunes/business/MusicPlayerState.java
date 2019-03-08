@@ -150,7 +150,7 @@ public class MusicPlayerState {
     }
 
     public void subscribeToPlayModeChange(Observer observer){
-        musicPlayerState.playModeObservable.addObserver(observer);;
+        musicPlayerState.playModeObservable.addObserver(observer);
     }
 
     public String getMusicPlayerState(){
@@ -200,6 +200,27 @@ public class MusicPlayerState {
         if(shuffleStatus.equals("") && repeatStatus.equals(""))
             playMode = "";
         return playMode;
+    }
+    public MusicPlayerState getMusicPlayerStateInstance(){return this.musicPlayerState;}
+
+    public MusicPlayerState(){}
+
+    public MusicPlayerState(List<Song> songList){
+
+        musicPlayerState = new MusicPlayerState();
+        musicPlayerState.songPlaying = false;
+        musicPlayerState.songPaused = false;
+        musicPlayerState.currentSong = null;
+        musicPlayerState.pausedPosition = 0;
+        musicPlayerState.currentSongList = songList;
+        musicPlayerState. nextSong = null;
+        musicPlayerState.previousSong = null;
+        musicPlayerState.songObservable = new SongObservable();
+        musicPlayerState.playModeObservable = new PlayModeObservable();
+        musicPlayerState.currentPlayingSongName = "";
+        musicPlayerState.shuffleModeOn = false;
+        musicPlayerState.repeatModeOn = false;
+        musicPlayerState.randomNumberGen = new Random();
     }
 
     private String getShuffleStatus(){

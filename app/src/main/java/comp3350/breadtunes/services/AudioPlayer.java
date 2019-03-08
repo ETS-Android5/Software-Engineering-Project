@@ -89,6 +89,7 @@ public class AudioPlayer implements MediaManager {
         player.setOnCompletionListener(listener);
     }
 
+
     @Override
     public void close() {
         if (player != null) {
