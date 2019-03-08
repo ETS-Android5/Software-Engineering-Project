@@ -30,7 +30,6 @@ public class MusicPlayerStateTest extends TestLogger {
         //MusicPlayerState mps = new MusicPlayerState(songList);
         MusicPlayerState mps = new MusicPlayerState();
 
-
         mps.getInstance().setCurrentSong(a);
         assertTrue(a == mps.getInstance().getCurrentlyPlayingSong());
         assertFalse(b == mps.getInstance().getCurrentlyPlayingSong());
