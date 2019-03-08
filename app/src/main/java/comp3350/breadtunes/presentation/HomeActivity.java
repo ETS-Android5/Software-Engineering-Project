@@ -293,6 +293,7 @@ public class HomeActivity extends BaseActivity implements Observer {
                 case DatabaseUpdated:
                     getSongsFromPersistance();
                     refreshSongList();
+                    MusicPlayerState.getInstance().setCurrentSongList(sList);
                     songListFragment = new SongListFragment();
                     getSupportFragmentManager().beginTransaction()
                             .replace(R.id.fragment_placeholder, songListFragment).commit();
