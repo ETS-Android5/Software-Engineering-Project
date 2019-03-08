@@ -46,7 +46,7 @@ public class ArtistLoader {
         for (Album album: albums) {
             // If looking at a new artist, add the previous artist to the list
             if (album.getSongs().get(0).getArtistId() != prevArtist) {
-                artists.add(new Artist(prevArtistName, artistAlbums));
+                artists.add(new Artist(prevArtist, prevArtistName, artistAlbums));
 
                 // Reset list of albums for artist
                 artistAlbums = new ArrayList<>();
@@ -59,7 +59,7 @@ public class ArtistLoader {
         }
 
         // Add the last artist after the loop ends
-        artists.add(new Artist(prevArtistName, artistAlbums));
+        artists.add(new Artist(prevArtist, prevArtistName, artistAlbums));
 
         return artists;
     }

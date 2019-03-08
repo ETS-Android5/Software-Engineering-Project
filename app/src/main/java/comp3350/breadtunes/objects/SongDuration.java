@@ -1,8 +1,13 @@
 package comp3350.breadtunes.objects;
 
+import java.io.Serializable;
 import java.util.concurrent.TimeUnit;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-public class SongDuration {
+public class SongDuration implements Serializable {
+    private static final String toStringFormat = "H:%dM:%dS:%d";
+    private static final Pattern durationStringPattern = Pattern.compile("H:(\\d+)M:(\\d+)S:(\\d+)");
     private int hours;
     private int minutes;
     private int seconds;
@@ -17,6 +22,20 @@ public class SongDuration {
         this.hours = 0;
         this.minutes = minutes;
         this.seconds = seconds;
+    }
+
+    public SongDuration(String songDurationStringRepresentation) {
+        Matcher matcher = durationStringPattern.matcher(songDurationStringRepresentation);
+
+        if (matcher.find()) {
+            hours = Integer.parseInt(matcher.group(1));
+            minutes = Integer.parseInt(matcher.group(2));
+            seconds = Integer.parseInt(matcher.group(3));
+        } else {
+            hours = 0;
+            minutes = 0;
+            seconds = 0;
+        }
     }
 
     public int getHours() { return hours; }
@@ -38,5 +57,10 @@ public class SongDuration {
                 TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(millis)));
 
         return new SongDuration(hours, minutes , seconds);
+    }
+
+    @Override
+    public String toString() {
+        return String.format(toStringFormat, hours, minutes, seconds);
     }
 }

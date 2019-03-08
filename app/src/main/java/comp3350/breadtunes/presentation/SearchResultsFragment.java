@@ -46,10 +46,6 @@ public class SearchResultsFragment extends Fragment  {
             Song selectedSong = LookUpSongs.getSong(sList, selectedSongName);
 
             homeActivity.playSong(selectedSong);
-
-
         });// on item click listener for listview
-
     }
-
 }

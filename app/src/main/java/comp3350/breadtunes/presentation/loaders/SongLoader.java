@@ -4,10 +4,8 @@ import android.content.ContentResolver;
 import android.content.Context;
 import android.database.Cursor;
 import android.net.Uri;
-import android.provider.BaseColumns;
 import android.provider.MediaStore;
 
-import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 

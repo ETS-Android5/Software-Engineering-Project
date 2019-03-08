@@ -1,7 +1,5 @@
 package comp3350.breadtunes.persistence;
 
-import java.lang.reflect.Array;
-import java.util.ArrayList;
 import java.util.List;
 
 import comp3350.breadtunes.exception.RecordDoesNotExistException;
