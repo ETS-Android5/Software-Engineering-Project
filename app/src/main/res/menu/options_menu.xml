@@ -7,4 +7,10 @@
         app:showAsAction="ifRoom|withText"
         app:actionViewClass="android.widget.SearchView"
         android:textAlignment="center"/>
+
+    <item
+        android:id="@+id/parental_lock_on"
+        android:icon="@drawable/lock"
+        android:title="parental_lock_on"
+        app:showAsAction="always" />
 </menu>
