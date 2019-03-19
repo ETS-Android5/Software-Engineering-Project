@@ -44,6 +44,7 @@ public class ParentalControlSetupFragment extends Fragment {
     }
 
     public void onResume(){
+        super.onResume();
         registerOnClickSubmit();
     }
 

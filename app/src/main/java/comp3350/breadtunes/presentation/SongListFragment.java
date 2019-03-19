@@ -140,12 +140,18 @@ public class SongListFragment extends Fragment implements Observer {
         if(id == R.id.parental_lock_on){
 
             //logic to check in the database if credentials have been set up
-
-            //if have been setup : musicPlayerState.setParentalControlMode(true)
-
-            //else, bring up fragment to setup credentials:
+            // if(!credentialManager.credentialsHaveBeenSet())
+            //      homeActivity.showParentalControlSetupFragment();
+            // else
+            //      showLoginFragment
+            //               inside login fragment have option for "forgot password"
             homeActivity.showParentalControlSetupFragment();
         }
+        else if(id == R.id.parental_lock_off){
+            Toast.makeText(homeActivity, "Parental Mode deactivated", Toast.LENGTH_LONG).show();
+            //musicPlayerState.setParentalControl( false );
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
