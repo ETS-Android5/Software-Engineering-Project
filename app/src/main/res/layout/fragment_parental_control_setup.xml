@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".presentation.ParentalControlSetupFragment"
+    >
+
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="595dp"
+        android:layout_height="91dp"
+        android:text="Credential Setup"
+        android:textAlignment="center"
+        android:textSize="40dp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+
+    <TextView
+        android:id="@+id/instructions"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:text="In order to setup parental mode, a PIN and a secret question must be setup."
+        android:textAlignment="textStart"
+        android:textSize="25dp"
+        android:textStyle="bold"
+        android:layout_marginLeft="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title" />
+
+    <TextView
+        android:id="@+id/pin_instructions"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:text="Please enter a PIN to manage parental control. Pin must be at least 4 characters long."
+        android:textAlignment="textStart"
+        android:textSize="20dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="30dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/instructions" />
+
+    <EditText
+        android:id="@+id/pin_field"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:ems="10"
+        android:inputType="numberPassword"
+        android:layout_marginTop="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/pin_instructions" />
+
+    <TextView
+        android:id="@+id/question_instructions"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:text="Please enter your secret question"
+        android:textAlignment="textStart"
+        android:textSize="20dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="30dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/pin_field" />
+
+    <EditText
+        android:id="@+id/secret_question"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="30dp"
+        android:ems="10"
+        android:hint="What is your dog's name?"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/question_instructions" />
+
+    <TextView
+        android:id="@+id/secret_answer"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:text="Please enter answer to your secret question"
+        android:textAlignment="textStart"
+        android:textSize="20dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="30dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/secret_question" />
+
+    <EditText
+        android:id="@+id/secret_question_answer"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="30dp"
+        android:ems="10"
+        android:hint="s p a r k y"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/secret_answer" />
+
+    <Button
+        android:id="@+id/submit_button"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginTop="56dp"
+        android:text="Submit"
+        app:layout_constraintTop_toBottomOf="@id/secret_question_answer"
+        android:textStyle="bold"
+        android:textSize="20dp"
+        />
+
+
+</android.support.constraint.ConstraintLayout>
