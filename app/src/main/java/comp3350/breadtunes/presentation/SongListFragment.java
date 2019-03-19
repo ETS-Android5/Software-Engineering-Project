@@ -17,6 +17,8 @@ import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.SearchView;
+import android.widget.Toast;
+
 import java.util.Observable;
 import java.util.Observer;
 import comp3350.breadtunes.R;
@@ -135,6 +137,15 @@ public class SongListFragment extends Fragment implements Observer {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+        if(id == R.id.parental_lock_on){
+
+            //logic to check in the database if credentials have been set up
+
+            //if have been setup : musicPlayerState.setParentalControlMode(true)
+
+            //else, bring up fragment to setup credentials:
+            homeActivity.showParentalControlSetupFragment();
+        }
         return super.onOptionsItemSelected(item);
     }
 
@@ -179,4 +190,5 @@ public class SongListFragment extends Fragment implements Observer {
             }
         });
     }
+
 }
