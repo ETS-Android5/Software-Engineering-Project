@@ -80,7 +80,9 @@ public class ParentalControlSetupFragment extends Fragment {
             //WRITE NEW CREDENTIALS
             //if all is good
             // communicate with business object and hand over the data so it can be written into the database
-            // homeActivity.showSongListFragment
+            // CredentialManager.writeNewCredentials(PIN, secretQuestion, secretQuestionAnswer);
+            homeActivity.showSongListFragment();
+            Toast.makeText(homeActivity, "Credentials created", Toast.LENGTH_LONG).show();
         }else{
 
             if(!secretPINOk)

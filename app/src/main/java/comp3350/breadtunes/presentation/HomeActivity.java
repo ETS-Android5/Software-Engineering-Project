@@ -31,6 +31,8 @@ import java.util.Observer;
 //    // PLAY SONGS https://developer.android.com/guide/topics/media/mediaplayer#java
 //==============================
 
+@// TODO: 20/03/19 agregar accion para forgot pin, agregar cambios en music player state que represente si esta activado, agregar checksa credentials have been set in parental lock activation, agregar ui element que diga "PARENTAL LOCK ON/OFF" 
+
 
 public class HomeActivity extends BaseActivity implements Observer {
     MediaPlayerController mediaPlayerController;  // controls playback operations
@@ -154,6 +156,9 @@ public class HomeActivity extends BaseActivity implements Observer {
         }
         if (searchSongFragment.isAdded()) {
             fragmentTransaction.hide(searchSongFragment);
+        }
+        if(parentalControlSetupFragment.isAdded()){
+            fragmentTransaction.hide(parentalControlSetupFragment);
         }
         fragmentTransaction.commit();
 
