@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import comp3350.breadtunes.R;
 
@@ -61,15 +62,36 @@ public class ParentalControlSetupFragment extends Fragment {
 
     private void setupParentalControl(){
 
-        final EditText secretPin = (EditText) getView().findViewById(R.id.pin_field);
-        final EditText secretQuestion = (EditText) getView().findViewById(R.id.secret_question);
-        final EditText secretQuestionAnswer = (EditText) getView().findViewById(R.id.secret_question_answer);
+        final EditText secretPinView = (EditText) getView().findViewById(R.id.pin_field);
+        final EditText secretQuestionView = (EditText) getView().findViewById(R.id.secret_question);
+        final EditText secretQuestionAnswerView = (EditText) getView().findViewById(R.id.secret_question_answer);
 
-        //do input validation here
+        //input validation start
+        String PIN = String.valueOf(secretPinView.getText());
+        boolean secretPINOk = (PIN.length() > 3);
 
-        //if all is good
-        // communicate with business object and hand over the data so it can be written into the database
-        // homeActivity.showSongListFragment
+        String secretQuestion = String.valueOf(secretQuestionView.getText());
+        boolean secretQuestionOK = (secretQuestion.length() > 4);
+
+        String secretQuestionAnswer = String.valueOf(secretQuestionAnswerView.getText());
+        boolean secretQuestionAnswerOK = (secretQuestionAnswer.length() > 4);
+
+        if(secretPINOk && secretQuestionOK && secretQuestionAnswerOK){
+            //WRITE NEW CREDENTIALS
+            //if all is good
+            // communicate with business object and hand over the data so it can be written into the database
+            // homeActivity.showSongListFragment
+        }else{
+
+            if(!secretPINOk)
+                Toast.makeText(homeActivity, "PIN must be at least 3 characters long", Toast.LENGTH_LONG).show();
+            if(!secretQuestionOK)
+                Toast.makeText(homeActivity, "Secret question must be at least 5 characters long", Toast.LENGTH_LONG).show();
+            if(!secretQuestionAnswerOK)
+                Toast.makeText(homeActivity, "Secret question answer must be at least 5 characters long", Toast.LENGTH_LONG).show();
+
+
+        }
     }
 
 }
