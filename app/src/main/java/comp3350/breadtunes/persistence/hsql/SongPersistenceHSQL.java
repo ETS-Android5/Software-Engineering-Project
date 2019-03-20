@@ -2,16 +2,14 @@ package comp3350.breadtunes.persistence.hsql;
 
 import android.net.Uri;
 
-import java.sql.Blob;
 import java.sql.Connection;
-import java.sql.DriverManager;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
+import comp3350.breadtunes.application.BreadTunesApplication;
 import comp3350.breadtunes.exception.PersistenceException;
 import comp3350.breadtunes.objects.SongDuration;
 import comp3350.breadtunes.persistence.SongPersistence;
@@ -19,22 +17,7 @@ import comp3350.breadtunes.objects.Song;
 
 public class SongPersistenceHSQL implements SongPersistence {
 
-    private final String databasePath;
-
-    public SongPersistenceHSQL(String databasePath) {
-        this.databasePath = databasePath;
-
-        try {
-            Class.forName("org.hsqldb.jdbc.JDBCDriver");
-        } catch (ClassNotFoundException e) {
-            e.printStackTrace();
-        }
-    }
-
-    private Connection connection() throws SQLException {
-        String connectionUrl = String.format("jdbc:hsqldb:file:%s;shutdown=true", databasePath);
-        return DriverManager.getConnection(connectionUrl, "SA", "");
-    }
+    public SongPersistenceHSQL() { }
 
     private Song getSongFromResultSet(ResultSet resultSet) throws SQLException {
         return new Song.Builder()
@@ -54,7 +37,8 @@ public class SongPersistenceHSQL implements SongPersistence {
     public List<Song> getAll() {
         final List<Song> songList = new ArrayList<>();
 
-        try (final Connection dbConnection = connection()) {
+        try {
+            Connection dbConnection = BreadTunesApplication.getDbConnection();
             final PreparedStatement statement = dbConnection.prepareStatement("SELECT * FROM Songs ORDER BY Name ASC");
             final ResultSet resultSet = statement.executeQuery();
 
@@ -73,7 +57,8 @@ public class SongPersistenceHSQL implements SongPersistence {
     }
 
     public Song insert(Song song) {
-        try (final Connection dbConnection = connection()) {
+        try {
+            Connection dbConnection = BreadTunesApplication.getDbConnection();
             StringBuilder queryBuilder = new StringBuilder();
             queryBuilder.append("INSERT INTO Songs (SongId, Name, Year, Track, Duration, ArtistId, ArtistName, AlbumId, AlbumName, URI) ");
             queryBuilder.append("VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
@@ -99,7 +84,8 @@ public class SongPersistenceHSQL implements SongPersistence {
     }
 
     public void insertSongs(List<Song> songs) {
-        try (final Connection dbConnection = connection()) {
+        try {
+            Connection dbConnection = BreadTunesApplication.getDbConnection();
             dbConnection.setAutoCommit(false);
 
             StringBuilder queryBuilder = new StringBuilder();
@@ -128,6 +114,8 @@ public class SongPersistenceHSQL implements SongPersistence {
                     dbConnection.commit();
                 }
             }
+
+            dbConnection.setAutoCommit(true);
         } catch (SQLException e) {
             throw new PersistenceException(e.getMessage());
         }

@@ -34,7 +34,7 @@ public class ServiceGateway
 
     public static synchronized SongPersistence getSongPersistence() {
         if (songPersistence == null) {
-            songPersistence = new SongPersistenceHSQL(AppState.databasePath);
+            songPersistence = new SongPersistenceHSQL();
         }
 
         return songPersistence;

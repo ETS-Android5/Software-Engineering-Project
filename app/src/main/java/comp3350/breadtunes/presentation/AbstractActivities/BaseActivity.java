@@ -48,7 +48,6 @@ public abstract class BaseActivity extends AppCompatActivity {
         if (baseInitialized == true) return;
 
         requestReadExternalStoragePermission();
-        copyDatabaseToDevice();
 
         if (AppState.externalReadAccessAllowed) {
             notifyDatabaseUpdateAsync(updateMediaDatabaseAsync(loadMediaAsync()));
@@ -92,58 +91,6 @@ public abstract class BaseActivity extends AppCompatActivity {
                     AppState.externalReadAccessAllowed = true;
                     notifyDatabaseUpdateAsync(updateMediaDatabaseAsync(loadMediaAsync()));
                 }
-            }
-        }
-    }
-
-    private void copyDatabaseToDevice() {
-        final String databaseAssetPath = getString(R.string.database_asset_path);
-
-        String[] assetNames;
-        Context context = getApplicationContext();
-        File dataDirectory = context.getDir(databaseAssetPath, Context.MODE_PRIVATE);
-        AssetManager assetManager = getAssets();
-
-        try {
-
-            assetNames = assetManager.list(databaseAssetPath);
-            for (int i = 0; i < assetNames.length; i++) {
-                assetNames[i] = databaseAssetPath + "/" + assetNames[i];
-            }
-
-            copyAssetsToDirectory(assetNames, dataDirectory);
-
-            AppState.databasePath = new File(dataDirectory, getString(R.string.database_name)).toString();
-
-        } catch (final IOException ioe) {
-            Log.w("", "Unable to access application data: " + ioe.getMessage());
-        }
-    }
-
-    public void copyAssetsToDirectory(String[] assets, File directory) throws IOException {
-        AssetManager assetManager = getAssets();
-
-        for (String asset : assets) {
-            String[] components = asset.split("/");
-            String copyPath = directory.toString() + "/" + components[components.length - 1];
-
-            char[] buffer = new char[1024];
-            int count;
-
-            File outFile = new File(copyPath);
-
-            if (!outFile.exists()) {
-                InputStreamReader in = new InputStreamReader(assetManager.open(asset));
-                FileWriter out = new FileWriter(outFile);
-
-                count = in.read(buffer);
-                while (count != -1) {
-                    out.write(buffer, 0, count);
-                    count = in.read(buffer);
-                }
-
-                out.close();
-                in.close();
             }
         }
     }
