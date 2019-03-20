@@ -73,5 +73,6 @@ public class BreadTunesApplication extends Application {
         statement.executeBatch();
         dbConnection.setAutoCommit(true);
 
+        Log.i("HSQLDB", "Initialized database tables because database did not exist.");
     }
 }

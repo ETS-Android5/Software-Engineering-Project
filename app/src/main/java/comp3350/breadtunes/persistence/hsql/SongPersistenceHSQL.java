@@ -56,34 +56,7 @@ public class SongPersistenceHSQL implements SongPersistence {
         }
     }
 
-    public Song insert(Song song) {
-        try {
-            Connection dbConnection = BreadTunesApplication.getDbConnection();
-            StringBuilder queryBuilder = new StringBuilder();
-            queryBuilder.append("INSERT INTO Songs (SongId, Name, Year, Track, Duration, ArtistId, ArtistName, AlbumId, AlbumName, URI) ");
-            queryBuilder.append("VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
-            final PreparedStatement statement = dbConnection.prepareStatement(queryBuilder.toString());
-            statement.setInt(1, song.getSongId());
-            statement.setString(2, song.getName());
-            statement.setInt(3, song.getYear());
-            statement.setInt(4, song.getTrackNumber());
-            statement.setString(5, song.getDuration().toString());
-            statement.setInt(6, song.getArtistId());
-            statement.setString(7, song.getArtistName());
-            statement.setInt(8, song.getAlbumId());
-            statement.setString(9, song.getAlbumName());
-            statement.setString(10, song.getSongUri().toString());
-            statement.executeUpdate();
-
-            statement.close();
-
-            return song;
-        } catch (SQLException e) {
-            throw new PersistenceException(e.getMessage());
-        }
-    }
-
-    public void insertSongs(List<Song> songs) {
+    private void insertSongs(List<Song> songs) {
         try {
             Connection dbConnection = BreadTunesApplication.getDbConnection();
             dbConnection.setAutoCommit(false);
@@ -147,12 +120,5 @@ public class SongPersistenceHSQL implements SongPersistence {
 
         insertSongs(songsToInsert);
         return databaseUpdated;
-    }
-
-    public Song update(Song song) {
-        return song;
-    }
-
-    public void delete(Song song) {
     }
 }
