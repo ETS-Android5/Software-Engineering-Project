@@ -11,6 +11,10 @@ import android.widget.EditText;
 import android.widget.TextView;
 
 import comp3350.breadtunes.R;
+import comp3350.breadtunes.business.CredentialManager;
+import comp3350.breadtunes.objects.SecureCredentials;
+import comp3350.breadtunes.persistence.CredentialPersistence;
+import comp3350.breadtunes.services.ServiceGateway;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -67,9 +71,16 @@ public class ParentalControlSetupFragment extends Fragment {
 
         //do input validation here
 
-        //if all is good
-        // communicate with business object and hand over the data so it can be written into the database
+        String pin = secretPin.getText().toString();
+        String secretQ = secretQuestion.getText().toString();
+        String secretQAns = secretQuestionAnswer.getText().toString();
+        CredentialManager credentialManager = ServiceGateway.getCredentialManager();
+        credentialManager.writeNewCredentials(pin, secretQ, secretQAns);
+
+        // TODO: Remove! Just checking something out here
+        CredentialPersistence persistence = ServiceGateway.getCredentialPersistence();
+        SecureCredentials credentials = persistence.getMostRecentCredentials();
+
         // homeActivity.showSongListFragment
     }
-
 }
