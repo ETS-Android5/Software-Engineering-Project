@@ -2,6 +2,7 @@ package comp3350.breadtunes.services;
 
 import java.util.Observer;
 
+import comp3350.breadtunes.business.CredentialManager;
 import comp3350.breadtunes.business.enums.DatabaseState;
 import comp3350.breadtunes.business.interfaces.MediaManager;
 import comp3350.breadtunes.business.observables.DatabaseUpdatedObservable;
@@ -12,6 +13,7 @@ public class ServiceGateway
 {
 	private static SongPersistence songPersistence = null;
     private static AudioPlayer audioPlayer = null;
+    private static CredentialManager credentialManager = null;
     private static DatabaseUpdatedObservable dbObservable = new DatabaseUpdatedObservable();
 
     public static void subscribeToDatabaseStateChanges(Observer observer) {
@@ -36,5 +38,13 @@ public class ServiceGateway
         }
 
         return songPersistence;
+    }
+
+    public static synchronized CredentialManager getCredentialManager() {
+        if (credentialManager == null) {
+            credentialManager = new CredentialManager();
+        }
+
+        return credentialManager;
     }
 }
