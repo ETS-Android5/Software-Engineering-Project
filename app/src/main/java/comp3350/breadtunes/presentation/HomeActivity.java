@@ -47,6 +47,7 @@ public class HomeActivity extends BaseActivity implements Observer {
     private SearchResultsFragment searchSongFragment;
     private SongListFragment songListFragment;
     private ParentalControlSetupFragment parentalControlSetupFragment;
+    private ResetPINFragment resetPINFragment;
 
     // the list of songs acquired from Persistance layer
     List<Song> songList;
@@ -62,6 +63,7 @@ public class HomeActivity extends BaseActivity implements Observer {
         ServiceGateway.subscribeToDatabaseStateChanges(this);
 
         if (savedInstanceState == null) {
+            resetPINFragment = new ResetPINFragment();
             nowPlayingFragment = new NowPlayingFragment();
             searchSongFragment = new SearchResultsFragment();
             songListFragment = new SongListFragment();
@@ -160,6 +162,10 @@ public class HomeActivity extends BaseActivity implements Observer {
         if(parentalControlSetupFragment.isAdded()){
             fragmentTransaction.hide(parentalControlSetupFragment);
         }
+        if(resetPINFragment.isAdded()){
+            fragmentTransaction.hide(resetPINFragment);
+        }
+        
         fragmentTransaction.commit();
 
     }
@@ -187,10 +193,44 @@ public class HomeActivity extends BaseActivity implements Observer {
         if(parentalControlSetupFragment.isAdded()){
             fragmentTransaction.hide(parentalControlSetupFragment);
         }
+        if(resetPINFragment.isAdded()){
+            fragmentTransaction.hide(resetPINFragment);
+        }
         fragmentTransaction.addToBackStack(null); //add to back stack so we can return to this fragment
         fragmentTransaction.commit();
 
     }
+
+    public void showPINResetFragment(){
+
+        fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        //if the fragment is already in the container, show it
+        if (resetPINFragment.isAdded()) {
+            fragmentTransaction.show(resetPINFragment);
+        } else {
+            //inflate it if it has not been added
+            fragmentTransaction.add(R.id.fragment_placeholder, resetPINFragment);
+        }
+
+        //hide the other fragments if they are showing
+        if (songListFragment.isAdded()) {
+            fragmentTransaction.hide(songListFragment);
+        }
+        if (searchSongFragment.isAdded()) {
+            fragmentTransaction.hide(searchSongFragment);
+        }
+        if (nowPlayingFragment.isAdded()){
+            fragmentTransaction.hide(nowPlayingFragment);
+        }
+        if(parentalControlSetupFragment.isAdded()){
+            fragmentTransaction.hide(parentalControlSetupFragment);
+        }
+
+        fragmentTransaction.addToBackStack(null); //add to back stack so we can return to this fragment
+        fragmentTransaction.commit();
+
+    }
+
 
     public void showParentalControlSetupFragment(){
 
@@ -212,6 +252,9 @@ public class HomeActivity extends BaseActivity implements Observer {
         }
         if (nowPlayingFragment.isAdded()){
             fragmentTransaction.hide(nowPlayingFragment);
+        }
+        if(resetPINFragment.isAdded()){
+            fragmentTransaction.hide(resetPINFragment);
         }
         fragmentTransaction.addToBackStack(null); //add to back stack so we can return to this fragment
         fragmentTransaction.commit();
@@ -235,6 +278,12 @@ public class HomeActivity extends BaseActivity implements Observer {
         }
         if(searchSongFragment.isAdded()){
             fragmentTransaction.hide(searchSongFragment);
+        }
+        if(parentalControlSetupFragment.isAdded()){
+            fragmentTransaction.hide(parentalControlSetupFragment);
+        }
+        if(resetPINFragment.isAdded()){
+            fragmentTransaction.hide(resetPINFragment);
         }
 
         fragmentTransaction.commit();

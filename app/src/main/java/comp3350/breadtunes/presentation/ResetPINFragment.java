@@ -11,19 +11,23 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import org.w3c.dom.Text;
+
 import comp3350.breadtunes.R;
 
 /**
  * A simple {@link Fragment} subclass.
  */
-public class ParentalControlSetupFragment extends Fragment {
+public class ResetPINFragment extends Fragment {
+
 
     public HomeActivity homeActivity;
     private final String TAG = "HomeActivity";
-    public static Button submitButton;
+    private static TextView secretQuestion;
+    private static Button submitButton;
 
 
-    public ParentalControlSetupFragment() {
+    public ResetPINFragment() {
         // Required empty public constructor
     }
 
@@ -37,10 +41,13 @@ public class ParentalControlSetupFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_parental_control_setup, container, false);
+        return inflater.inflate(R.layout.fragment_reset_pin, container, false);
     }
 
     public void onViewCreated(View view, Bundle savedInstanceState){
+        secretQuestion = (TextView) getView().findViewById(R.id.secret_question);
+        //credential manager . get secret question
+        secretQuestion.setText("question");
         registerOnClickSubmit();
     }
 
@@ -54,44 +61,46 @@ public class ParentalControlSetupFragment extends Fragment {
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                setupParentalControl();
+                resetCredentials();
             }
         });
     }
 
-
-    private void setupParentalControl(){
-
-        final EditText secretPinView = (EditText) getView().findViewById(R.id.pin_field);
-        final EditText secretQuestionView = (EditText) getView().findViewById(R.id.secret_question);
+    private void resetCredentials(){
         final EditText secretQuestionAnswerView = (EditText) getView().findViewById(R.id.secret_question_answer);
-
-        //input validation start
-        String PIN = String.valueOf(secretPinView.getText());
-        boolean secretPINOk = (PIN.length() > 3);
-
-        String secretQuestion = String.valueOf(secretQuestionView.getText());
-        boolean secretQuestionOK = (secretQuestion.length() > 4 && (secretQuestion.length() < 80));
 
         String secretQuestionAnswer = String.valueOf(secretQuestionAnswerView.getText());
         boolean secretQuestionAnswerOK = (secretQuestionAnswer.length() > 4);
 
-        if(secretPINOk && secretQuestionOK && secretQuestionAnswerOK){
-            //WRITE NEW CREDENTIALS
-            //if all is good
-            // communicate with business object and hand over the data so it can be written into the database
-            // CredentialManager.writeNewCredentials(PIN, secretQuestion, secretQuestionAnswer);
+        final EditText secretPinView = (EditText) getView().findViewById(R.id.pin_field);
+        String PIN = String.valueOf(secretPinView.getText());
+        boolean secretPINOk = (PIN.length() > 3);
+
+        if(secretQuestionAnswerOK && secretPINOk){
+            /*
+            credential manager validate secret question answer
+            if( correct)
+                credential manager update pin
+
+                "new pin saved"
+                show song list fragment
+
+            else
+
+                Toast incorrect answer to question
+             */
+
+            Toast.makeText(homeActivity, "New PIN saved.", Toast.LENGTH_LONG).show();
             homeActivity.showSongListFragment();
-            Toast.makeText(homeActivity, "Credentials created", Toast.LENGTH_LONG).show();
         }else{
 
             if(!secretPINOk)
                 Toast.makeText(homeActivity, "PIN must be at least 3 characters long", Toast.LENGTH_LONG).show();
-            if(!secretQuestionOK)
-                Toast.makeText(homeActivity, "Secret question must be at least 5 characters long", Toast.LENGTH_LONG).show();
+
             if(!secretQuestionAnswerOK)
                 Toast.makeText(homeActivity, "Secret question answer must be at least 5 characters long", Toast.LENGTH_LONG).show();
-        }
-    }
 
+        }
+
+    }
 }

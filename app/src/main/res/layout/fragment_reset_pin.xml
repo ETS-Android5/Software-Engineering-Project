@@ -1,0 +1,93 @@
+<?xml version="1.0" encoding="utf-8"?>
+<android.support.constraint.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        xmlns:app="http://schemas.android.com/apk/res-auto"
+        xmlns:tools="http://schemas.android.com/tools"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:context=".presentation.ResetPINFragment"
+        >
+
+
+    <TextView
+        android:id="@+id/title"
+        android:layout_width="595dp"
+        android:layout_height="91dp"
+        android:text="PIN Reset"
+        android:textAlignment="center"
+        android:textSize="40dp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <TextView
+        android:id="@+id/instructions"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:text="Please answer your secret question."
+        android:textAlignment="textStart"
+        android:textSize="25dp"
+        android:textStyle="bold"
+        android:layout_marginLeft="10dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/title" />
+
+    <TextView
+        android:id="@+id/secret_question"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:text="Secret Question"
+        android:textStyle="bold"
+        android:textAlignment="textStart"
+        android:textSize="20dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="30dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/instructions" />
+
+    <EditText
+        android:id="@+id/secret_question_answer"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:layout_marginTop="30dp"
+        android:ems="10"
+        android:inputType="textPersonName"
+        app:layout_constraintEnd_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/secret_question" />
+
+    <TextView
+        android:id="@+id/new_pin_message"
+        android:layout_width="fill_parent"
+        android:layout_height="0dp"
+        android:text="Please enter your new PIN"
+        android:textAlignment="textStart"
+        android:textSize="20dp"
+        android:layout_marginLeft="10dp"
+        android:layout_marginTop="30dp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/secret_question_answer" />
+
+    <EditText
+        android:id="@+id/pin_field"
+        android:layout_width="80dp"
+        android:layout_height="0dp"
+        android:layout_marginTop="30dp"
+        android:ems="10"
+        android:inputType="numberPassword"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/new_pin_message" />
+
+    <Button
+        android:id="@+id/submit_button"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:layout_marginStart="10dp"
+        android:layout_marginTop="56dp"
+        android:text="UPDATE PIN"
+        android:textSize="20dp"
+        android:textStyle="bold"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/pin_field" />
+
+
+</android.support.constraint.ConstraintLayout>

@@ -221,12 +221,14 @@ public class SongListFragment extends Fragment implements Observer {
                 })
                 .setNeutralButton("Forgot Password?", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        Toast.makeText(homeActivity, "too bad", Toast.LENGTH_LONG).show();
+                        homeActivity.showPINResetFragment();
                     }
                 })
                 .setNegativeButton("Cancel", null)
                 .create();
         dialog.show();
     }
+
+
 
 }
