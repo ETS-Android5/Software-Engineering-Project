@@ -66,7 +66,7 @@ public class BreadTunesApplication extends Application {
         dbConnection.setAutoCommit(false);
         Statement statement = dbConnection.createStatement();
         statement.addBatch("CREATE MEMORY TABLE PUBLIC.SONGS(SONGID INTEGER NOT NULL PRIMARY KEY, NAME VARCHAR(256), YEAR INTEGER, TRACK INTEGER, DURATION VARCHAR(256), ARTISTID INTEGER, ARTISTNAME VARCHAR(256), ALBUMID INTEGER, ALBUMNAME VARCHAR(256), URI VARCHAR(256));");
-        statement.addBatch("CREATE MEMORY TABLE PUBLIC.CREDENTIALS(CID NOT NULL PRIMARY KEY, PIN CHAR(64) NOT NULL, SECURITYQUESTION VARCHAR(80) NOT NULL, SECURITYQUESTIONANS CHAR(64) NOT NULL, DATEUPDATED VARCHAR(64));");
+        statement.addBatch("CREATE MEMORY TABLE PUBLIC.CREDENTIALS(CID INTEGER IDENTITY PRIMARY KEY, PIN CHAR(64) NOT NULL, SECURITYQUESTION VARCHAR(80) NOT NULL, SECURITYQUESTIONANS CHAR(64) NOT NULL, DATEUPDATED VARCHAR(64));");
         statement.addBatch("INSERT INTO SONGS VALUES (-10, 'Haydn Adagio', 2000, 1, 'H:0M:3S:1', -10, 'Joseph Haydn', -10, 'Classical Tunes', 'android.resource://comp3350.breadtunes/raw/adagio');");
         statement.addBatch("INSERT INTO SONGS VALUES (-11, 'Jarabe Tapatio', 2000, 1, 'H:0M:3S:3', -11, 'Mexico', -11, 'Mexican Tunes', 'android.resource://comp3350.breadtunes/raw/jarabe');");
         statement.addBatch("INSERT INTO SONGS VALUES (-12, 'Nocturne', 2000, 1, 'H:0M:3S:5', -12, 'Frederic Chopin', -12, 'Classical Tunes', 'android.resource://comp3350.breadtunes/raw/nocturne');");
