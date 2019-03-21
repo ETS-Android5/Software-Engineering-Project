@@ -1,6 +1,7 @@
 package comp3350.breadtunes.presentation;
 import comp3350.breadtunes.R;
 import comp3350.breadtunes.business.LookUpSongs;
+import comp3350.breadtunes.business.SongQueue;
 import comp3350.breadtunes.business.observables.DatabaseUpdatedObservable;
 import comp3350.breadtunes.presentation.MediaController.MediaPlayerController;
 import comp3350.breadtunes.services.ServiceGateway;
@@ -44,10 +45,14 @@ public class HomeActivity extends BaseActivity implements Observer {
     private NowPlayingFragment nowPlayingFragment;
     private SearchResultsFragment searchSongFragment;
     private SongListFragment songListFragment;
+    private QueueFragment queueSongFragment;
 
     // the list of songs acquired from Persistance layer
     List<Song> songList;
-
+    int QSIZE = 50;
+    int index = 0;
+    SongQueue queue;
+    String[] forQ;
     //variables for getting search query and launching search results fragment
     List<Song> sResult;
     String[] result;
@@ -62,6 +67,7 @@ public class HomeActivity extends BaseActivity implements Observer {
             nowPlayingFragment = new NowPlayingFragment();
             searchSongFragment = new SearchResultsFragment();
             songListFragment = new SongListFragment();
+            queueSongFragment = new QueueFragment();
         } else {
             //retrieve the state of the fragment
             songListFragment = (SongListFragment) getSupportFragmentManager().getFragment(savedInstanceState, "songlist_fragment");
@@ -74,7 +80,8 @@ public class HomeActivity extends BaseActivity implements Observer {
         mediaPlayerController = new MediaPlayerController();
         findSong = new LookUpSongs(songList);
 
-
+        queue = new SongQueue(QSIZE);
+        forQ = new String[QSIZE];
         refreshSongList();
         showSongListFragment(); //put the song list fragment on top of the main activity
         handleIntent(getIntent());
@@ -199,6 +206,22 @@ public class HomeActivity extends BaseActivity implements Observer {
         fragmentTransaction.commit();
     }
 
+    public void showQueueFragment() {
+
+        fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        //if the fragment is already in the container, show it
+
+        queueSongFragment = new QueueFragment();
+        fragmentTransaction.remove(songListFragment);
+        fragmentTransaction.add(R.id.fragment_placeholder, queueSongFragment);
+
+        if (nowPlayingFragment.isAdded()) {
+            fragmentTransaction.hide(nowPlayingFragment);
+        }
+
+        fragmentTransaction.commit();
+    }
+
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_home, menu);
@@ -239,6 +262,18 @@ public class HomeActivity extends BaseActivity implements Observer {
             Log.i(TAG, MusicPlayerState.getInstance().getMusicPlayerState());
         }
 
+    }
+
+    public void addToQueue(Song s){
+        queue.insert(s);
+        forQ[index] = s.getName();
+        index++;
+    }
+
+    public void playNext(Song s){
+        queue.addSongToPlayNext(s);
+        forQ[index] = s.getName();
+        index++;
     }
 
     //NEXT BUTTON

@@ -1,16 +1,18 @@
 package comp3350.breadtunes.business;
 
+
+import comp3350.breadtunes.business.interfaces.sQueue;
 import comp3350.breadtunes.objects.Song;
 
-public class SongQueue {
+public class SongQueue implements sQueue {
     private int size;
     private Song[] qArray;
     private int top;
     private int rear;
     private int nItems;
 
-    public SongQueue(int queueSize){
-        size = queueSize;
+    public SongQueue(int qSize){
+        size = qSize;
         qArray = new Song[size];
         top = 0;
         rear = -1;
