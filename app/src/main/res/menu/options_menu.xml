@@ -4,7 +4,20 @@
     <item android:id="@+id/search"
         android:title="search"
         android:icon="@drawable/ic_search"
-        app:showAsAction="ifRoom|withText"
+        app:showAsAction="always"
         app:actionViewClass="android.widget.SearchView"
-        android:textAlignment="center"/>
+        android:textAlignment="center"
+        />
+
+    <item
+        android:id="@+id/parental_lock_on"
+        android:icon="@drawable/lock"
+        android:title="parental_lock_on"
+        app:showAsAction="always" />
+
+    <item
+        android:id="@+id/parental_lock_off"
+        android:icon="@drawable/unlock"
+        android:title="parental_lock_off"
+        app:showAsAction="always" />
 </menu>

@@ -46,6 +46,7 @@ public class HomeActivity extends BaseActivity implements Observer {
     private SearchResultsFragment searchSongFragment;
     private SongListFragment songListFragment;
     private QueueFragment queueSongFragment;
+    private ParentalControlSetupFragment parentalControlSetupFragment;
 
     // the list of songs acquired from Persistance layer
     List<Song> songList;
@@ -68,6 +69,7 @@ public class HomeActivity extends BaseActivity implements Observer {
             searchSongFragment = new SearchResultsFragment();
             songListFragment = new SongListFragment();
             queueSongFragment = new QueueFragment();
+            parentalControlSetupFragment = new ParentalControlSetupFragment();
         } else {
             //retrieve the state of the fragment
             songListFragment = (SongListFragment) getSupportFragmentManager().getFragment(savedInstanceState, "songlist_fragment");
@@ -184,9 +186,37 @@ public class HomeActivity extends BaseActivity implements Observer {
         if (searchSongFragment.isAdded()) {
             fragmentTransaction.hide(searchSongFragment);
         }
+        if(parentalControlSetupFragment.isAdded()){
+            fragmentTransaction.hide(parentalControlSetupFragment);
+        }
         fragmentTransaction.addToBackStack(null); //add to back stack so we can return to this fragment
         fragmentTransaction.commit();
 
+    }
+
+    public void showParentalControlSetupFragment(){
+
+        fragmentTransaction = getSupportFragmentManager().beginTransaction();
+        //if the fragment is already in the container, show it
+        if (parentalControlSetupFragment.isAdded()) {
+            fragmentTransaction.show(parentalControlSetupFragment);
+        } else {
+            //inflate it if it has not been added
+            fragmentTransaction.add(R.id.fragment_placeholder, parentalControlSetupFragment);
+        }
+
+        //hide the other fragments if they are showing
+        if (songListFragment.isAdded()) {
+            fragmentTransaction.hide(songListFragment);
+        }
+        if (searchSongFragment.isAdded()) {
+            fragmentTransaction.hide(searchSongFragment);
+        }
+        if (nowPlayingFragment.isAdded()){
+            fragmentTransaction.hide(nowPlayingFragment);
+        }
+        fragmentTransaction.addToBackStack(null); //add to back stack so we can return to this fragment
+        fragmentTransaction.commit();
     }
 
 
@@ -201,6 +231,12 @@ public class HomeActivity extends BaseActivity implements Observer {
 
         if (nowPlayingFragment.isAdded()) {
             fragmentTransaction.hide(nowPlayingFragment);
+        }
+        if(parentalControlSetupFragment.isAdded()){
+            fragmentTransaction.hide(parentalControlSetupFragment);
+        }
+        if(searchSongFragment.isAdded()){
+            fragmentTransaction.hide(searchSongFragment);
         }
 
         fragmentTransaction.commit();
@@ -259,7 +295,7 @@ public class HomeActivity extends BaseActivity implements Observer {
             String response = mediaPlayerController.resumeSong();
             Log.i(TAG, response); //display result of operation to log
         } else {
-            Log.i(TAG, MusicPlayerState.getInstance().getMusicPlayerState());
+            Log.i(TAG, "Song is not paused");
         }
 
     }

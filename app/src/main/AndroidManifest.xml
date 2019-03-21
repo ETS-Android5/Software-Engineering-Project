@@ -10,10 +10,8 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:supportsRtl="true"
+        android:name="comp3350.breadtunes.application.BreadTunesApplication"
         android:theme="@style/AppTheme">
-
-
-
 
         <activity
             android:name="comp3350.breadtunes.presentation.HomeActivity"

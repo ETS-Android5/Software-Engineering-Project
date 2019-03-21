@@ -153,18 +153,6 @@ public class MusicPlayerState {
         musicPlayerState.playModeObservable.addObserver(observer);
     }
 
-    public String getMusicPlayerState(){
-        String state;
-
-        if(musicPlayerState.currentSong!=null){
-            state = "Current song not null song is "+musicPlayerState.currentSong.getName()+" song paused: "+musicPlayerState.songPaused+" song playing "+musicPlayerState.songPlaying+"variable currentSongname is "+musicPlayerState.currentPlayingSongName;
-        }else{
-            state = "Current song is null, current song name variable: "+musicPlayerState.currentPlayingSongName+" song paused: "+musicPlayerState.songPaused+" song playing: "+musicPlayerState.songPlaying;
-        }
-
-        return state;
-    }
-
     //called to set next and previous when random mode is on
     private int getRandomSongIndex(){
         boolean differentFromCurrent = false;

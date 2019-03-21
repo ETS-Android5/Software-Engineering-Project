@@ -1,8 +1,10 @@
 package comp3350.breadtunes.presentation;
 
 
+import android.app.AlertDialog;
 import android.app.SearchManager;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.util.Log;
@@ -16,8 +18,13 @@ import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
+import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SearchView;
+import android.widget.Toast;
+
+import org.hsqldb.lib.tar.TarFileOutputStream;
+
 import java.util.Observable;
 import java.util.Observer;
 import comp3350.breadtunes.R;
@@ -137,6 +144,24 @@ public class SongListFragment extends Fragment implements Observer {
         // automatically handle clicks on the Home/Up button, so long
         // as you specify a parent activity in AndroidManifest.xml.
         int id = item.getItemId();
+        if(id == R.id.parental_lock_on){
+
+            //logic to check in the database if credentials have been set up
+            // if(!credentialManager.credentialsHaveBeenSet())
+            //      homeActivity.showParentalControlSetupFragment();
+            // else
+            //      showLoginFragment
+            //               inside login fragment have option for "forgot password"
+
+
+
+            homeActivity.showParentalControlSetupFragment();
+        }
+        else if(id == R.id.parental_lock_off){
+            //musicPlayerState.setParentalControl( false );
+            showPINInputDialog();
+        }
+
         return super.onOptionsItemSelected(item);
     }
 
@@ -182,6 +207,7 @@ public class SongListFragment extends Fragment implements Observer {
         });
     }
 
+<<<<<<< HEAD
     public void registerOnLongClickForSonglist(){
         activitySongList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
             @Override
@@ -243,4 +269,30 @@ public class SongListFragment extends Fragment implements Observer {
         }
         return true;
     }
+=======
+
+    private void showPINInputDialog() {
+        final EditText taskEditText = new EditText(homeActivity);
+        AlertDialog dialog = new AlertDialog.Builder(homeActivity)
+                .setTitle("Parental Lock")
+                .setMessage("What is your PIN?")
+                .setView(taskEditText)
+                .setPositiveButton("Submit", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        String task = String.valueOf(taskEditText.getText());
+                        Toast.makeText(homeActivity, "PIN "+task,Toast.LENGTH_LONG ).show();
+                    }
+                })
+                .setNeutralButton("Forgot Password?", new DialogInterface.OnClickListener() {
+                    public void onClick(DialogInterface dialog, int which) {
+                        Toast.makeText(homeActivity, "too bad", Toast.LENGTH_LONG).show();
+                    }
+                })
+                .setNegativeButton("Cancel", null)
+                .create();
+        dialog.show();
+    }
+
+>>>>>>> 58718adcb993a4ed706474c6374b131ba54d113b
 }
