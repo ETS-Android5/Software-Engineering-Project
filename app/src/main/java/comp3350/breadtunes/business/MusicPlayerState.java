@@ -28,6 +28,7 @@ public class MusicPlayerState {
     private PlayModeObservable playModeObservable;
 
     private static MusicPlayerState musicPlayerState;
+    private final String TAG = "State: ";
 
     //march 5
     private String currentPlayingSongName; //the name of the current song, must be saved and restored in main activity
@@ -142,7 +143,6 @@ public class MusicPlayerState {
                 musicPlayerState.previousSong = null; //no previous song , we are the start of the list
             }
         }
-
     }
 
     public void subscribeToSongChange(Observer observer) {
@@ -151,18 +151,6 @@ public class MusicPlayerState {
 
     public void subscribeToPlayModeChange(Observer observer){
         musicPlayerState.playModeObservable.addObserver(observer);
-    }
-
-    public String getMusicPlayerState(){
-        String state;
-
-        if(musicPlayerState.currentSong!=null){
-            state = "Current song not null song is "+musicPlayerState.currentSong.getName()+" song paused: "+musicPlayerState.songPaused+" song playing "+musicPlayerState.songPlaying+"variable currentSongname is "+musicPlayerState.currentPlayingSongName;
-        }else{
-            state = "Current song is null, current song name variable: "+musicPlayerState.currentPlayingSongName+" song paused: "+musicPlayerState.songPaused+" song playing: "+musicPlayerState.songPlaying;
-        }
-
-        return state;
     }
 
     //called to set next and previous when random mode is on

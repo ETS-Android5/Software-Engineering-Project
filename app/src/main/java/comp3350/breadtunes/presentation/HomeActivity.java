@@ -277,7 +277,7 @@ public class HomeActivity extends BaseActivity implements Observer {
             String response = mediaPlayerController.resumeSong();
             Log.i(TAG, response); //display result of operation to log
         } else {
-            Log.i(TAG, MusicPlayerState.getInstance().getMusicPlayerState());
+            Log.i(TAG, "Song is not paused");
         }
 
     }
