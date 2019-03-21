@@ -1,66 +1,106 @@
 package comp3350.breadtunes.business;
 
-import comp3350.breadtunes.business.StringHasher;
+import java.util.Date;
+
+import comp3350.breadtunes.objects.SecureCredentials;
+import comp3350.breadtunes.persistence.CredentialPersistence;
+import comp3350.breadtunes.services.ServiceGateway;
 
 public class CredentialManager {
 
-
-    //class in charge of writing into database new credentials (pin, secret question, secret q answer) when credentials setup first time
-
-
-    //class in charge of validating if given pin matches the one in the database
-
-    //class of handling on forgetting pin (dealing with secret question and secret answer)
-
-    // class ifnroms if credentials have been setup or not
-
-    public CredentialManager(){
+    public CredentialManager() {
 
     }
 
-    public static boolean credentialsHaveBeenSet(){
-        // Find most recent credential set in database.
+    /**
+     * Determine if there are any previous credentials in the database.
+     *
+     * @return true if there are existing credentials, false if not.
+     */
+    public boolean credentialsHaveBeenSet(){
+        CredentialPersistence credentialPersistence = ServiceGateway.getCredentialPersistence();
+        SecureCredentials credentials = credentialPersistence.getMostRecentCredentials();
 
-        // If no entries, return false
-        return false;
-
-        // Else, return true
+        if (credentials == null) {
+            return false;
+        } else {
+            return true;
+        }
     }
 
-    public static void writeNewCredentials(String pin, String secretQ, String secretQAnswer, DateTimeHelper dateTimeHelper) {
+    /**
+     * Inserts a new set of hashed credentials into the database.
+     *
+     * @param pin The pin the user submitted, in plaintext.
+     * @param secretQ The security question the user entered, in plaintext.
+     * @param secretQAnswer The answer to the security question, in plaintext.
+     */
+    public void writeNewCredentials(String pin, String secretQ, String secretQAnswer) {
+        // Create a new set of credentials
         String pinHashed = StringHasher.sha256HexHash(pin);
         String secretAnswerHashed = StringHasher.sha256HexHash(secretQAnswer);
-        String currentTime = dateTimeHelper.getCurrentTimeString();
+        Date currentTime = new Date();
+        SecureCredentials newCredentials = new SecureCredentials(pinHashed, secretQ, secretAnswerHashed, currentTime);
 
-        // Insert information into database
+        // Insert the new credentials into the database
+        CredentialPersistence credentialPersistence = ServiceGateway.getCredentialPersistence();
+        credentialPersistence.insertNewCredentials(newCredentials);
     }
 
-    public static boolean validatePIN(String pin) {
+    /**
+     * Determines whether the user answered the security question correctly.
+     *
+     * @param pin The pin the user entered and submitted, in plaintext.
+     * @return true if the hashed pin matches the value in the database, false otherwise.
+     */
+    public boolean validatePIN(String pin) {
+        // Hash the pin
         String pinHashed = StringHasher.sha256HexHash(pin);
 
-        // Get most recent pin from database
+        // Get most recent hashed pin from database
+        CredentialPersistence credentialPersistence = ServiceGateway.getCredentialPersistence();
+        SecureCredentials credentials = credentialPersistence.getMostRecentCredentials();
+        String pinHashedStored = credentials.getHashedPin();
 
-        // Compare pinHashed with value in database
-
-        return false;
+        // Compare pin to the database value
+        if (pinHashed.equals(pinHashedStored)) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
-    public static boolean validateSecretQuestionAswer(String answer) {
-        String secretAnswerHashed = StringHasher.sha256HexHash(answer);
+    /**
+     * Determines whether the user answered the security question correctly.
+     *
+     * @param answer The answer the user submitted for the security question, in plaintext.
+     * @return true if the answer's hash matches the database value, false otherwise.
+     */
+    public boolean validateSecretQuestionAswer(String answer) {
+        // Hash the security question answer
+        String securityAnswerHashed = StringHasher.sha256HexHash(answer);
 
         // Get most recent secret question answer from database
+        CredentialPersistence credentialPersistence = ServiceGateway.getCredentialPersistence();
+        SecureCredentials credentials = credentialPersistence.getMostRecentCredentials();
+        String securityAnswerHashedStored = credentials.getHashedSecurityQuestionAnswer();
 
-        // Compare secretAnswerHashed with value in database
-
-        return false;
+        // Compare answer to the database value
+        if (securityAnswerHashed.compareTo(securityAnswerHashedStored) == 0) {
+            return true;
+        } else {
+            return false;
+        }
     }
 
-    //used when "forgot password" and must answer secret question
-    public static String getSecretQuestion(){
-        // Get most recent secret question from database
-
-        return "";
+    /**
+     * Gets the security question for the current credentials.
+     *
+     * @return The security question for the most recent credentials in the database.
+     */
+    public String getSecretQuestion() {
+        CredentialPersistence credentialPersistence = ServiceGateway.getCredentialPersistence();
+        SecureCredentials credentials = credentialPersistence.getMostRecentCredentials();
+        return credentials.getSecurityQuestion();
     }
-
-
 }

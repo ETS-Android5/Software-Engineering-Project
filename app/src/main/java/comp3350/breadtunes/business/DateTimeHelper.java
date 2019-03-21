@@ -19,4 +19,8 @@ public class DateTimeHelper {
     public Date parseTimeString(String dateString) throws ParseException {
         return dateFormatter.parse(dateString);
     }
+
+    public String dateToString(Date date) {
+        return dateFormatter.format(date);
+    }
 }
