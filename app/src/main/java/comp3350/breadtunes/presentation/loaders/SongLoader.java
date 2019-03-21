@@ -81,6 +81,7 @@ public class SongLoader {
                     .artistId(cursor.getInt(artistIdIndex))
                     .albumName(cursor.getString(albumNameIndex))
                     .artistName(cursor.getString(artistNameIndex))
+                    .flaggedAsInappropriate(false)
                     .build();
 
         } catch (Exception ex) {
