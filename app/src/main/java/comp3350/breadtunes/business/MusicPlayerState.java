@@ -28,6 +28,7 @@ public class MusicPlayerState {
     private PlayModeObservable playModeObservable;
 
     private static MusicPlayerState musicPlayerState;
+    private final String TAG = "State: ";
 
     //march 5
     private String currentPlayingSongName; //the name of the current song, must be saved and restored in main activity
@@ -142,7 +143,6 @@ public class MusicPlayerState {
                 musicPlayerState.previousSong = null; //no previous song , we are the start of the list
             }
         }
-
     }
 
     public void subscribeToSongChange(Observer observer) {

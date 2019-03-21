@@ -26,6 +26,9 @@ public class MediaPlayerController{
             }
 
             ServiceGateway.getMediaManager().startPlayingSong(context, song.getSongUri());
+            MusicPlayerState.getInstance().setCurrentSong(song);  //update the state of the music player!
+            MusicPlayerState.getInstance().setIsSongPlaying(true);
+            MusicPlayerState.getInstance().setIsSongPaused(false);
             ServiceGateway.getMediaManager().setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                 public void onCompletion(MediaPlayer mediaPlayer) {
 
@@ -38,15 +41,13 @@ public class MediaPlayerController{
                         nextSong = MusicPlayerState.getInstance().getNextSong(); //if repeat mode not on, next song is as usual
                     }
 
+                    //
                     if(nextSong != null){
                         playSong(nextSong, context);
                     }
                 }
             });
 
-            MusicPlayerState.getInstance().setCurrentSong(song);  //update the state of the music player!
-            MusicPlayerState.getInstance().setIsSongPlaying(true);
-            MusicPlayerState.getInstance().setIsSongPaused(false);
             response = "Playing "+song.getName();
         }
         return response;
