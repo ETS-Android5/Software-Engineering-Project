@@ -14,6 +14,7 @@ public class ServiceGateway
 	private static SongPersistence songPersistence = null;
     private static AudioPlayer audioPlayer = null;
     private static CredentialManager credentialManager = null;
+    private static CredentialPersistence credentialPersistence = null;
     private static DatabaseUpdatedObservable dbObservable = new DatabaseUpdatedObservable();
 
     public static void subscribeToDatabaseStateChanges(Observer observer) {
@@ -46,5 +47,13 @@ public class ServiceGateway
         }
 
         return credentialManager;
+    }
+
+    public static synchronized CredentialPersistence getCredentialPersistence() {
+        if (credentialPersistence == null) {
+            credentialPersistence = new CredentialPersistenceHSQL();
+        }
+
+        return credentialPersistence;
     }
 }
