@@ -4,6 +4,7 @@ import java.util.List;
 
 import comp3350.breadtunes.objects.Song;
 
-public interface SongPersistence extends GeneralPersistence<Song> {
+public interface SongPersistence {
+    List<Song> getAll();
     boolean insertSongsNoDuplicates(List<Song> song);
 }
