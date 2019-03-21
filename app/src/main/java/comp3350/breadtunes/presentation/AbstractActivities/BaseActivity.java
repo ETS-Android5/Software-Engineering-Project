@@ -1,27 +1,18 @@
 package comp3350.breadtunes.presentation.AbstractActivities;
 
 import android.Manifest;
-import android.content.Context;
 import android.content.pm.PackageManager;
-import android.content.res.AssetManager;
 import android.os.Build;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.widget.Toast;
 
-import java.io.File;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.io.InputStreamReader;
 import java.util.List;
 
 import comp3350.breadtunes.business.enums.DatabaseState;
-import comp3350.breadtunes.business.observables.DatabaseUpdatedObservable;
 import comp3350.breadtunes.objects.*;
-import comp3350.breadtunes.R;
 import comp3350.breadtunes.persistence.SongPersistence;
-import comp3350.breadtunes.presentation.loaders.*;
+import comp3350.breadtunes.persistence.loaders.*;
 import comp3350.breadtunes.services.AppState;
 import comp3350.breadtunes.services.ServiceGateway;
 import java8.util.concurrent.CompletableFuture;
