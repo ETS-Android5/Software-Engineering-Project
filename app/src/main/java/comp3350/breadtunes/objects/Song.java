@@ -1,6 +1,7 @@
 package comp3350.breadtunes.objects;
 
 import android.net.Uri;
+import android.util.Log;
 
 public class Song {
     private int songId;
@@ -114,9 +115,15 @@ public class Song {
             flaggedAsInappropriate = val;
             return this;
         }
-
+        
         public Song build() {
             return new Song(this);
         }
+
+    }
+
+    public boolean equals(Object object){
+        Song otherSongObject = (Song) object;
+        return this.getSongUri().toString().equals(otherSongObject.getSongUri().toString());
     }
 }
