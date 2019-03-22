@@ -14,6 +14,8 @@ import android.widget.Toast;
 import org.w3c.dom.Text;
 
 import comp3350.breadtunes.R;
+import comp3350.breadtunes.business.CredentialManager;
+import comp3350.breadtunes.services.ServiceGateway;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -46,8 +48,8 @@ public class ResetPINFragment extends Fragment {
 
     public void onViewCreated(View view, Bundle savedInstanceState){
         secretQuestion = (TextView) getView().findViewById(R.id.secret_question);
-        //credential manager . get secret question
-        secretQuestion.setText("question");
+        CredentialManager credentialManager = ServiceGateway.getCredentialManager();
+        secretQuestion.setText(credentialManager.getSecretQuestion());
         registerOnClickSubmit();
     }
 
@@ -77,21 +79,17 @@ public class ResetPINFragment extends Fragment {
         boolean secretPINOk = (PIN.length() > 3);
 
         if(secretQuestionAnswerOK && secretPINOk){
-            /*
-            credential manager validate secret question answer
-            if( correct)
-                credential manager update pin
 
-                "new pin saved"
-                show song list fragment
+               CredentialManager credentialManager = ServiceGateway.getCredentialManager();
+               if(credentialManager.validateSecretQuestionAswer(secretQuestionAnswer)){   //validate secret question answer and update records with new pin
+                   // TODO: 22/03/19  update pin()
+                   //credential manager .update pin (new pin);
+                   Toast.makeText(homeActivity, "New PIN saved.", Toast.LENGTH_LONG).show();
+                   homeActivity.showSongListFragment();
+               }else{
+                   Toast.makeText(homeActivity, "Incorrect PIN", Toast.LENGTH_LONG).show();
+               }
 
-            else
-
-                Toast incorrect answer to question
-             */
-
-            Toast.makeText(homeActivity, "New PIN saved.", Toast.LENGTH_LONG).show();
-            homeActivity.showSongListFragment();
         }else{
 
             if(!secretPINOk)

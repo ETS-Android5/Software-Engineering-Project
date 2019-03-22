@@ -65,7 +65,7 @@ public class ParentalControlSetupFragment extends Fragment {
 
 
     private void setupParentalControl(){
-        
+
         final EditText secretPinView = (EditText) getView().findViewById(R.id.pin_field);
         final EditText secretQuestionView = (EditText) getView().findViewById(R.id.secret_question);
         final EditText secretQuestionAnswerView = (EditText) getView().findViewById(R.id.secret_question_answer);

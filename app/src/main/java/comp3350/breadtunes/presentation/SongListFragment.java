@@ -27,11 +27,13 @@ import org.hsqldb.lib.tar.TarFileOutputStream;
 import java.util.Observable;
 import java.util.Observer;
 import comp3350.breadtunes.R;
+import comp3350.breadtunes.business.CredentialManager;
 import comp3350.breadtunes.business.LookUpSongs;
 import comp3350.breadtunes.business.MusicPlayerState;
 import comp3350.breadtunes.business.observables.PlayModeObservable;
 import comp3350.breadtunes.business.observables.SongObservable;
 import comp3350.breadtunes.objects.Song;
+import comp3350.breadtunes.services.ServiceGateway;
 
 import static comp3350.breadtunes.presentation.HomeActivity.sList;
 
@@ -144,19 +146,14 @@ public class SongListFragment extends Fragment implements Observer {
         int id = item.getItemId();
         if(id == R.id.parental_lock_on){
 
-            //logic to check in the database if credentials have been set up
-            // if(!credentialManager.credentialsHaveBeenSet())
-            //      homeActivity.showParentalControlSetupFragment();
-            // else
-            //      showLoginFragment
-            //               inside login fragment have option for "forgot password"
-
-
-
-            homeActivity.showParentalControlSetupFragment();
+            CredentialManager credentialManager = ServiceGateway.getCredentialManager();
+            if(credentialManager.credentialsHaveBeenSet()){
+                showPINInputDialog();
+            }else{
+                homeActivity.showParentalControlSetupFragment();
+            }
         }
         else if(id == R.id.parental_lock_off){
-            //musicPlayerState.setParentalControl( false );
             showPINInputDialog();
         }
 
@@ -215,8 +212,16 @@ public class SongListFragment extends Fragment implements Observer {
                 .setPositiveButton("Submit", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        String task = String.valueOf(taskEditText.getText());
-                        Toast.makeText(homeActivity, "PIN "+task,Toast.LENGTH_LONG ).show();
+                        String pin = String.valueOf(taskEditText.getText());
+                        CredentialManager credentialManager = ServiceGateway.getCredentialManager();
+                        boolean correctPIN = credentialManager.validatePIN(pin);
+
+                        if(correctPIN){
+                             // TODO: 22/03/19 update music player state
+                        }else{
+                            Toast.makeText(homeActivity, "Incorrect PIN, please try again", Toast.LENGTH_LONG).show();
+                        }
+
                     }
                 })
                 .setNeutralButton("Forgot Password?", new DialogInterface.OnClickListener() {

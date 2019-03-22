@@ -103,4 +103,10 @@ public class CredentialManager {
         SecureCredentials credentials = credentialPersistence.getMostRecentCredentials();
         return credentials.getSecurityQuestion();
     }
+
+
+    //@ // TODO: 22/03/19  add method described below
+    public void updatePIN(String newPIN){
+        //update the PIN stored in the database, this method would be called in the reset pin after answering the secret question
+    }
 }
