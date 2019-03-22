@@ -148,13 +148,13 @@ public class SongListFragment extends Fragment implements Observer {
 
             CredentialManager credentialManager = ServiceGateway.getCredentialManager();
             if(credentialManager.credentialsHaveBeenSet()){
-                showPINInputDialog();
+                showPINInputDialog(true);
             }else{
                 homeActivity.showParentalControlSetupFragment();
             }
         }
         else if(id == R.id.parental_lock_off){
-            showPINInputDialog();
+            showPINInputDialog(false);
         }
 
         return super.onOptionsItemSelected(item);
@@ -203,7 +203,7 @@ public class SongListFragment extends Fragment implements Observer {
     }
 
 
-    private void showPINInputDialog() {
+    private void showPINInputDialog(boolean turnOn) {
         final EditText taskEditText = new EditText(homeActivity);
         AlertDialog dialog = new AlertDialog.Builder(homeActivity)
                 .setTitle("Parental Lock")
@@ -217,7 +217,14 @@ public class SongListFragment extends Fragment implements Observer {
                         boolean correctPIN = credentialManager.validatePIN(pin);
 
                         if(correctPIN){
-                             // TODO: 22/03/19 update music player state
+
+                            if(turnOn){
+                                MusicPlayerState.getInstance().turnParentalControlOn(true); //parental control mode activated
+                                Toast.makeText(homeActivity, "Parental Control mode activated", Toast.LENGTH_LONG).show();
+                            }else{
+                                MusicPlayerState.getInstance().turnParentalControlOn(false); //turn it off
+                                Toast.makeText(homeActivity, "Parental Control mode deactivated", Toast.LENGTH_LONG).show();
+                            }
                         }else{
                             Toast.makeText(homeActivity, "Incorrect PIN, please try again", Toast.LENGTH_LONG).show();
                         }

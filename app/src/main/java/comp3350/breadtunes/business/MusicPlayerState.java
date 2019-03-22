@@ -23,6 +23,7 @@ public class MusicPlayerState {
     private Song previousSong;              //whats the previous song?
     private boolean shuffleModeOn;         //is the player playing songs randomly?
     private boolean repeatModeOn;           //is the repeat mode on
+    private boolean parentalControlModeOn;   // is the parental control mode on?
 
     private SongObservable songObservable;
     private PlayModeObservable playModeObservable;
@@ -53,6 +54,7 @@ public class MusicPlayerState {
             musicPlayerState.shuffleModeOn = false;
             musicPlayerState.repeatModeOn = false;
             musicPlayerState.randomNumberGen = new Random();
+            musicPlayerState.parentalControlModeOn = false;
         }
 
         return musicPlayerState;
@@ -67,6 +69,7 @@ public class MusicPlayerState {
     public int getPausedPosition() { return musicPlayerState.pausedPosition; }
     public boolean getShuffleMode(){return musicPlayerState.shuffleModeOn;}
     public boolean getRepeatMode(){return musicPlayerState.repeatModeOn;}
+    public boolean getParentalControlModeOn(){return musicPlayerState.parentalControlModeOn;}
 
 
     //getters that return song objects
@@ -81,6 +84,7 @@ public class MusicPlayerState {
     public void setIsSongPaused(boolean songPaused) { musicPlayerState.songPaused = songPaused; }
     public void setCurrentSongList(List<Song> newSongList){musicPlayerState.currentSongList = newSongList;}
     public void setCurrentSongPlayingName(String name){musicPlayerState.currentPlayingSongName = name;}
+    public void turnParentalControlOn(boolean On){musicPlayerState.parentalControlModeOn = On;}
 
     public void setRepeatMode(boolean mode){
         musicPlayerState.repeatModeOn = mode;
