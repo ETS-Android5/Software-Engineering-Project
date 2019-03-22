@@ -12,6 +12,10 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import comp3350.breadtunes.R;
+import comp3350.breadtunes.business.CredentialManager;
+import comp3350.breadtunes.objects.SecureCredentials;
+import comp3350.breadtunes.persistence.CredentialPersistence;
+import comp3350.breadtunes.services.ServiceGateway;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -61,7 +65,7 @@ public class ParentalControlSetupFragment extends Fragment {
 
 
     private void setupParentalControl(){
-
+        
         final EditText secretPinView = (EditText) getView().findViewById(R.id.pin_field);
         final EditText secretQuestionView = (EditText) getView().findViewById(R.id.secret_question);
         final EditText secretQuestionAnswerView = (EditText) getView().findViewById(R.id.secret_question_answer);
@@ -78,9 +82,8 @@ public class ParentalControlSetupFragment extends Fragment {
 
         if(secretPINOk && secretQuestionOK && secretQuestionAnswerOK){
             //WRITE NEW CREDENTIALS
-            //if all is good
-            // communicate with business object and hand over the data so it can be written into the database
-            // CredentialManager.writeNewCredentials(PIN, secretQuestion, secretQuestionAnswer);
+            CredentialManager credentialManager = ServiceGateway.getCredentialManager();
+            credentialManager.writeNewCredentials(PIN, secretQuestion, secretQuestionAnswer);
             homeActivity.showSongListFragment();
             Toast.makeText(homeActivity, "Credentials created", Toast.LENGTH_LONG).show();
         }else{
@@ -92,6 +95,6 @@ public class ParentalControlSetupFragment extends Fragment {
             if(!secretQuestionAnswerOK)
                 Toast.makeText(homeActivity, "Secret question answer must be at least 5 characters long", Toast.LENGTH_LONG).show();
         }
-    }
 
+    }
 }

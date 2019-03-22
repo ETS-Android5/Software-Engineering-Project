@@ -12,9 +12,9 @@ public class Song {
     private int artistId;
     private String artistName;
     private String albumName;
-    private String rawName;
     private int albumId;
     private Uri songUri;
+    private boolean flaggedAsInnapropriate;
 
     public Song(){
     }
@@ -22,7 +22,6 @@ public class Song {
     private Song(Builder builder) {
         songId = builder.songId;
         name = builder.name;
-        rawName = builder.rawName;
         year = builder.year;
         trackNumber = builder.trackNumber;
         duration = builder.duration;
@@ -31,12 +30,12 @@ public class Song {
         albumName = builder.albumName;
         artistName = builder.artistName;
         songUri = builder.songUri;
+        flaggedAsInnapropriate = builder.flaggedAsInappropriate;
     }
 
     // Getters only, disallow changing Song information
     public int getSongId() { return songId; }
     public String getName() { return name; }
-    public String getRawName() { return rawName; }
     public int getYear() { return year; }
     public int getTrackNumber() { return trackNumber; }
     public SongDuration getDuration() { return duration; }
@@ -49,7 +48,6 @@ public class Song {
     public static final class Builder {
         private int songId;
         private String name;
-        private String rawName;
         private int year;
         private int trackNumber;
         private SongDuration duration;
@@ -58,6 +56,7 @@ public class Song {
         private String albumName;
         private String artistName;
         private Uri songUri;
+        private boolean flaggedAsInappropriate;
 
         public Builder() {
         }
@@ -69,11 +68,6 @@ public class Song {
 
         public Builder name(String val) {
             name = val;
-            return this;
-        }
-
-        public Builder rawName(String val) {
-            rawName = val;
             return this;
         }
 
@@ -103,8 +97,8 @@ public class Song {
         }
 
         public Builder artistName(String val) {
-           artistName = val;
-           return this;
+            artistName = val;
+            return this;
         }
 
         public Builder albumName(String val) {
@@ -117,10 +111,14 @@ public class Song {
             return this;
         }
 
+        public Builder flaggedAsInappropriate(boolean val) {
+            flaggedAsInappropriate = val;
+            return this;
+        }
+        
         public Song build() {
             return new Song(this);
         }
-
 
     }
 
