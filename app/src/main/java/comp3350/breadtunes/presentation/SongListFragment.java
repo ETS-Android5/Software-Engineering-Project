@@ -20,6 +20,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.hsqldb.lib.tar.TarFileOutputStream;
@@ -47,6 +48,7 @@ public class SongListFragment extends Fragment implements Observer {
     ListView activitySongList;
     String[] songNameList;
     private final String TAG = "HomeActivity";
+    public static TextView parentalControlStatus; @ // TODO: 22/03/19  ADD OBSERVABLE FOR PARENTAL CONTROL MODE CHANGED AND UPDATE CHANGES HERE WITH VIEW R.ID.parental_control_status 
     public static Button nowPlayingSongGui;
 
 
