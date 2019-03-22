@@ -3,6 +3,7 @@ import java.util.List;
 import java.util.Observer;
 import java.util.Random;
 
+import comp3350.breadtunes.business.observables.ParentalControlStatusObservable;
 import comp3350.breadtunes.business.observables.PlayModeObservable;
 import comp3350.breadtunes.business.observables.SongObservable;
 import comp3350.breadtunes.exception.InvalidSongIndex;
@@ -25,8 +26,10 @@ public class MusicPlayerState {
     private boolean repeatModeOn;           //is the repeat mode on
     private boolean parentalControlModeOn;   // is the parental control mode on?
 
+    //observables
     private SongObservable songObservable;
     private PlayModeObservable playModeObservable;
+    private ParentalControlStatusObservable parentalControlStatusObservable;
 
     private static MusicPlayerState musicPlayerState;
     private final String TAG = "State: ";
@@ -84,7 +87,11 @@ public class MusicPlayerState {
     public void setIsSongPaused(boolean songPaused) { musicPlayerState.songPaused = songPaused; }
     public void setCurrentSongList(List<Song> newSongList){musicPlayerState.currentSongList = newSongList;}
     public void setCurrentSongPlayingName(String name){musicPlayerState.currentPlayingSongName = name;}
-    public void turnParentalControlOn(boolean On){musicPlayerState.parentalControlModeOn = On;}
+
+    public void turnParentalControlOn(boolean On){
+        musicPlayerState.parentalControlModeOn = On;
+        parentalControlStatusObservable.setParentalControlStatus(On);
+    }
 
     public void setRepeatMode(boolean mode){
         musicPlayerState.repeatModeOn = mode;
@@ -157,6 +164,10 @@ public class MusicPlayerState {
         musicPlayerState.playModeObservable.addObserver(observer);
     }
 
+    public void subscribeToParentalControlStatusChange(Observer observer){
+        musicPlayerState.parentalControlStatusObservable.addObserver(observer);
+    }
+
     //called to set next and previous when random mode is on
     private int getRandomSongIndex(){
         boolean differentFromCurrent = false;
@@ -193,6 +204,14 @@ public class MusicPlayerState {
             playMode = "";
         return playMode;
     }
+
+    public String getParentalControlStatus(){
+        if(parentalControlModeOn){
+            return "Parental Control Mode On";
+        }else{
+            return "Parental Control Mode Off";
+        }
+    }
     public MusicPlayerState getMusicPlayerStateInstance(){return this.musicPlayerState;}
 
     public MusicPlayerState(){}
@@ -208,6 +227,7 @@ public class MusicPlayerState {
         musicPlayerState. nextSong = null;
         musicPlayerState.previousSong = null;
         musicPlayerState.songObservable = new SongObservable();
+        musicPlayerState.parentalControlStatusObservable = new ParentalControlStatusObservable();
         musicPlayerState.playModeObservable = new PlayModeObservable();
         musicPlayerState.currentPlayingSongName = "";
         musicPlayerState.shuffleModeOn = false;

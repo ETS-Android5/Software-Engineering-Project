@@ -31,6 +31,7 @@ import comp3350.breadtunes.R;
 import comp3350.breadtunes.business.CredentialManager;
 import comp3350.breadtunes.business.LookUpSongs;
 import comp3350.breadtunes.business.MusicPlayerState;
+import comp3350.breadtunes.business.observables.ParentalControlStatusObservable;
 import comp3350.breadtunes.business.observables.PlayModeObservable;
 import comp3350.breadtunes.business.observables.SongObservable;
 import comp3350.breadtunes.objects.Song;
@@ -48,7 +49,7 @@ public class SongListFragment extends Fragment implements Observer {
     ListView activitySongList;
     String[] songNameList;
     private final String TAG = "HomeActivity";
-    public static TextView parentalControlStatus; @ // TODO: 22/03/19  ADD OBSERVABLE FOR PARENTAL CONTROL MODE CHANGED AND UPDATE CHANGES HERE WITH VIEW R.ID.parental_control_status 
+    public static TextView parentalControlStatus;  // TODO: 22/03/19// test observable
     public static Button nowPlayingSongGui;
 
 
@@ -67,6 +68,7 @@ public class SongListFragment extends Fragment implements Observer {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         MusicPlayerState.getInstance().subscribeToSongChange(this);
+        MusicPlayerState.getInstance().subscribeToParentalControlStatusChange(this);
         MusicPlayerState.getInstance().subscribeToPlayModeChange(this);
         return inflater.inflate(R.layout.fragment_song_list, container, false);
     }
@@ -82,10 +84,13 @@ public class SongListFragment extends Fragment implements Observer {
     public void onResume(){
         super.onResume();
         MusicPlayerState.getInstance().subscribeToSongChange(this);
+        MusicPlayerState.getInstance().subscribeToParentalControlStatusChange(this);
         getSongNames();
         populateSongListView();
         registerOnClickForSonglist();
         registerOnClickForNowPlayingButton();
+        parentalControlStatus = (TextView) getView().findViewById(R.id.parental_control_status);
+        parentalControlStatus.setText(MusicPlayerState.getInstance().getParentalControlStatus());
         nowPlayingSongGui.setText(MusicPlayerState.getInstance().getCurrentlyPlayingSongName()+"\n"+MusicPlayerState.getInstance().getPlayMode());
 
     }
@@ -126,11 +131,16 @@ public class SongListFragment extends Fragment implements Observer {
             Song song = songObservable.getSong();
             String songName = song.getName();
             nowPlayingSongGui.setText(songName+"\n"+MusicPlayerState.getInstance().getPlayMode());
-        }else{
+        }else if(observable instanceof PlayModeObservable){
             PlayModeObservable playModeObservable = (PlayModeObservable) observable;
             String playMode = playModeObservable.getPlayMode();;
             String songName = MusicPlayerState.getInstance().getCurrentlyPlayingSong().getName();
             nowPlayingSongGui.setText(songName+"\n"+playMode);
+        }else{
+            ParentalControlStatusObservable parentalControlStatusObservable = (ParentalControlStatusObservable) observable;
+            parentalControlStatus = (TextView) getView().findViewById(R.id.parental_control_status);
+            parentalControlStatus.setText(parentalControlStatusObservable.getParentalControlStatus());
+
         }
     }
 
