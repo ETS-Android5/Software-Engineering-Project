@@ -53,6 +53,7 @@ public class MusicPlayerState {
             musicPlayerState.previousSong = null;
             musicPlayerState.songObservable = new SongObservable();
             musicPlayerState.playModeObservable = new PlayModeObservable();
+            musicPlayerState.parentalControlStatusObservable = new ParentalControlStatusObservable();
             musicPlayerState.currentPlayingSongName = "";
             musicPlayerState.shuffleModeOn = false;
             musicPlayerState.repeatModeOn = false;

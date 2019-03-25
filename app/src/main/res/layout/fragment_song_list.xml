@@ -20,7 +20,7 @@
         android:id="@+id/parental_control_status"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="200dp"
+        android:layout_marginStart="160dp"
         android:text=""
         android:textAlignment="center"
         android:textSize="23sp"

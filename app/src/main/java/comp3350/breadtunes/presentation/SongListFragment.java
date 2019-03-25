@@ -79,6 +79,7 @@ public class SongListFragment extends Fragment implements Observer {
         populateSongListView();
         registerOnClickForSonglist();
         registerOnClickForNowPlayingButton();
+        parentalControlStatus = (TextView) getView().findViewById(R.id.parental_control_status);
     }
 
     public void onResume(){
@@ -127,16 +128,20 @@ public class SongListFragment extends Fragment implements Observer {
     public void update(Observable observable, Object o) {
 
         if(observable instanceof SongObservable){
+
             SongObservable songObservable = (SongObservable) observable;
             Song song = songObservable.getSong();
             String songName = song.getName();
             nowPlayingSongGui.setText(songName+"\n"+MusicPlayerState.getInstance().getPlayMode());
         }else if(observable instanceof PlayModeObservable){
+
             PlayModeObservable playModeObservable = (PlayModeObservable) observable;
-            String playMode = playModeObservable.getPlayMode();;
+            String playMode = playModeObservable.getPlayMode();
             String songName = MusicPlayerState.getInstance().getCurrentlyPlayingSong().getName();
             nowPlayingSongGui.setText(songName+"\n"+playMode);
         }else{
+            //ELSE its a parental control status observable notification
+
             ParentalControlStatusObservable parentalControlStatusObservable = (ParentalControlStatusObservable) observable;
             parentalControlStatus = (TextView) getView().findViewById(R.id.parental_control_status);
             parentalControlStatus.setText(parentalControlStatusObservable.getParentalControlStatus());
@@ -160,13 +165,25 @@ public class SongListFragment extends Fragment implements Observer {
 
             CredentialManager credentialManager = ServiceGateway.getCredentialManager();
             if(credentialManager.credentialsHaveBeenSet()){
-                showPINInputDialog(true);
+
+                if(!MusicPlayerState.getInstance().getParentalControlModeOn()){     //only proceeed if parental control is off
+                    showPINInputDialog(true);
+                }else{
+                    Toast.makeText(homeActivity, "Parental Control is already on", Toast.LENGTH_LONG).show();
+
+                }
+
+
             }else{
                 homeActivity.showParentalControlSetupFragment();
             }
         }
         else if(id == R.id.parental_lock_off){
-            showPINInputDialog(false);
+            if(MusicPlayerState.getInstance().getParentalControlModeOn()){        //only proceed if parental control is on
+                showPINInputDialog(false);
+            }else {
+                Toast.makeText(homeActivity, "Parental Control is already off", Toast.LENGTH_LONG).show();
+            }
         }
 
         return super.onOptionsItemSelected(item);
@@ -213,6 +230,8 @@ public class SongListFragment extends Fragment implements Observer {
             }
         });
     }
+
+
 
 
     private void showPINInputDialog(boolean turnOn) {
