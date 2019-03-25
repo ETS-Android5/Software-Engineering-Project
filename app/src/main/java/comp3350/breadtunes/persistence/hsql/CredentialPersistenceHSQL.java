@@ -81,6 +81,27 @@ public class CredentialPersistenceHSQL implements CredentialPersistence {
         }
     }
 
+    public void updateMostRecentCredentialsPin(String hashedPin) {
+        DateTimeHelper dth = new DateTimeHelper();
+
+        try {
+            SecureCredentials mostRecentCredentials = getMostRecentCredentials();
+
+            // Update the PIN for the most recent credentials
+            Connection dbConnection = BreadTunesApplication.getDbConnection();
+            String getIdQuery = "UPDATE Credentials SET Pin=? WHERE Pin=? AND DateUpdated=?";
+            final PreparedStatement statement = dbConnection.prepareStatement(getIdQuery);
+            statement.setString(1, hashedPin);
+            statement.setString(2, mostRecentCredentials.getHashedPin());
+            statement.setString(3, dth.dateToString(mostRecentCredentials.getDateUpdated()));
+            statement.execute();
+
+            statement.close();
+        } catch (SQLException e) {
+            throw new PersistenceException(e.getMessage());
+        }
+    }
+
     private SecureCredentials getCredentialsFromResultSet(ResultSet resultSet) throws SQLException {
         DateTimeHelper dateTimeHelper = new DateTimeHelper();
 
