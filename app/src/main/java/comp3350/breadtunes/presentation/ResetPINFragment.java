@@ -82,8 +82,7 @@ public class ResetPINFragment extends Fragment {
 
                CredentialManager credentialManager = ServiceGateway.getCredentialManager();
                if(credentialManager.validateSecretQuestionAswer(secretQuestionAnswer)){   //validate secret question answer and update records with new pin
-                   // TODO: 22/03/19  update pin()
-                   //credential manager .update pin (new pin);
+                   credentialManager.updatePIN(PIN);
                    Toast.makeText(homeActivity, "New PIN saved.", Toast.LENGTH_LONG).show();
                    homeActivity.showSongListFragment();
                }else{
