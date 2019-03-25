@@ -105,8 +105,14 @@ public class CredentialManager {
     }
 
 
-    //@ // TODO: 22/03/19  add method described below
-    public void updatePIN(String newPIN){
-        //update the PIN stored in the database, this method would be called in the reset pin after answering the secret question
+    /**
+     * Updates the pin for the most recent credential set to the new pin.
+     *
+     * @param newPIN The new pin for the credentials, in plaintext.
+     */
+    public void updatePIN(String newPIN) {
+        String pinHashed = StringHasher.sha256HexHash(newPIN);
+        CredentialPersistence credentialPersistence = ServiceGateway.getCredentialPersistence();
+        credentialPersistence.updateMostRecentCredentialsPin(pinHashed);
     }
 }
