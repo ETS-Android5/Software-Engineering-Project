@@ -49,7 +49,7 @@ public class SongListFragment extends Fragment implements Observer {
     ListView activitySongList;
     String[] songNameList;
     private final String TAG = "HomeActivity";
-    public static TextView parentalControlStatus;  // TODO: 22/03/19// test observable
+    public static TextView parentalControlStatus;
     public static Button nowPlayingSongGui;
 
 
@@ -143,7 +143,6 @@ public class SongListFragment extends Fragment implements Observer {
             //ELSE its a parental control status observable notification
 
             ParentalControlStatusObservable parentalControlStatusObservable = (ParentalControlStatusObservable) observable;
-            parentalControlStatus = (TextView) getView().findViewById(R.id.parental_control_status);
             parentalControlStatus.setText(parentalControlStatusObservable.getParentalControlStatus());
 
         }
