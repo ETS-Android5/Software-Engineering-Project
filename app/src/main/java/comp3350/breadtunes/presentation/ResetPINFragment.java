@@ -87,7 +87,7 @@ public class ResetPINFragment extends Fragment {
                    Toast.makeText(homeActivity, "New PIN saved.", Toast.LENGTH_LONG).show();
                    homeActivity.showSongListFragment();
                }else{
-                   Toast.makeText(homeActivity, "Incorrect PIN", Toast.LENGTH_LONG).show();
+                   Toast.makeText(homeActivity, "Incorrect secret question answer", Toast.LENGTH_LONG).show();
                }
 
         }else{
