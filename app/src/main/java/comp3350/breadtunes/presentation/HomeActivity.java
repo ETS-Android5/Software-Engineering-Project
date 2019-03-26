@@ -88,7 +88,7 @@ public class HomeActivity extends BaseActivity implements Observer {
         findSong = new LookUpSongs(songList);
 
         // Show the list of songs
-        refreshSongList();
+        getSongNameList();
         showSongListFragment();
         handleIntent(getIntent());
     }
@@ -98,17 +98,30 @@ public class HomeActivity extends BaseActivity implements Observer {
         songList.addAll(ServiceGateway.getSongPersistence().getAll());
     }
 
-    public void refreshSongList() {
+    public void getUnflaggedSongsFromPersistence() {
+        songList = new ArrayList<>();
+        songList.addAll(ServiceGateway.getSongPersistence().getAllNotFlagged());
+    }
+
+    public void getSongNameList() {
         sList.addAll(songList);
         songNamesToDisplay = new String[songList.size()];
         for (int i = 0; i < songNamesToDisplay.length; i++)
             songNamesToDisplay[i] = songList.get(i).getName();
     }
 
+    public void refreshSongList() {
+        getSongNameList();
+        MusicPlayerState.getInstance().setCurrentSongList(sList);
+        songListFragment = new SongListFragment();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_placeholder, songListFragment).commit();
+    }
+
     protected void onResume() {
         super.onResume();
         getSongsFromPersistance();
-        refreshSongList();
+        getSongNameList();
     }
 
     protected void onStart() {
@@ -390,17 +403,21 @@ public class HomeActivity extends BaseActivity implements Observer {
                 case DatabaseUpdated:
                     getSongsFromPersistance();
                     refreshSongList();
-                    MusicPlayerState.getInstance().setCurrentSongList(sList);
-                    songListFragment = new SongListFragment();
-                    getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.fragment_placeholder, songListFragment).commit();
                     break;
                 case DatabaseEmpty:
                     break;
             }
         }
         else if (observable instanceof ParentalControlStatusObservable) {
+            boolean parentalModeOn = ((ParentalControlStatusObservable) observable).getParentalControlStatusBoolean();
 
+            if (parentalModeOn) {
+                getUnflaggedSongsFromPersistence();
+                refreshSongList();
+            } else {
+                getSongsFromPersistance();
+                refreshSongList();
+            }
         }
     }
 }
