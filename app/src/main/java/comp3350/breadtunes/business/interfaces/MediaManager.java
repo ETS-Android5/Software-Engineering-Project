@@ -22,5 +22,5 @@ public interface MediaManager {
 
     void setOnCompletionListener(MediaPlayer.OnCompletionListener listener);
 
-    void close();
+    //void close();
 }

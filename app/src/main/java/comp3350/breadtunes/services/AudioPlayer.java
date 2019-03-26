@@ -79,7 +79,7 @@ public class AudioPlayer implements MediaManager {
     }
 
 
-
+    /*
     @Override
     public void close() {
         if (player != null) {
@@ -91,5 +91,6 @@ public class AudioPlayer implements MediaManager {
             player.release();
         }
     }
+    */
 
 }
