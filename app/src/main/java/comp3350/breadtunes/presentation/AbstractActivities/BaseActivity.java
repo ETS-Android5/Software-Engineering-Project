@@ -29,8 +29,6 @@ public abstract class BaseActivity extends AppCompatActivity {
     private static boolean baseInitialized = false;
 
     private static List<Song> songs;
-    private static List<Album> albums;
-    private static List<Artist> artists;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -87,17 +85,9 @@ public abstract class BaseActivity extends AppCompatActivity {
     }
 
     private CompletableFuture<Void> loadMediaAsync() {
-        // Get songs from device, which cascades into getting albums and
+        // Get songs from device
         return CompletableFuture.supplyAsync(() -> SongLoader.getAllSongs(this))
-                .thenApply(allSongs -> {
-                    BaseActivity.songs = allSongs;
-                    return AlbumLoader.getAllAlbums(allSongs);
-                }).thenApply(allAlbums -> {
-                    BaseActivity.albums = allAlbums;
-                    return ArtistLoader.getAllArtists(allAlbums);
-                }).thenAccept(allArtists ->
-                        BaseActivity.artists = allArtists
-                );
+                .thenAccept(allSongs -> BaseActivity.songs = allSongs);
     }
 
     private CompletableFuture<Boolean> updateMediaDatabaseAsync(CompletableFuture<Void> cf) {
