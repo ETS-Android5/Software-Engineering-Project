@@ -2,6 +2,7 @@ package comp3350.breadtunes.presentation;
 import comp3350.breadtunes.R;
 import comp3350.breadtunes.business.LookUpSongs;
 import comp3350.breadtunes.business.observables.DatabaseUpdatedObservable;
+import comp3350.breadtunes.business.observables.ParentalControlStatusObservable;
 import comp3350.breadtunes.presentation.MediaController.MediaPlayerController;
 import comp3350.breadtunes.services.ServiceGateway;
 import comp3350.breadtunes.business.MusicPlayerState;
@@ -60,8 +61,12 @@ public class HomeActivity extends BaseActivity implements Observer {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        ServiceGateway.subscribeToDatabaseStateChanges(this);
 
+        // Set subscriptions
+        ServiceGateway.subscribeToDatabaseStateChanges(this);
+        MusicPlayerState.getInstance().subscribeToParentalControlStatusChange(this);
+
+        // Prepare fragments
         if (savedInstanceState == null) {
             resetPINFragment = new ResetPINFragment();
             nowPlayingFragment = new NowPlayingFragment();
@@ -73,18 +78,20 @@ public class HomeActivity extends BaseActivity implements Observer {
             songListFragment = (SongListFragment) getSupportFragmentManager().getFragment(savedInstanceState, "songlist_fragment");
         }
 
-
+        // Retrieve songs from database
         getSongsFromPersistance();
 
-
+        // Create media controller
         mediaPlayerController = new MediaPlayerController();
+
+        // Create song search helper
         findSong = new LookUpSongs(songList);
 
-
+        // Show the list of songs
         refreshSongList();
-        showSongListFragment(); //put the song list fragment on top of the main activity
+        showSongListFragment();
         handleIntent(getIntent());
-    }//on create
+    }
 
     public void getSongsFromPersistance() {
         songList = new ArrayList<>();
@@ -391,6 +398,9 @@ public class HomeActivity extends BaseActivity implements Observer {
                 case DatabaseEmpty:
                     break;
             }
+        }
+        else if (observable instanceof ParentalControlStatusObservable) {
+
         }
     }
 }
