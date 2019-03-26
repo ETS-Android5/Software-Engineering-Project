@@ -2,7 +2,7 @@ package comp3350.breadtunes.business.observables;
 
 import java.util.Observable;
 
-import comp3350.breadtunes.business.enums.DatabaseState;
+import comp3350.breadtunes.presentation.enums.DatabaseState;
 
 public class DatabaseUpdatedObservable extends Observable {
     private DatabaseState state;

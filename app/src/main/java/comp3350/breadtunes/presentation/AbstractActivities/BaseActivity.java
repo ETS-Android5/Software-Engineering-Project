@@ -9,7 +9,7 @@ import android.widget.Toast;
 
 import java.util.List;
 
-import comp3350.breadtunes.business.enums.DatabaseState;
+import comp3350.breadtunes.presentation.enums.DatabaseState;
 import comp3350.breadtunes.objects.*;
 import comp3350.breadtunes.persistence.SongPersistence;
 import comp3350.breadtunes.persistence.loaders.*;

@@ -3,7 +3,7 @@ package comp3350.breadtunes.services;
 import java.util.Observer;
 
 import comp3350.breadtunes.business.CredentialManager;
-import comp3350.breadtunes.business.enums.DatabaseState;
+import comp3350.breadtunes.presentation.enums.DatabaseState;
 import comp3350.breadtunes.business.interfaces.MediaManager;
 import comp3350.breadtunes.business.observables.DatabaseUpdatedObservable;
 import comp3350.breadtunes.persistence.*;
