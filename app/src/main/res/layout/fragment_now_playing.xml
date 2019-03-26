@@ -146,5 +146,13 @@
         app:layout_constraintLeft_toRightOf="@id/shuffle_button"
         app:layout_constraintTop_toBottomOf="@id/play_next_button" />
 
+    <SeekBar
+        android:id="@+id/seek_bar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_constraintTop_toTopOf="parent"
+        android:layout_marginTop="20dp"
+        />
+
 
 </android.support.constraint.ConstraintLayout>
