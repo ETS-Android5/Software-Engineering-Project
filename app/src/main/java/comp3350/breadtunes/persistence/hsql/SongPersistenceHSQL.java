@@ -19,21 +19,6 @@ public class SongPersistenceHSQL implements SongPersistence {
 
     public SongPersistenceHSQL() { }
 
-    private Song getSongFromResultSet(ResultSet resultSet) throws SQLException {
-        return new Song.Builder()
-                .songId(resultSet.getInt("SongID"))
-                .name(resultSet.getString("Name"))
-                .year(resultSet.getInt("Year"))
-                .trackNumber(resultSet.getInt("Track"))
-                .duration(new SongDuration(resultSet.getString("Duration")))
-                .artistId(resultSet.getInt("ArtistID"))
-                .artistName(resultSet.getString("ArtistName"))
-                .albumId(resultSet.getInt("AlbumID"))
-                .albumName(resultSet.getString("AlbumName"))
-                .songUri(Uri.parse(resultSet.getString("Uri")))
-                .build();
-    }
-
     public List<Song> getAll() {
         final List<Song> songList = new ArrayList<>();
 
@@ -56,39 +41,23 @@ public class SongPersistenceHSQL implements SongPersistence {
         }
     }
 
-    private void insertSongs(List<Song> songs) {
+    public List<Song> getAllNotFlagged() {
+        final List<Song> songList = new ArrayList<>();
+
         try {
             Connection dbConnection = BreadTunesApplication.getDbConnection();
-            dbConnection.setAutoCommit(false);
+            final PreparedStatement statement = dbConnection.prepareStatement("SELECT * FROM Songs WHERE Flagged=FALSE ORDER BY Name ASC");
+            final ResultSet resultSet = statement.executeQuery();
 
-            StringBuilder queryBuilder = new StringBuilder();
-            queryBuilder.append("INSERT INTO Songs (SongId, Name, Year, Track, Duration, ArtistId, ArtistName, AlbumId, AlbumName, URI) ");
-            queryBuilder.append("VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
-            final PreparedStatement statement = dbConnection.prepareStatement(queryBuilder.toString());
-
-            int i = 0;
-            for (Song song : songs) {
-                statement.setInt(1, song.getSongId());
-                statement.setString(2, song.getName());
-                statement.setInt(3, song.getYear());
-                statement.setInt(4, song.getTrackNumber());
-                statement.setString(5, song.getDuration().toString());
-                statement.setInt(6, song.getArtistId());
-                statement.setString(7, song.getArtistName());
-                statement.setInt(8, song.getAlbumId());
-                statement.setString(9, song.getAlbumName());
-                statement.setString(10, song.getSongUri().toString());
-
-                statement.addBatch();
-                i++;
-
-                if (i % 1000 == 0 || i == songs.size()) {
-                    statement.executeBatch(); // Execute every 1000 items.
-                    dbConnection.commit();
-                }
+            while (resultSet.next()) {
+                final Song song = getSongFromResultSet(resultSet);
+                songList.add(song);
             }
 
-            dbConnection.setAutoCommit(true);
+            resultSet.close();
+            statement.close();
+
+            return songList;
         } catch (SQLException e) {
             throw new PersistenceException(e.getMessage());
         }
@@ -121,4 +90,77 @@ public class SongPersistenceHSQL implements SongPersistence {
         insertSongs(songsToInsert);
         return databaseUpdated;
     }
+
+    public void setSongFlagged(Song song, boolean isFlagged) {
+        try {
+            Connection dbConnection = BreadTunesApplication.getDbConnection();
+
+            String query = "UPDATE Songs SET Flagged=? WHERE SongID=?";
+            final PreparedStatement statement = dbConnection.prepareStatement(query);
+            statement.setBoolean(1, isFlagged);
+            statement.setInt(2, song.getSongId());
+
+            statement.execute();
+            statement.close();
+
+        } catch (SQLException e) {
+            throw new PersistenceException(e.getMessage());
+        }
+    }
+
+    private void insertSongs(List<Song> songs) {
+        try {
+            Connection dbConnection = BreadTunesApplication.getDbConnection();
+            dbConnection.setAutoCommit(false);
+
+            StringBuilder queryBuilder = new StringBuilder();
+            queryBuilder.append("INSERT INTO Songs (SongId, Name, Year, Track, Duration, ArtistId, ArtistName, AlbumId, AlbumName, URI, Flagged) ");
+            queryBuilder.append("VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?);");
+            final PreparedStatement statement = dbConnection.prepareStatement(queryBuilder.toString());
+
+            int i = 0;
+            for (Song song : songs) {
+                statement.setInt(1, song.getSongId());
+                statement.setString(2, song.getName());
+                statement.setInt(3, song.getYear());
+                statement.setInt(4, song.getTrackNumber());
+                statement.setString(5, song.getDuration().toString());
+                statement.setInt(6, song.getArtistId());
+                statement.setString(7, song.getArtistName());
+                statement.setInt(8, song.getAlbumId());
+                statement.setString(9, song.getAlbumName());
+                statement.setString(10, song.getSongUri().toString());
+                statement.setBoolean(11, false);
+
+                statement.addBatch();
+                i++;
+
+                if (i % 1000 == 0 || i == songs.size()) {
+                    statement.executeBatch(); // Execute every 1000 items.
+                    dbConnection.commit();
+                }
+            }
+
+            dbConnection.setAutoCommit(true);
+        } catch (SQLException e) {
+            throw new PersistenceException(e.getMessage());
+        }
+    }
+
+    private Song getSongFromResultSet(ResultSet resultSet) throws SQLException {
+        return new Song.Builder()
+                .songId(resultSet.getInt("SongID"))
+                .name(resultSet.getString("Name"))
+                .year(resultSet.getInt("Year"))
+                .trackNumber(resultSet.getInt("Track"))
+                .duration(new SongDuration(resultSet.getString("Duration")))
+                .artistId(resultSet.getInt("ArtistID"))
+                .artistName(resultSet.getString("ArtistName"))
+                .albumId(resultSet.getInt("AlbumID"))
+                .albumName(resultSet.getString("AlbumName"))
+                .songUri(Uri.parse(resultSet.getString("Uri")))
+                .flaggedAsInappropriate(resultSet.getBoolean("Flagged"))
+                .build();
+    }
+
 }
