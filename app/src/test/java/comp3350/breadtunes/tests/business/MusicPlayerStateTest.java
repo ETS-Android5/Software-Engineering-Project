@@ -93,7 +93,7 @@ public class MusicPlayerStateTest extends TestLogger {
 
         List<Song> testList = mps2.getCurrentSongList();
 
-        mps2.setCurrentSong(testList.get(0)); // initial song is first item in the initial queue
+        mps2.setCurrentSong(testList.get(0)); // initial song is first item in the initial updateQueue
 
         assertEquals(songList.get(0), mps2.getCurrentlyPlayingSong());
         mps2.setCurrentSong(mps2.getNextSong());
@@ -111,7 +111,7 @@ public class MusicPlayerStateTest extends TestLogger {
         mps2.setCurrentSongList(songList);
         List<Song> testList = mps2.getCurrentSongList();
 
-        mps2.setCurrentSong(testList.get(3)); // initial song is last item in the initial queue
+        mps2.setCurrentSong(testList.get(3)); // initial song is last item in the initial updateQueue
 
         assertEquals(songList.get(3), mps2.getCurrentlyPlayingSong());
         mps2.setCurrentSong(mps2.getPreviousSong());
@@ -207,10 +207,10 @@ public class MusicPlayerStateTest extends TestLogger {
 
         mps2.setCurrentSong(a);
 
-        System.out.println(mps2.getMusicPlayerState());
+        System.out.println(mps2.getMusicPlayerStateInstance());
         assertEquals( "Current song not null song is null song paused: false song playing falsevariable currentSongname is null",
 
-        mps2.getMusicPlayerState());
+        mps2.getMusicPlayerStateInstance());
     }
 
     @Test

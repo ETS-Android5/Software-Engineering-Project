@@ -11,6 +11,7 @@ public class SongQueue implements sQueue {
     private int rear;
     private int nItems;
 
+
     public SongQueue(int qSize){
         size = qSize;
         qArray = new Song[size];
@@ -20,7 +21,7 @@ public class SongQueue implements sQueue {
     }
 
     public void insert(Song insertSong){
-        // Wrap queue
+        // Wrap updateQueue
         if(!isFull()) {
             if (rear == size - 1) {
                 rear = -1;
@@ -29,9 +30,15 @@ public class SongQueue implements sQueue {
             nItems++;
         }
         else{
-            //unable to add to a full queue
+            //unable to add to a full updateQueue
 
             //do nothing
+        }
+            for(int j = 0;j<nItems-1;j++){
+                if(qArray[nItems-1] == qArray[j]){
+                    rear--;
+                    nItems--;
+                }
         }
     }
 
@@ -39,7 +46,7 @@ public class SongQueue implements sQueue {
         Song temp;
         if(!isEmpty() && top != rear) {
             temp = qArray[top++];
-            // Wrap queue if queue cannot fit another item
+            // Wrap updateQueue if updateQueue cannot fit another item
             if (top == size) {
                 top = 0;
             }
@@ -95,4 +102,5 @@ public class SongQueue implements sQueue {
     public boolean isFull(){
         return (nItems == size);
     }
+
 }

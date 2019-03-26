@@ -48,8 +48,7 @@ public class SongListFragment extends Fragment implements Observer {
     private final String TAG = "HomeActivity";
     public static Button nowPlayingSongGui;
     String[] menuItems = new String[2];
-    AdapterView.AdapterContextMenuInfo Info;
-    // make a queue status
+    // make a updateQueue status
 
     public SongListFragment() {
         // Required empty public constructor
@@ -59,7 +58,7 @@ public class SongListFragment extends Fragment implements Observer {
         super.onCreate(savedInstanceState);
         homeActivity = (HomeActivity) getActivity();
         setHasOptionsMenu(true);
-
+        //registerForContextMenu(activitySongList);
     }
 
     @Override
@@ -174,6 +173,7 @@ public class SongListFragment extends Fragment implements Observer {
         ArrayAdapter<String> adapter = new ArrayAdapter<>(getContext(), R.layout.songlist_element, homeActivity.songNamesToDisplay);
         activitySongList = (ListView) getView().findViewById(R.id.songList);
         activitySongList.setAdapter(adapter);
+        registerForContextMenu(activitySongList);
     }
 
     public void registerOnClickForSonglist(){
@@ -207,48 +207,14 @@ public class SongListFragment extends Fragment implements Observer {
         });
     }
 
-<<<<<<< HEAD
-    public void registerOnLongClickForSonglist(){
-        activitySongList.setOnItemLongClickListener(new AdapterView.OnItemLongClickListener() {
-            @Override
-            public boolean onItemLongClick(AdapterView<?> adapterView, View view, int i, long l) {
-                String selectedSongName = (String) adapterView.getItemAtPosition(i); //get the name of the song being played
-                Log.i(TAG, "Clicked on "+selectedSongName);
-                //get the song object associated with the song name that was clicked
-                Song selectedSong = LookUpSongs.getSong(sList, selectedSongName);
-                Info = new AdapterView.AdapterContextMenuInfo(view,i,R.id.songList);
-                //Display the menu
-                //onCreateContextMenu(R.menu.context_menu, view, Info);
-                registerForContextMenu(activitySongList);
-                Log.v("long clicked","pos: " + i);
-
-                return true;
-            }
-        });
-
-    }
-
     @Override
     public void onCreateContextMenu(ContextMenu menu, View v,ContextMenu.ContextMenuInfo menuInfo) {
-        super.onCreateContextMenu(menu, v, menuInfo);
-        //MenuInflater inflater = getMenuInflater();
-        //inflater.inflate(R.menu.context_menu, menu);
-
-        //menu.add(0, v.getId(), 0, "Something");
-        //menu.add(0, v.getId(), 0, "Something else");
-
-        //menu.setHeaderTitle(title);
-        //menu.add(0, CMD_EDIT, 0, R.string.context_menu_edit);
-        //menu.add(0, CMD_DELETE, 0, R.string.context_menu_delete);
-
-        if(v.getId() == R.id.songList){
             AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
             menu.setHeaderTitle(sList.get(info.position).getName());
             menu.add(Menu.NONE, 0,0, "Add to Queue");
-            menu.add(Menu.NONE, 0,0, "Play Next");
+            menu.add(Menu.NONE, 1,1, "Play Next");
             menuItems[0]= "Add to Queue";
-            menuItems[0]= "Play Next";
-        }
+            menuItems[1]= "Play Next";
     }
 
     @Override
@@ -258,18 +224,17 @@ public class SongListFragment extends Fragment implements Observer {
         String menuItemName = menuItems[menuItemIndex];
         String listItemName = sList.get(info.position).getName();
 
-        if(menuItemIndex == 0){
-            homeActivity.addToQueue(LookUpSongs.getSong(sList, listItemName));
-        }
-        else if(menuItemIndex == 1){
-            homeActivity.playNext(LookUpSongs.getSong(sList, listItemName));
-        }
-        else{
-            //do nothing
-        }
-        return true;
+        switch(item.getItemId()) {
+            case 0:
+                homeActivity.addToQueue(LookUpSongs.getSong(sList, listItemName));
+                return true;
+            case 1:
+                homeActivity.playNext(LookUpSongs.getSong(sList, listItemName));
+                return true;
+            default:
+                return super.onContextItemSelected(item);
+            }
     }
-=======
 
     private void showPINInputDialog() {
         final EditText taskEditText = new EditText(homeActivity);
@@ -294,5 +259,4 @@ public class SongListFragment extends Fragment implements Observer {
         dialog.show();
     }
 
->>>>>>> 58718adcb993a4ed706474c6374b131ba54d113b
 }

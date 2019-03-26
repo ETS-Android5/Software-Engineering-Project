@@ -111,7 +111,7 @@ public class QueueTest extends TestLogger {
         Song expectedSong = q.remove();
 
         // Assert
-        assertEquals(expectedSong, song1); // Expect that the only item in the queue was song1
+        assertEquals(expectedSong, song1); // Expect that the only item in the updateQueue was song1
         assertNotNull(expectedSong);
         assertFalse(q.isFull());
         assertTrue(q.isEmpty());

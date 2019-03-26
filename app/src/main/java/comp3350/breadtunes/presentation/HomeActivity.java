@@ -39,6 +39,8 @@ public class HomeActivity extends BaseActivity implements Observer {
     String[] songNamesToDisplay;
     private final String TAG = "HomeActivity";
     LookUpSongs findSong;
+    String[] queueFragSongsDisplay;
+    public static List<Song> qResult;
     private FragmentTransaction fragmentTransaction;
 
     // fragments used in the main activity
@@ -51,9 +53,7 @@ public class HomeActivity extends BaseActivity implements Observer {
     // the list of songs acquired from Persistance layer
     List<Song> songList;
     int QSIZE = 50;
-    int index = 0;
-    SongQueue queue;
-    String[] forQ;
+    SongQueue queue= new SongQueue(QSIZE);
     //variables for getting search query and launching search results fragment
     List<Song> sResult;
     String[] result;
@@ -82,8 +82,6 @@ public class HomeActivity extends BaseActivity implements Observer {
         mediaPlayerController = new MediaPlayerController();
         findSong = new LookUpSongs(songList);
 
-        queue = new SongQueue(QSIZE);
-        forQ = new String[QSIZE];
         refreshSongList();
         showSongListFragment(); //put the song list fragment on top of the main activity
         handleIntent(getIntent());
@@ -254,7 +252,14 @@ public class HomeActivity extends BaseActivity implements Observer {
         if (nowPlayingFragment.isAdded()) {
             fragmentTransaction.hide(nowPlayingFragment);
         }
+        if(parentalControlSetupFragment.isAdded()){
+            fragmentTransaction.hide(parentalControlSetupFragment);
+        }
+        if(searchSongFragment.isAdded()){
+            fragmentTransaction.hide(searchSongFragment);
+        }
 
+        fragmentTransaction.addToBackStack(null);
         fragmentTransaction.commit();
     }
 
@@ -300,17 +305,59 @@ public class HomeActivity extends BaseActivity implements Observer {
 
     }
 
+    //QUEUE BUTTON
+    public void onClickViewQueue(View view){
+        showQueueFragment();
+        Log.i(TAG, "Showing the updateQueue");
+    }
+
     public void addToQueue(Song s){
         queue.insert(s);
-        forQ[index] = s.getName();
-        index++;
+        queueFragSongsDisplay = new String[queue.size()];
+        for (int i=0; i<queue.size();i++){
+            if(queue.getSong(i) != null) {
+                queueFragSongsDisplay[i] = queue.getSong(i).getName();
+                updateQueue();
+            }
+            else
+                break;
+        }
+
+        if(queue != null){
+            songList = updateQueue();
+        }
+
     }
 
     public void playNext(Song s){
         queue.addSongToPlayNext(s);
-        forQ[index] = s.getName();
-        index++;
+        queueFragSongsDisplay = new String[queue.size()];
+        for (int i=0; i<queue.size();i++){
+            if(queue.getSong(i) != null) {
+                queueFragSongsDisplay[i] = queue.getSong(i).getName();
+                updateQueue();
+            }
+            else
+                break;
+        }
+
+        if(queue != null){
+            songList = updateQueue();
+        }
     }
+    
+    public void removefromQ(){
+        queue.remove();
+    }
+
+    public List<Song> updateQueue(){
+        qResult = new ArrayList<>();
+        for (int i = 0; i< queueFragSongsDisplay.length; i++){
+            qResult.add(LookUpSongs.getSong(songList, queueFragSongsDisplay[0]));
+        }
+        return qResult;
+    }
+
 
     //NEXT BUTTON
     public void onClickPlayNext(View view) {

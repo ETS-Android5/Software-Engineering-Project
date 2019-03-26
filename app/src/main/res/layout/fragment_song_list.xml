@@ -94,10 +94,21 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <Button
+            android:id="@+id/queueList"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:text="Queue"
+            android:textSize="17dp"
+            android:onClick="onClickViewQueue"
+            />
+
+        <Button
             android:id="@+id/song_name"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:textSize="17dp" />
+
+
     </LinearLayout>
 
 

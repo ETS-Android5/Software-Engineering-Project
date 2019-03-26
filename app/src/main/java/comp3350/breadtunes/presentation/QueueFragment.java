@@ -17,8 +17,14 @@ import static comp3350.breadtunes.presentation.HomeActivity.sList;
 public class QueueFragment extends Fragment{
 
         public HomeActivity homeActivity;
+        String[] noItem = new String[1];
 
-        public QueueFragment() {
+    public String[] getNoItem() {
+        noItem[0] = "no song in updateQueue";
+        return noItem;
+    }
+
+    public QueueFragment() {
             // Required empty public constructor
         }
 
@@ -33,19 +39,27 @@ public class QueueFragment extends Fragment{
 
         public void onViewCreated(View view, Bundle savedInstanceState) {
             //populate the list of songs associated with the search input
-            ArrayAdapter adapter = new ArrayAdapter<String>(getContext(), R.layout.songlist_element,homeActivity.forQ);
-            final ListView activitySongList = (ListView) view.findViewById(R.id.queueResult);
-            activitySongList.setAdapter(adapter);
+            if(homeActivity.queueFragSongsDisplay != null) {
+                ArrayAdapter adapter = new ArrayAdapter<String>(getContext(), R.layout.songlist_element, homeActivity.queueFragSongsDisplay);
+                final ListView activitySongList = (ListView) view.findViewById(R.id.queueResult);
+                activitySongList.setAdapter(adapter);
 
-            //set on item click listener to react to list clicks
-            activitySongList.setOnItemClickListener((adapterView, view1, i, l) -> {
-                String selectedSongName = (String) adapterView.getItemAtPosition(i);     //get the name of the song being played
-                //get the song object associated with the song name that was clicked
-                Song selectedSong = LookUpSongs.getSong(sList, selectedSongName);
+                //set on item click listener to react to list clicks
+                activitySongList.setOnItemClickListener((adapterView, view1, i, l) -> {
+                    String selectedSongName = (String) adapterView.getItemAtPosition(i);     //get the name of the song being played
+                    //get the song object associated with the song name that was clicked
+                    Song selectedSong = LookUpSongs.getSong(sList, selectedSongName);
 
-                homeActivity.playSong(selectedSong);
-                homeActivity.showNowPlayingFragment();
-                homeActivity.queue.remove();
-            });// on item click listener for listview
+                    homeActivity.playSong(selectedSong);
+                    homeActivity.showNowPlayingFragment();
+                    homeActivity.queue.remove();
+                    //homeActivity.index--;
+                });// on item click listener for listview
+            }
+            else{
+                ArrayAdapter adapter = new ArrayAdapter<String>(getContext(), R.layout.songlist_element, getNoItem());
+                final ListView activitySongList = (ListView) view.findViewById(R.id.queueResult);
+                activitySongList.setAdapter(adapter);
+            }
         }
 }

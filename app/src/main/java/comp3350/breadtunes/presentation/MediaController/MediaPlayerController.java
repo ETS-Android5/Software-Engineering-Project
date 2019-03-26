@@ -1,9 +1,14 @@
 package comp3350.breadtunes.presentation.MediaController;
 import android.content.Context;
 import android.media.MediaPlayer;
+
+import comp3350.breadtunes.business.LookUpSongs;
 import comp3350.breadtunes.business.MusicPlayerState;
 import comp3350.breadtunes.objects.Song;
+import comp3350.breadtunes.presentation.HomeActivity;
 import comp3350.breadtunes.services.ServiceGateway;
+
+import static comp3350.breadtunes.presentation.HomeActivity.qResult;
 
 // Class that controls the playing, pausing, and playing next/previous
 public class MediaPlayerController{
@@ -48,6 +53,15 @@ public class MediaPlayerController{
             MusicPlayerState.getInstance().setIsSongPlaying(true);
             MusicPlayerState.getInstance().setIsSongPaused(false);
             response = "Playing "+song.getName();
+        }
+
+        if(qResult != null) {
+            for (int i = 0; i < qResult.size(); i++) {
+                Song result = LookUpSongs.getSong(qResult, qResult.get(i).getName());
+                if (song == result) {
+                    HomeActivity.removefromQ();
+                }
+            }
         }
         return response;
     }

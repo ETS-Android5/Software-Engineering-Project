@@ -7,12 +7,12 @@ import comp3350.breadtunes.business.observables.PlayModeObservable;
 import comp3350.breadtunes.business.observables.SongObservable;
 import comp3350.breadtunes.exception.InvalidSongIndex;
 import comp3350.breadtunes.objects.Song;
+import comp3350.breadtunes.presentation.HomeActivity;
 import comp3350.breadtunes.services.ServiceGateway;
 
 
 // Logic class that represents the state of the music player SINGLETON PATTERN
 public class MusicPlayerState {
-
 
     private boolean songPlaying; //is a song currently being played?
     private boolean songPaused;     //is a song currently paused?
@@ -52,6 +52,7 @@ public class MusicPlayerState {
             musicPlayerState.shuffleModeOn = false;
             musicPlayerState.repeatModeOn = false;
             musicPlayerState.randomNumberGen = new Random();
+
         }
 
         return musicPlayerState;
@@ -106,28 +107,31 @@ public class MusicPlayerState {
     }
 
     //update the next song instance variable based on the current playing song
-    public void updateNextSong(){
+    public void updateNextSong() {
+        if (HomeActivity.qResult != null) {
+            musicPlayerState.currentSongList = HomeActivity.qResult;
+            musicPlayerState.nextSong =  musicPlayerState.getCurrentSongList().get(0);
+        }
+        else {
+            if (musicPlayerState.getShuffleMode()) {
+                if (musicPlayerState.currentSongList != null && musicPlayerState.currentSong != null) {
+                    int randomNextSongIndex = getRandomSongIndex();
+                    musicPlayerState.nextSong = musicPlayerState.getCurrentSongList().get(randomNextSongIndex);
+                }
+            } else {
 
+                //shuffle not on
+                if (musicPlayerState.currentSongList != null && musicPlayerState.currentSong != null) { //make sure that the song is being played
 
-        if(musicPlayerState.getShuffleMode()){
-            if (musicPlayerState.currentSongList != null && musicPlayerState.currentSong != null){
-                int randomNextSongIndex = getRandomSongIndex();
-                musicPlayerState.nextSong = musicPlayerState.getCurrentSongList().get(randomNextSongIndex);
-            }
-        }else{
-
-            //shuffle not on
-            if (musicPlayerState.currentSongList != null && musicPlayerState.currentSong != null) { //make sure that the song is being played
-
-                int currentSongIndex = musicPlayerState.currentSongList.indexOf(currentSong);
-                if (currentSongIndex + 1 < musicPlayerState.currentSongList.size()) {
-                    musicPlayerState.nextSong = musicPlayerState.currentSongList.get(++currentSongIndex);//make sure we do not go out of bounds
-                } else {
-                    musicPlayerState.nextSong = null; //no next song to play, we are the end of the list
+                    int currentSongIndex = musicPlayerState.currentSongList.indexOf(currentSong);
+                    if (currentSongIndex + 1 < musicPlayerState.currentSongList.size()) {
+                        musicPlayerState.nextSong = musicPlayerState.currentSongList.get(++currentSongIndex);//make sure we do not go out of bounds
+                    } else {
+                        musicPlayerState.nextSong = null; //no next song to play, we are the end of the list
+                    }
                 }
             }
         }
-
     }
 
     //update the previous song instance variable based on the current playing song
