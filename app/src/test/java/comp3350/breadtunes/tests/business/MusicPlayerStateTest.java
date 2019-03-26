@@ -207,10 +207,10 @@ public class MusicPlayerStateTest extends TestLogger {
 
         mps2.setCurrentSong(a);
 
-        System.out.println(mps2.getMusicPlayerState());
+        System.out.println(mps2.getMusicPlayerStateInstance());
         assertEquals( "Current song not null song is null song paused: false song playing falsevariable currentSongname is null",
 
-        mps2.getMusicPlayerState());
+        mps2.getMusicPlayerStateInstance());
     }
 
     @Test
