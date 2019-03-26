@@ -16,6 +16,19 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
+    <TextView
+        android:id="@+id/parental_control_status"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="160dp"
+        android:text=""
+        android:textAlignment="center"
+        android:textSize="23sp"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textTitle" />
+
+
+
     <ImageButton
         android:id="@+id/pause_button"
         android:layout_width="wrap_content"
@@ -28,7 +41,7 @@
         android:textSize="15sp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textTitle" />
+        app:layout_constraintTop_toBottomOf="@id/parental_control_status" />
 
     <ImageButton
         android:id="@+id/resume_button"
@@ -42,7 +55,7 @@
         android:textSize="15sp"
         android:textStyle="bold"
         app:layout_constraintLeft_toRightOf="@id/pause_button"
-        app:layout_constraintTop_toBottomOf="@id/textTitle"
+        app:layout_constraintTop_toBottomOf="@id/parental_control_status"
         android:src="@drawable/play"/>
 
 
@@ -57,7 +70,7 @@
         android:textSize="15sp"
         android:textStyle="bold"
         app:layout_constraintLeft_toRightOf="@id/resume_button"
-        app:layout_constraintTop_toBottomOf="@id/textTitle"
+        app:layout_constraintTop_toBottomOf="@id/parental_control_status"
         android:focusable="false"
         android:src="@drawable/previous"/>
 
@@ -72,7 +85,7 @@
         android:textSize="15sp"
         android:textStyle="bold"
         app:layout_constraintLeft_toRightOf="@id/play_previous_button"
-        app:layout_constraintTop_toBottomOf="@id/textTitle"
+        app:layout_constraintTop_toBottomOf="@id/parental_control_status"
         android:focusable="false"
         android:src="@drawable/next"/>
 
