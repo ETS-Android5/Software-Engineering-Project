@@ -1,4 +1,4 @@
-package comp3350.breadtunes.persistence;
+package comp3350.breadtunes.persistence.interfaces;
 
 import comp3350.breadtunes.objects.SecureCredentials;
 

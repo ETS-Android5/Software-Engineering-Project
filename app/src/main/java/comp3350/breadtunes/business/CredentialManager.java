@@ -3,7 +3,7 @@ package comp3350.breadtunes.business;
 import java.util.Date;
 
 import comp3350.breadtunes.objects.SecureCredentials;
-import comp3350.breadtunes.persistence.CredentialPersistence;
+import comp3350.breadtunes.persistence.interfaces.CredentialPersistence;
 import comp3350.breadtunes.services.ServiceGateway;
 
 public class CredentialManager {

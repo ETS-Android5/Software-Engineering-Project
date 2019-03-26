@@ -12,7 +12,7 @@ import java.util.List;
 import comp3350.breadtunes.exception.PersistenceException;
 import comp3350.breadtunes.objects.SongDuration;
 import comp3350.breadtunes.persistence.DatabaseManager;
-import comp3350.breadtunes.persistence.SongPersistence;
+import comp3350.breadtunes.persistence.interfaces.SongPersistence;
 import comp3350.breadtunes.objects.Song;
 import comp3350.breadtunes.services.ServiceGateway;
 

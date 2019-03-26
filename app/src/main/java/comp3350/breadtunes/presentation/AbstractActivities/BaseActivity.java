@@ -11,7 +11,7 @@ import java.util.List;
 
 import comp3350.breadtunes.presentation.enums.DatabaseState;
 import comp3350.breadtunes.objects.*;
-import comp3350.breadtunes.persistence.SongPersistence;
+import comp3350.breadtunes.persistence.interfaces.SongPersistence;
 import comp3350.breadtunes.persistence.loaders.*;
 import comp3350.breadtunes.services.AppState;
 import comp3350.breadtunes.services.ServiceGateway;

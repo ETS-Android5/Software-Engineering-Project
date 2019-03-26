@@ -13,7 +13,7 @@ import java.util.List;
 import comp3350.breadtunes.business.DateTimeHelper;
 import comp3350.breadtunes.exception.PersistenceException;
 import comp3350.breadtunes.objects.SecureCredentials;
-import comp3350.breadtunes.persistence.CredentialPersistence;
+import comp3350.breadtunes.persistence.interfaces.CredentialPersistence;
 import comp3350.breadtunes.persistence.DatabaseManager;
 import comp3350.breadtunes.services.ServiceGateway;
 

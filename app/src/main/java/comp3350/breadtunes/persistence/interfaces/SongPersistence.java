@@ -1,4 +1,4 @@
-package comp3350.breadtunes.persistence;
+package comp3350.breadtunes.persistence.interfaces;
 
 import java.util.List;
 
