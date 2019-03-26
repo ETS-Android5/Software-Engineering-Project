@@ -10,13 +10,20 @@ import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
-import comp3350.breadtunes.application.BreadTunesApplication;
 import comp3350.breadtunes.business.DateTimeHelper;
 import comp3350.breadtunes.exception.PersistenceException;
 import comp3350.breadtunes.objects.SecureCredentials;
 import comp3350.breadtunes.persistence.CredentialPersistence;
+import comp3350.breadtunes.persistence.DatabaseManager;
+import comp3350.breadtunes.services.ServiceGateway;
 
 public class CredentialPersistenceHSQL implements CredentialPersistence {
+    private DatabaseManager databaseManager;
+
+    public CredentialPersistenceHSQL() {
+        databaseManager = ServiceGateway.getDatabaseManager();
+    }
+
     /**
      * Get the most recent credentials from the database, based on the DateUpdated field.
      *
@@ -26,7 +33,7 @@ public class CredentialPersistenceHSQL implements CredentialPersistence {
         try {
             List<SecureCredentials> credentialList = new ArrayList<>();
 
-            Connection dbConnection = BreadTunesApplication.getDbConnection();
+            Connection dbConnection = databaseManager.getDbConnection();
             final PreparedStatement statement = dbConnection.prepareStatement("SELECT * FROM Credentials;");
             final ResultSet resultSet = statement.executeQuery();
 
@@ -55,11 +62,12 @@ public class CredentialPersistenceHSQL implements CredentialPersistence {
 
     /**
      * Inserts a new set of credentials into the database.
+     *
      * @param credentials The credentials, with pin and security question answer hashed (SHA256).
      */
     public void insertNewCredentials(SecureCredentials credentials) {
         try {
-            Connection dbConnection = BreadTunesApplication.getDbConnection();
+            Connection dbConnection = databaseManager.getDbConnection();
 
             StringBuilder queryBuilder = new StringBuilder();
             queryBuilder.append("INSERT INTO Credentials (Pin, SecurityQuestion, SecurityQuestionAns, DateUpdated) ");
@@ -81,6 +89,11 @@ public class CredentialPersistenceHSQL implements CredentialPersistence {
         }
     }
 
+    /**
+     * Update the hashed pin for the most recent credentials.
+     *
+     * @param hashedPin The new hashed pin (SHA256).
+     */
     public void updateMostRecentCredentialsPin(String hashedPin) {
         DateTimeHelper dth = new DateTimeHelper();
 
@@ -88,7 +101,7 @@ public class CredentialPersistenceHSQL implements CredentialPersistence {
             SecureCredentials mostRecentCredentials = getMostRecentCredentials();
 
             // Update the PIN for the most recent credentials
-            Connection dbConnection = BreadTunesApplication.getDbConnection();
+            Connection dbConnection = databaseManager.getDbConnection();
             String getIdQuery = "UPDATE Credentials SET Pin=? WHERE Pin=? AND DateUpdated=?";
             final PreparedStatement statement = dbConnection.prepareStatement(getIdQuery);
             statement.setString(1, hashedPin);

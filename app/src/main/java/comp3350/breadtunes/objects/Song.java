@@ -44,6 +44,7 @@ public class Song {
     public String getArtistName() { return this.artistName; }
     public int getAlbumId() { return this.albumId; }
     public String getAlbumName() { return this.albumName; }
+    public boolean getFlaggedStatus() { return this.flaggedAsInnapropriate; }
 
     public static final class Builder {
         private int songId;

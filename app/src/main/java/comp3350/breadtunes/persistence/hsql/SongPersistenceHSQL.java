@@ -9,21 +9,30 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-import comp3350.breadtunes.application.BreadTunesApplication;
 import comp3350.breadtunes.exception.PersistenceException;
 import comp3350.breadtunes.objects.SongDuration;
+import comp3350.breadtunes.persistence.DatabaseManager;
 import comp3350.breadtunes.persistence.SongPersistence;
 import comp3350.breadtunes.objects.Song;
+import comp3350.breadtunes.services.ServiceGateway;
 
 public class SongPersistenceHSQL implements SongPersistence {
+    private DatabaseManager databaseManager;
 
-    public SongPersistenceHSQL() { }
+    public SongPersistenceHSQL() {
+        databaseManager = ServiceGateway.getDatabaseManager();
+    }
 
+    /**
+     * Get all of the songs in the database.
+     *
+     * @return A list of all the songs.
+     */
     public List<Song> getAll() {
         final List<Song> songList = new ArrayList<>();
 
         try {
-            Connection dbConnection = BreadTunesApplication.getDbConnection();
+            Connection dbConnection = databaseManager.getDbConnection();
             final PreparedStatement statement = dbConnection.prepareStatement("SELECT * FROM Songs ORDER BY Name ASC");
             final ResultSet resultSet = statement.executeQuery();
 
@@ -41,11 +50,16 @@ public class SongPersistenceHSQL implements SongPersistence {
         }
     }
 
+    /**
+     * Get all songs from the database that have not been flagged as inappropriate.
+     *
+     * @return A list of all the unflagged songs.
+     */
     public List<Song> getAllNotFlagged() {
         final List<Song> songList = new ArrayList<>();
 
         try {
-            Connection dbConnection = BreadTunesApplication.getDbConnection();
+            Connection dbConnection = databaseManager.getDbConnection();
             final PreparedStatement statement = dbConnection.prepareStatement("SELECT * FROM Songs WHERE Flagged=FALSE ORDER BY Name ASC");
             final ResultSet resultSet = statement.executeQuery();
 
@@ -63,6 +77,12 @@ public class SongPersistenceHSQL implements SongPersistence {
         }
     }
 
+    /**
+     * Inserts songs into the database without adding duplicates.
+     *
+     * @param songs The list of songs to add to the database.
+     * @return true if database changed, false otherwise.
+     */
     public boolean insertSongsNoDuplicates(List<Song> songs) {
         boolean databaseUpdated = false;
 
@@ -91,9 +111,21 @@ public class SongPersistenceHSQL implements SongPersistence {
         return databaseUpdated;
     }
 
+    /**
+     * Set the "flagged as inappropriate" status for a single song. Updates the song in the
+     * database. Does not update the song if the flagged status already matches the status of the
+     * song passed in.
+     *
+     * @param song The song to update.
+     * @param isFlagged The flagged status to set for the song.
+     */
     public void setSongFlagged(Song song, boolean isFlagged) {
         try {
-            Connection dbConnection = BreadTunesApplication.getDbConnection();
+            Connection dbConnection = databaseManager.getDbConnection();
+
+            if (song.getFlaggedStatus() == isFlagged) {
+                return;
+            }
 
             String query = "UPDATE Songs SET Flagged=? WHERE SongID=?";
             final PreparedStatement statement = dbConnection.prepareStatement(query);
@@ -110,7 +142,7 @@ public class SongPersistenceHSQL implements SongPersistence {
 
     private void insertSongs(List<Song> songs) {
         try {
-            Connection dbConnection = BreadTunesApplication.getDbConnection();
+            Connection dbConnection = databaseManager.getDbConnection();
             dbConnection.setAutoCommit(false);
 
             StringBuilder queryBuilder = new StringBuilder();
