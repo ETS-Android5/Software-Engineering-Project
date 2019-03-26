@@ -14,6 +14,8 @@ import comp3350.breadtunes.R;
 public class DatabaseManager {
     private static DatabaseManager instance;
 
+    private Connection dbConnection;
+
     private DatabaseManager() {
     }
 
@@ -25,7 +27,7 @@ public class DatabaseManager {
         return instance;
     }
 
-    public Connection initializeDatabase(Context appContext) {
+    public void initializeDatabase(Context appContext) {
         try {
             String databasePath = getDatabasePath(appContext);
 
@@ -39,22 +41,18 @@ public class DatabaseManager {
             // Create database connection
             Class.forName("org.hsqldb.jdbc.JDBCDriver");
             String connectionUrl = String.format("jdbc:hsqldb:file:%s", databasePath);
-            Connection dbConnection = DriverManager.getConnection(connectionUrl, "SA", "");
+            dbConnection = DriverManager.getConnection(connectionUrl, "SA", "");
 
             Log.i("HSQLDB", String.format("Database connection took %d milliseconds to create", System.currentTimeMillis() - start));
 
             if (!databaseCreated) {
-                createDatabase(dbConnection);
+                createDatabase();
             }
-
-            return dbConnection;
 
         } catch (ClassNotFoundException e) {
             e.printStackTrace();
-            return null;
         } catch (SQLException e) {
             e.printStackTrace();
-            return null;
         }
     }
 
@@ -65,7 +63,7 @@ public class DatabaseManager {
         return databasePath;
     }
 
-    private void createDatabase(Connection dbConnection) throws SQLException {
+    private void createDatabase() throws SQLException {
         dbConnection.setAutoCommit(false);
 
         Statement statement = dbConnection.createStatement();
@@ -77,5 +75,9 @@ public class DatabaseManager {
         dbConnection.setAutoCommit(true);
 
         Log.i("HSQLDB", "Initialized database tables because database did not exist.");
+    }
+
+    public Connection getDbConnection() {
+        return dbConnection;
     }
 }

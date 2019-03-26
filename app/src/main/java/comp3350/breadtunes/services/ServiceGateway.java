@@ -16,6 +16,7 @@ public class ServiceGateway
     private static CredentialManager credentialManager = null;
     private static CredentialPersistence credentialPersistence = null;
     private static DatabaseUpdatedObservable dbObservable = new DatabaseUpdatedObservable();
+    private static DatabaseManager dbManager = null;
 
     public static void subscribeToDatabaseStateChanges(Observer observer) {
         dbObservable.addObserver(observer);
@@ -31,6 +32,14 @@ public class ServiceGateway
        }
 
        return audioPlayer;
+    }
+
+    public static synchronized DatabaseManager getDatabaseManager() {
+        if (dbManager == null) {
+            dbManager = DatabaseManager.getInstance();
+        }
+
+        return dbManager;
     }
 
     public static synchronized SongPersistence getSongPersistence() {
