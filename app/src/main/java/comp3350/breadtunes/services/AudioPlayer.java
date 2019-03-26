@@ -4,7 +4,7 @@ import android.content.Context;
 import android.media.MediaPlayer;
 import android.net.Uri;
 
-import comp3350.breadtunes.business.interfaces.MediaManager;
+import comp3350.breadtunes.presentation.interfaces.MediaManager;
 
 public class AudioPlayer implements MediaManager {
     private MediaPlayer player;

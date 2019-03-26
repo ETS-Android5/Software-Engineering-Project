@@ -1,4 +1,4 @@
-package comp3350.breadtunes.business.interfaces;
+package comp3350.breadtunes.presentation.interfaces;
 
 import android.content.Context;
 import android.media.MediaPlayer;
@@ -21,6 +21,4 @@ public interface MediaManager {
     int getCurrentPosition();
 
     void setOnCompletionListener(MediaPlayer.OnCompletionListener listener);
-
-    //void close();
 }
