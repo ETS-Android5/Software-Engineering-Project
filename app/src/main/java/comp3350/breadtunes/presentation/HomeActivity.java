@@ -356,6 +356,8 @@ public class HomeActivity extends BaseActivity implements Observer {
         Log.i(TAG, response);
     }
 
+    public void onClickSeekBar(View view){}
+
 
     @Override
     protected void onNewIntent(Intent intent) {
