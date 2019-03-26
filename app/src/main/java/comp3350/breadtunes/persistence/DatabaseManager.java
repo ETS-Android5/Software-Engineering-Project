@@ -32,13 +32,16 @@ public class DatabaseManager {
             String databasePath = getDatabasePath(appContext);
 
             boolean databaseCreated = true;
+
+            // This statement is tightly coupled with HSQLDB, since HSQLDB uses a .script file to
+            // represent a database in the file system. This checks if that file exists or not.
             if (!new File(databasePath + ".script").exists()) {
                 databaseCreated = false;
             }
 
             long start = System.currentTimeMillis();
 
-            // Create database connection
+            // Create database connection (this is an expensive set of operations)
             Class.forName("org.hsqldb.jdbc.JDBCDriver");
             String connectionUrl = String.format("jdbc:hsqldb:file:%s", databasePath);
             dbConnection = DriverManager.getConnection(connectionUrl, "SA", "");
