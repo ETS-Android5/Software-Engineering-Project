@@ -12,6 +12,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 import android.widget.SearchView;
 import android.widget.TextView;
 
@@ -31,6 +32,7 @@ public class NowPlayingFragment extends Fragment implements Observer {
 
     public HomeActivity homeActivity;
 
+    public static ImageView songArt;
     public static TextView nowPlayingSongGui;
     public static TextView nowPlayingAlbumGui;
     public static TextView nowPlayingArtistGui;
@@ -57,6 +59,7 @@ public class NowPlayingFragment extends Fragment implements Observer {
         nowPlayingSongGui = (TextView) view.findViewById(R.id.song_name);
         nowPlayingArtistGui = (TextView) view.findViewById(R.id.artist_name);
         nowPlayingAlbumGui = (TextView) view.findViewById(R.id.album_name);
+        songArt = (ImageView) view.findViewById(R.id.song_art);
 
         //populate the fields in the fragment
         nowPlayingSongGui.setText(MusicPlayerState.getInstance().getCurrentlyPlayingSong().getName());
