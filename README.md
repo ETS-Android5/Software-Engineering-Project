@@ -38,3 +38,16 @@ BreadTunes was built using Android Studio. Running the code is as simple as clon
 
 ## Running the Tests
 
+BreadTunes has 3 different types of tests: Unit, Integration, and System tests. To run any of the tests, first make sure the project is open in Android Studio.
+
+#### Unit Tests
+
+To run the unit tests, right click the file `AllTests.java` in the folder `src/test/java/comp3350/breadtunes/tests`. Then, click "Run AllTests.java".
+
+#### Integration Tests
+
+To run the integration tests... (will finish writing after we set up integration tests).
+
+#### System Tests
+
+To run the system tests... (will finish writing after we set up system tests).
