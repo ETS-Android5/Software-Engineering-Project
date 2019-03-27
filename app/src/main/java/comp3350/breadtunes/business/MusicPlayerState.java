@@ -58,11 +58,7 @@ public class MusicPlayerState {
             musicPlayerState.shuffleModeOn = false;
             musicPlayerState.repeatModeOn = false;
             musicPlayerState.randomNumberGen = new Random();
-<<<<<<< HEAD
-
-=======
             musicPlayerState.parentalControlModeOn = false;
->>>>>>> master
         }
 
         return musicPlayerState;
