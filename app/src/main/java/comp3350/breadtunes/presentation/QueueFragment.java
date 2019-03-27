@@ -20,7 +20,7 @@ public class QueueFragment extends Fragment{
         String[] noItem = new String[1];
 
     public String[] getNoItem() {
-        noItem[0] = "no song in updateQueue";
+        noItem[0] = "Queue is empty";
         return noItem;
     }
 
@@ -51,9 +51,6 @@ public class QueueFragment extends Fragment{
                     Song selectedSong = LookUpSongs.getSong(sList, selectedSongName);
 
                     homeActivity.playSong(selectedSong);
-                    homeActivity.showNowPlayingFragment();
-                    homeActivity.queue.remove();
-                    //homeActivity.index--;
                 });// on item click listener for listview
             }
             else{

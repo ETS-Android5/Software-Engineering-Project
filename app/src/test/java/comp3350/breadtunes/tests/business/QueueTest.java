@@ -2,9 +2,7 @@ package comp3350.breadtunes.tests.business;
 
 import org.junit.Test;
 
-import comp3350.breadtunes.business.SongQueue;
 import comp3350.breadtunes.objects.Song;
-import comp3350.breadtunes.objects.SongDuration;
 import comp3350.breadtunes.tests.watchers.TestLogger;
 
 import static org.junit.Assert.*;

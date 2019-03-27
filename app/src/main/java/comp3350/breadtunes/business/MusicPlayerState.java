@@ -1,6 +1,12 @@
 package comp3350.breadtunes.business;
+import android.util.Log;
+
+import java.util.ArrayDeque;
+import java.util.Deque;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Observer;
+import java.util.Queue;
 import java.util.Random;
 
 import comp3350.breadtunes.business.observables.ParentalControlStatusObservable;
@@ -33,9 +39,11 @@ public class MusicPlayerState {
 
     private static MusicPlayerState musicPlayerState;
     private final String TAG = "State: ";
-
-    //march 5
     private String currentPlayingSongName; //the name of the current song, must be saved and restored in main activity
+
+    //queue
+   // private SongQueue queue;
+    private Deque<Song> queue;
 
     //to get random song
     Random randomNumberGen;
@@ -59,6 +67,8 @@ public class MusicPlayerState {
             musicPlayerState.repeatModeOn = false;
             musicPlayerState.randomNumberGen = new Random();
             musicPlayerState.parentalControlModeOn = false;
+            //musicPlayerState.queue = new SongQueue(MAX_Q_SIZE);
+            musicPlayerState.queue = new ArrayDeque<>(100);
         }
 
         return musicPlayerState;
@@ -74,6 +84,7 @@ public class MusicPlayerState {
     public boolean getShuffleMode(){return musicPlayerState.shuffleModeOn;}
     public boolean getRepeatMode(){return musicPlayerState.repeatModeOn;}
     public boolean getParentalControlModeOn(){return musicPlayerState.parentalControlModeOn;}
+    public int getQueueSize(){return  musicPlayerState.queue.size();}
 
 
     //getters that return song objects
@@ -110,8 +121,16 @@ public class MusicPlayerState {
 
     //update the song playing
     public void setCurrentSong(Song newCurrentSong) {
+
+        if(musicPlayerState.queue!= null && musicPlayerState.queue.size() > 0 && newCurrentSong.getName().equals(musicPlayerState.queue.peek().getName())){
+            Log.i(TAG, "song playing equals top of queue");
+            musicPlayerState.queue.remove(); //remove the top of the queue
+            Log.i(TAG, "removed top of queue");
+        }
+
         musicPlayerState.currentSong = newCurrentSong; //when the song is changed, update the new next and previous
-        musicPlayerState.currentPlayingSongName = currentSong.getName();
+        musicPlayerState.currentPlayingSongName = musicPlayerState.currentSong.getName();
+
         updateNextSong();
         updatePreviousSong();
 
@@ -120,11 +139,15 @@ public class MusicPlayerState {
 
     //update the next song instance variable based on the current playing song
     public void updateNextSong() {
-        if (HomeActivity.qResult != null) {
-            musicPlayerState.currentSongList = HomeActivity.qResult;
-            musicPlayerState.nextSong =  musicPlayerState.getCurrentSongList().get(0);
-        }
-        else {
+
+        if(musicPlayerState.queue != null && musicPlayerState.queue.size() > 0){
+
+            Song queueTop = musicPlayerState.queue.peek();
+            if(queueTop != null) {
+                musicPlayerState.nextSong = queueTop;
+                Log.i(TAG, "Next song is "+musicPlayerState.nextSong.getName());
+            }
+        }else{
             if (musicPlayerState.getShuffleMode()) {
                 if (musicPlayerState.currentSongList != null && musicPlayerState.currentSong != null) {
                     int randomNextSongIndex = getRandomSongIndex();
@@ -138,9 +161,11 @@ public class MusicPlayerState {
                     int currentSongIndex = musicPlayerState.currentSongList.indexOf(currentSong);
                     if (currentSongIndex + 1 < musicPlayerState.currentSongList.size()) {
                         musicPlayerState.nextSong = musicPlayerState.currentSongList.get(++currentSongIndex);//make sure we do not go out of bounds
+                        Log.i(TAG, "Next song is "+musicPlayerState.nextSong.getName());
                     } else {
                         musicPlayerState.nextSong = null; //no next song to play, we are the end of the list
                     }
+
                 }
             }
         }
@@ -253,6 +278,36 @@ public class MusicPlayerState {
             status = "- Repeat on";
         }
         return status;
+    }
+
+    //add a song to the top of the queue
+    public void addSongToPlayNext(Song s){
+        musicPlayerState.queue.addFirst(s);
+        Log.i(TAG, "Added song "+s.getName()+" to play next");
+        Log.i(TAG, "song at top of queue is "+musicPlayerState.queue.peek().getName());
+        musicPlayerState.updateNextSong();
+    }
+
+
+    public void addToQueue(Song s){
+       // queue.insert(s);
+        queue.add(s);
+        Log.i(TAG, "Added song "+s.getName()+" to queue");
+        Log.i(TAG, "song at top of queue is "+musicPlayerState.queue.peek().getName());
+        musicPlayerState.updateNextSong();
+    }
+
+
+    //get the song names in the queue to populate the queue fragment
+    public String[] getQueueSongNames(){
+        String[] queueSongNames = new String[musicPlayerState.queue.size()];
+
+        int i=0;
+        for(Song song: musicPlayerState.queue){
+            queueSongNames[i++] = song.getName();
+        }
+
+        return queueSongNames;
     }
 
 }

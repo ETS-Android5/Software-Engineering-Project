@@ -8,8 +8,6 @@ import comp3350.breadtunes.objects.Song;
 import comp3350.breadtunes.presentation.HomeActivity;
 import comp3350.breadtunes.services.ServiceGateway;
 
-import static comp3350.breadtunes.presentation.HomeActivity.qResult;
-
 // Class that controls the playing, pausing, and playing next/previous
 public class MediaPlayerController{
 
@@ -46,7 +44,6 @@ public class MediaPlayerController{
                         nextSong = MusicPlayerState.getInstance().getNextSong(); //if repeat mode not on, next song is as usual
                     }
 
-                    //
                     if(nextSong != null){
                         playSong(nextSong, context);
                     }
@@ -56,14 +53,6 @@ public class MediaPlayerController{
             response = "Playing "+song.getName();
         }
 
-        if(qResult != null) {
-            for (int i = 0; i < qResult.size(); i++) {
-                Song result = LookUpSongs.getSong(qResult, qResult.get(i).getName());
-                if (song == result) {
-                    //HomeActivity.removefromQ();
-                }
-            }
-        }
         return response;
     }
 
@@ -99,7 +88,6 @@ public class MediaPlayerController{
         String response;
         if(MusicPlayerState.getInstance().getCurrentlyPlayingSong() != null && MusicPlayerState.getInstance().getCurrentSongList()!= null){ //make sure there is a song playing
 
-            boolean repeatModeIsOn = MusicPlayerState.getInstance().getRepeatMode();
 
             Song nextSong = MusicPlayerState.getInstance().getNextSong();
 

@@ -232,7 +232,7 @@ public class SongListFragment extends Fragment implements Observer {
         });
     }
 
-    @Override
+     // TODO: 27/03/19  ADD FLAG SONG!
     public void onCreateContextMenu(ContextMenu menu, View v,ContextMenu.ContextMenuInfo menuInfo) {
             AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
             menu.setHeaderTitle(sList.get(info.position).getName());
@@ -242,23 +242,25 @@ public class SongListFragment extends Fragment implements Observer {
             menuItems[1]= "Play Next";
     }
 
-    @Override
+    // TODO: 27/03/19  callback for context menu
     public boolean onContextItemSelected(MenuItem item){
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
         int menuItemIndex = item.getItemId();
-        String menuItemName = menuItems[menuItemIndex];
         String listItemName = sList.get(info.position).getName();
 
         switch(item.getItemId()) {
             case 0:
-                homeActivity.addToQueue(LookUpSongs.getSong(sList, listItemName));
+                MusicPlayerState.getInstance().addToQueue(LookUpSongs.getSong(sList, listItemName));
+                homeActivity.queueFragSongsDisplay = MusicPlayerState.getInstance().getQueueSongNames(); //refresh the songs to be displayed
                 return true;
             case 1:
-                homeActivity.playNext(LookUpSongs.getSong(sList, listItemName));
+                MusicPlayerState.getInstance().addSongToPlayNext(LookUpSongs.getSong(sList, listItemName));
+                homeActivity.queueFragSongsDisplay = MusicPlayerState.getInstance().getQueueSongNames();
                 return true;
             default:
                 return super.onContextItemSelected(item);
-            }
+        }
+
     }
 
 
