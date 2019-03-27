@@ -20,7 +20,14 @@ public interface MediaManager {
 
     int getCurrentPosition();
 
+    int getDuration();
+
+    void seekTo(int progress);
+
     void setOnCompletionListener(MediaPlayer.OnCompletionListener listener);
+
+    void setOnPreparedListener(MediaPlayer.OnPreparedListener listener);
+
 
     //void close();
 }
