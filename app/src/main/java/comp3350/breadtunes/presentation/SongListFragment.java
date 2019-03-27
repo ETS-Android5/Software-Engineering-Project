@@ -52,7 +52,7 @@ public class SongListFragment extends Fragment implements Observer {
     private final String TAG = "HomeActivity";
     public static TextView parentalControlStatus;
     public static Button nowPlayingSongGui;
-    String[] menuItems = new String[3];
+    String[] menuItems = new String[4];
     // make a updateQueue status
 
     public SongListFragment() {
@@ -237,23 +237,17 @@ public class SongListFragment extends Fragment implements Observer {
             menu.setHeaderTitle(sList.get(info.position).getName());
             menu.add(Menu.NONE, 0,0, "Add to Queue");
             menu.add(Menu.NONE, 1,1, "Play Next");
-            String thirdMenuItem = "error";
 
-            if(!MusicPlayerState.getInstance().getParentalControlModeOn()){  //can only flag songs if not in parental control mode on
-
-                boolean songIsFlagged = ServiceGateway.getSongFlagger().songIsFlagged(sList.get(info.position));
-                if(songIsFlagged){
-                    menu.add(Menu.NONE, 2, 2, "Remove song flag");
-                    thirdMenuItem = "Remove song flag";
-                }else{
-                    menu.add(Menu.NONE, 2, 2, "Flag Song");
-                    thirdMenuItem = "Flag Song";
-                }
+            if(!MusicPlayerState.getInstance().getParentalControlModeOn()){
+                menu.add(Menu.NONE, 2, 2, "Flag song");
+                menu.add(Menu.NONE, 3, 3, "Remove song flag");
+                menuItems[2] ="Flag song";
+                menuItems[3] = "Remove song flag";
             }
 
             menuItems[0]= "Add to Queue";
             menuItems[1]= "Play Next";
-            menuItems[2] = thirdMenuItem;
+
     }
 
     // TODO: 27/03/19  callback for context menu
@@ -271,16 +265,27 @@ public class SongListFragment extends Fragment implements Observer {
                 MusicPlayerState.getInstance().addSongToPlayNext(LookUpSongs.getSong(sList, listItemName));
                 homeActivity.queueFragSongsDisplay = MusicPlayerState.getInstance().getQueueSongNames();
                 return true;
-            case 2:
+            case 2: //addd flag
                 if(!MusicPlayerState.getInstance().getParentalControlModeOn()){    //only proceed if parental control is not on
                     boolean songIsFlagged = ServiceGateway.getSongFlagger().songIsFlagged(LookUpSongs.getSong(sList, listItemName));
-                    if(songIsFlagged){
-                        ServiceGateway.getSongFlagger().flagSong(LookUpSongs.getSong(sList, listItemName), false); //if the song was flagged, it means we are unflagging it
-                    }else{
+                    if(!songIsFlagged){
                         ServiceGateway.getSongFlagger().flagSong(LookUpSongs.getSong(sList, listItemName), true);
+                    }else{
+                        Toast.makeText(homeActivity, "Song is already flagged", Toast.LENGTH_SHORT).show();
                     }
                 }
+                return true;
 
+            case 3: //remove flag
+                if(!MusicPlayerState.getInstance().getParentalControlModeOn()){
+                    boolean songIsFlagged = ServiceGateway.getSongFlagger().songIsFlagged(LookUpSongs.getSong(sList, listItemName));
+                    if(songIsFlagged){
+                        ServiceGateway.getSongFlagger().flagSong(LookUpSongs.getSong(sList, listItemName), false);
+                    }else{
+                        Toast.makeText(homeActivity, "Song has no flag to remove", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                return true;
             default:
                 return super.onContextItemSelected(item);
         }
