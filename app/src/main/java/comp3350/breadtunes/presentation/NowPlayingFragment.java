@@ -2,9 +2,12 @@ package comp3350.breadtunes.presentation;
 
 
 import android.app.SearchManager;
+import android.app.Service;
 import android.content.Context;
 import android.content.Intent;
+import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -13,6 +16,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.SearchView;
+import android.widget.SeekBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -23,6 +27,8 @@ import comp3350.breadtunes.R;
 import comp3350.breadtunes.business.MusicPlayerState;
 import comp3350.breadtunes.business.observables.SongObservable;
 import comp3350.breadtunes.objects.Song;
+import comp3350.breadtunes.presentation.MediaController.MediaPlayerController;
+import comp3350.breadtunes.services.ServiceGateway;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -30,6 +36,9 @@ import comp3350.breadtunes.objects.Song;
 public class NowPlayingFragment extends Fragment implements Observer {
 
     public HomeActivity homeActivity;
+    public SeekBar seekBar;
+    private Handler handler;
+    private Runnable runnable;
 
     public static TextView nowPlayingSongGui;
     public static TextView nowPlayingAlbumGui;
@@ -42,6 +51,7 @@ public class NowPlayingFragment extends Fragment implements Observer {
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+
     }
 
 
@@ -57,12 +67,49 @@ public class NowPlayingFragment extends Fragment implements Observer {
         nowPlayingSongGui = (TextView) view.findViewById(R.id.song_name);
         nowPlayingArtistGui = (TextView) view.findViewById(R.id.artist_name);
         nowPlayingAlbumGui = (TextView) view.findViewById(R.id.album_name);
+        seekBar = (SeekBar) view.findViewById(R.id.seek_bar);
+        handler = new Handler();
 
         //populate the fields in the fragment
         nowPlayingSongGui.setText(MusicPlayerState.getInstance().getCurrentlyPlayingSong().getName());
         nowPlayingAlbumGui.setText(MusicPlayerState.getInstance().getCurrentlyPlayingSong().getAlbumName());
         nowPlayingArtistGui.setText(MusicPlayerState.getInstance().getCurrentlyPlayingSong().getArtistName());
 
+        /*
+        ServiceGateway.getMediaManager().setOnPreparedListener(new MediaPlayer.OnPreparedListener(){
+            @Override
+            public void onPrepared(MediaPlayer mediaPlayer){
+                seekBar.setMax(ServiceGateway.getMediaManager().getDuration());
+                changeSeekbar();
+            }
+        });//???
+        */
+
+        if(MusicPlayerState.getInstance().isSongPlaying()){
+            seekBar.setMax(ServiceGateway.getMediaManager().getDuration());
+            changeSeekbar();
+        }
+
+
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                if(b){
+                    ServiceGateway.getMediaManager().seekTo(i);
+                    seekBar.setMax(ServiceGateway.getMediaManager().getDuration());
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
     }
 
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -85,6 +132,9 @@ public class NowPlayingFragment extends Fragment implements Observer {
 
         Song song = songObservable.getSong();
 
+        seekBar.setMax(ServiceGateway.getMediaManager().getDuration());
+        changeSeekbar();
+
         String songName = song.getName();
         String albumName = song.getAlbumName();
         String artistName = song.getArtistName();
@@ -95,5 +145,16 @@ public class NowPlayingFragment extends Fragment implements Observer {
 
     }
 
+    public void changeSeekbar(){
+        seekBar.setProgress(ServiceGateway.getMediaManager().getCurrentPosition());
+
+        runnable = new Runnable(){
+            @Override
+            public void run(){
+                changeSeekbar();
+            }
+        };
+        handler.postDelayed(runnable, 50);
+    }
 
 }
