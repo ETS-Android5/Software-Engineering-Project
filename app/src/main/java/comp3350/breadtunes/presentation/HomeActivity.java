@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -41,12 +42,14 @@ public class HomeActivity extends BaseActivity implements Observer {
     String[] songNamesToDisplay;
     private final String TAG = "HomeActivity";
     LookUpSongs findSong;
+    String[] queueFragSongsDisplay; //songs displayed in the queue fragment
     private FragmentTransaction fragmentTransaction;
 
     // fragments used in the main activity
     private NowPlayingFragment nowPlayingFragment;
     private SearchResultsFragment searchSongFragment;
     private SongListFragment songListFragment;
+    private QueueFragment queueSongFragment;
     private ParentalControlSetupFragment parentalControlSetupFragment;
     private ResetPINFragment resetPINFragment;
 
@@ -72,6 +75,7 @@ public class HomeActivity extends BaseActivity implements Observer {
             nowPlayingFragment = new NowPlayingFragment();
             searchSongFragment = new SearchResultsFragment();
             songListFragment = new SongListFragment();
+            queueSongFragment = new QueueFragment();
             parentalControlSetupFragment = new ParentalControlSetupFragment();
         } else {
             //retrieve the state of the fragment
@@ -90,6 +94,7 @@ public class HomeActivity extends BaseActivity implements Observer {
         // Show the list of songs
         getSongNameList();
         showSongListFragment();
+
         handleIntent(getIntent());
     }
 
@@ -309,6 +314,34 @@ public class HomeActivity extends BaseActivity implements Observer {
         fragmentTransaction.commit();
     }
 
+    public void showQueueFragment() {
+
+        if(MusicPlayerState.getInstance().getQueueSize() > 0) {
+            fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            queueFragSongsDisplay = MusicPlayerState.getInstance().getQueueSongNames();
+            //if the fragment is already in the container, show it
+
+            queueSongFragment = new QueueFragment();
+            fragmentTransaction.remove(songListFragment);
+            fragmentTransaction.add(R.id.fragment_placeholder, queueSongFragment);
+
+            if (nowPlayingFragment.isAdded()) {
+                fragmentTransaction.hide(nowPlayingFragment);
+            }
+            if (parentalControlSetupFragment.isAdded()) {
+                fragmentTransaction.hide(parentalControlSetupFragment);
+            }
+            if (searchSongFragment.isAdded()) {
+                fragmentTransaction.hide(searchSongFragment);
+            }
+
+            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.commit();
+        }else{
+            Toast.makeText(this, "Queue is empty", Toast.LENGTH_LONG).show();
+        }
+    }
+
     public boolean onCreateOptionsMenu(Menu menu) {
         // Inflate the menu; this adds items to the action bar if it is present.
         getMenuInflater().inflate(R.menu.menu_home, menu);
@@ -349,6 +382,11 @@ public class HomeActivity extends BaseActivity implements Observer {
             Log.i(TAG, "Song is not paused");
         }
 
+    }
+
+    //QUEUE BUTTON
+    public void onClickViewQueue(View view){
+        showQueueFragment();
     }
 
     //NEXT BUTTON

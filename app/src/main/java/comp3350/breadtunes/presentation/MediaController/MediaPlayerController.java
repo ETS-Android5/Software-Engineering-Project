@@ -1,8 +1,11 @@
 package comp3350.breadtunes.presentation.MediaController;
 import android.content.Context;
 import android.media.MediaPlayer;
+
+import comp3350.breadtunes.business.LookUpSongs;
 import comp3350.breadtunes.business.MusicPlayerState;
 import comp3350.breadtunes.objects.Song;
+import comp3350.breadtunes.presentation.HomeActivity;
 import comp3350.breadtunes.services.ServiceGateway;
 
 // Class that controls the playing, pausing, and playing next/previous
@@ -41,7 +44,6 @@ public class MediaPlayerController{
                         nextSong = MusicPlayerState.getInstance().getNextSong(); //if repeat mode not on, next song is as usual
                     }
 
-                    //
                     if(nextSong != null){
                         playSong(nextSong, context);
                     }
@@ -50,6 +52,7 @@ public class MediaPlayerController{
 
             response = "Playing "+song.getName();
         }
+
         return response;
     }
 
@@ -85,7 +88,6 @@ public class MediaPlayerController{
         String response;
         if(MusicPlayerState.getInstance().getCurrentlyPlayingSong() != null && MusicPlayerState.getInstance().getCurrentSongList()!= null){ //make sure there is a song playing
 
-            boolean repeatModeIsOn = MusicPlayerState.getInstance().getRepeatMode();
 
             Song nextSong = MusicPlayerState.getInstance().getNextSong();
 

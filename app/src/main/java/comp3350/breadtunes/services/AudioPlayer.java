@@ -74,23 +74,14 @@ public class AudioPlayer implements MediaManager {
     }
 
     @Override
+    public int getDuration(){ return player.getDuration(); }
+
+    @Override
+    public void seekTo(int progress){player.seekTo(progress);}
+
+    @Override
     public void setOnCompletionListener(MediaPlayer.OnCompletionListener listener) {
         player.setOnCompletionListener(listener);
     }
-
-
-    /*
-    @Override
-    public void close() {
-        if (player != null) {
-            if (isPlaying()) {
-                player.stop();
-            }
-
-            player.reset();
-            player.release();
-        }
-    }
-    */
 
 }

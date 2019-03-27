@@ -1,7 +1,9 @@
 package comp3350.breadtunes.presentation;
 
+
 import android.net.Uri;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -10,11 +12,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.SeekBar;
 import android.widget.TextView;
-
 import java.util.Observable;
 import java.util.Observer;
-
 import comp3350.breadtunes.R;
 import comp3350.breadtunes.business.MusicPlayerState;
 import comp3350.breadtunes.business.observables.SongObservable;
@@ -28,6 +29,9 @@ import comp3350.breadtunes.services.ServiceGateway;
 public class NowPlayingFragment extends Fragment implements Observer {
 
     public HomeActivity homeActivity;
+    public SeekBar seekBar;
+    private Handler handler;
+    private Runnable runnable;
 
     public static ImageView songArt;
     public static TextView nowPlayingSongGui;
@@ -44,6 +48,7 @@ public class NowPlayingFragment extends Fragment implements Observer {
     public void onCreate(Bundle savedInstanceState){
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
+
     }
 
 
@@ -61,6 +66,10 @@ public class NowPlayingFragment extends Fragment implements Observer {
         nowPlayingAlbumGui = (TextView) view.findViewById(R.id.album_name);
         songArt = (ImageView) view.findViewById(R.id.song_art);
 
+        seekBar = (SeekBar) view.findViewById(R.id.seek_bar);
+        handler = new Handler();
+
+
         Song currentSong = MusicPlayerState.getInstance().getCurrentlyPlayingSong();
 
         //populate the fields in the fragment
@@ -68,6 +77,33 @@ public class NowPlayingFragment extends Fragment implements Observer {
         nowPlayingAlbumGui.setText(currentSong.getAlbumName());
         nowPlayingArtistGui.setText(currentSong.getArtistName());
         setAlbumArt(currentSong);
+
+
+        if(MusicPlayerState.getInstance().isSongPlaying()){
+            seekBar.setMax(ServiceGateway.getMediaManager().getDuration());
+            changeSeekbar();
+        }
+
+
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                if(b){
+                    ServiceGateway.getMediaManager().seekTo(i);
+                    seekBar.setMax(ServiceGateway.getMediaManager().getDuration());
+                }
+            }
+
+            @Override
+            public void onStartTrackingTouch(SeekBar seekBar) {
+
+            }
+
+            @Override
+            public void onStopTrackingTouch(SeekBar seekBar) {
+
+            }
+        });
     }
 
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -91,6 +127,10 @@ public class NowPlayingFragment extends Fragment implements Observer {
 
             Song song = songObservable.getSong();
 
+
+            seekBar.setMax(ServiceGateway.getMediaManager().getDuration());
+            changeSeekbar();
+
             String songName = song.getName();
             String albumName = song.getAlbumName();
             String artistName = song.getArtistName();
@@ -98,9 +138,14 @@ public class NowPlayingFragment extends Fragment implements Observer {
             nowPlayingSongGui.setText(songName);
             nowPlayingAlbumGui.setText(albumName);
             nowPlayingArtistGui.setText(artistName);
+
+            nowPlayingSongGui.setText(songName);
+            nowPlayingAlbumGui.setText(albumName);
+            nowPlayingArtistGui.setText(artistName);
             setAlbumArt(song);
         }
     }
+
 
     private void setAlbumArt(Song song) {
         AlbumArtLoader artLoader = ServiceGateway.getAlbumArtLoader();
@@ -114,4 +159,18 @@ public class NowPlayingFragment extends Fragment implements Observer {
             songArt.setImageURI(defaultAlbumArt);
         }
     }
+
+    public void changeSeekbar(){
+        seekBar.setProgress(ServiceGateway.getMediaManager().getCurrentPosition());
+
+        runnable = new Runnable(){
+            @Override
+            public void run(){
+                changeSeekbar();
+            }
+        };
+        handler.postDelayed(runnable, 50);
+    }
+
+
 }
