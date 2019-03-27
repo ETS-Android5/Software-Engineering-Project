@@ -123,7 +123,7 @@ public class SongPersistenceHSQL implements SongPersistence {
         try {
             Connection dbConnection = databaseManager.getDbConnection();
 
-            if (song.getFlaggedStatus() == isFlagged) {
+            if (isSongFlagged(song) == isFlagged) {
                 return;
             }
 
