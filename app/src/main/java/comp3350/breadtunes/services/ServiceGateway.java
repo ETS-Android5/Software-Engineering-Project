@@ -2,9 +2,11 @@ package comp3350.breadtunes.services;
 
 import java.util.Observer;
 
+import comp3350.breadtunes.application.BreadTunesApplication;
 import comp3350.breadtunes.business.CredentialManager;
 import comp3350.breadtunes.persistence.interfaces.CredentialPersistence;
 import comp3350.breadtunes.persistence.interfaces.SongPersistence;
+import comp3350.breadtunes.persistence.loaders.AlbumArtLoader;
 import comp3350.breadtunes.presentation.enums.DatabaseState;
 import comp3350.breadtunes.presentation.interfaces.MediaManager;
 import comp3350.breadtunes.business.observables.DatabaseUpdatedObservable;
@@ -19,6 +21,7 @@ public class ServiceGateway
     private static CredentialPersistence credentialPersistence = null;
     private static DatabaseUpdatedObservable dbObservable = new DatabaseUpdatedObservable();
     private static DatabaseManager dbManager = null;
+    private static AlbumArtLoader albumArtLoader = null;
 
     public static void subscribeToDatabaseStateChanges(Observer observer) {
         dbObservable.addObserver(observer);
@@ -34,6 +37,14 @@ public class ServiceGateway
        }
 
        return audioPlayer;
+    }
+
+    public static synchronized AlbumArtLoader getAlbumArtLoader() {
+        if (albumArtLoader == null) {
+            albumArtLoader = new AlbumArtLoader(AppState.applicationContext);
+        }
+
+        return albumArtLoader;
     }
 
     public static synchronized DatabaseManager getDatabaseManager() {

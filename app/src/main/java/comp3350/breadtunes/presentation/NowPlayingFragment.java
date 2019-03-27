@@ -1,9 +1,6 @@
 package comp3350.breadtunes.presentation;
 
-
-import android.app.SearchManager;
-import android.content.Context;
-import android.content.Intent;
+import android.net.Uri;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.view.LayoutInflater;
@@ -13,10 +10,8 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.SearchView;
 import android.widget.TextView;
 
-import java.util.ArrayList;
 import java.util.Observable;
 import java.util.Observer;
 
@@ -24,6 +19,8 @@ import comp3350.breadtunes.R;
 import comp3350.breadtunes.business.MusicPlayerState;
 import comp3350.breadtunes.business.observables.SongObservable;
 import comp3350.breadtunes.objects.Song;
+import comp3350.breadtunes.persistence.loaders.AlbumArtLoader;
+import comp3350.breadtunes.services.ServiceGateway;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -37,8 +34,11 @@ public class NowPlayingFragment extends Fragment implements Observer {
     public static TextView nowPlayingAlbumGui;
     public static TextView nowPlayingArtistGui;
 
+    private Uri defaultAlbumArt;
+
     public NowPlayingFragment() {
         // Required empty public constructor
+        defaultAlbumArt = Uri.parse("android.resource://comp3350.breadtunes/drawable/default_album_art");
     }
 
     public void onCreate(Bundle savedInstanceState){
@@ -61,11 +61,13 @@ public class NowPlayingFragment extends Fragment implements Observer {
         nowPlayingAlbumGui = (TextView) view.findViewById(R.id.album_name);
         songArt = (ImageView) view.findViewById(R.id.song_art);
 
-        //populate the fields in the fragment
-        nowPlayingSongGui.setText(MusicPlayerState.getInstance().getCurrentlyPlayingSong().getName());
-        nowPlayingAlbumGui.setText(MusicPlayerState.getInstance().getCurrentlyPlayingSong().getAlbumName());
-        nowPlayingArtistGui.setText(MusicPlayerState.getInstance().getCurrentlyPlayingSong().getArtistName());
+        Song currentSong = MusicPlayerState.getInstance().getCurrentlyPlayingSong();
 
+        //populate the fields in the fragment
+        nowPlayingSongGui.setText(currentSong.getName());
+        nowPlayingAlbumGui.setText(currentSong.getAlbumName());
+        nowPlayingArtistGui.setText(currentSong.getArtistName());
+        setAlbumArt(currentSong);
     }
 
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -83,20 +85,33 @@ public class NowPlayingFragment extends Fragment implements Observer {
 
     @Override
     public void update(Observable observable, Object o) {
+        if (observable instanceof  SongObservable) {
 
-        SongObservable songObservable = (SongObservable) observable;
+            SongObservable songObservable = (SongObservable) observable;
 
-        Song song = songObservable.getSong();
+            Song song = songObservable.getSong();
 
-        String songName = song.getName();
-        String albumName = song.getAlbumName();
-        String artistName = song.getArtistName();
+            String songName = song.getName();
+            String albumName = song.getAlbumName();
+            String artistName = song.getArtistName();
 
-        nowPlayingSongGui.setText(songName);
-        nowPlayingAlbumGui.setText(albumName);
-        nowPlayingArtistGui.setText(artistName);
-
+            nowPlayingSongGui.setText(songName);
+            nowPlayingAlbumGui.setText(albumName);
+            nowPlayingArtistGui.setText(artistName);
+            setAlbumArt(song);
+        }
     }
 
+    private void setAlbumArt(Song song) {
+        AlbumArtLoader artLoader = ServiceGateway.getAlbumArtLoader();
+        Uri albumArt = artLoader.getAlbumArt(song);
 
+        if (albumArt != null) {
+            songArt.setImageURI(null);
+            songArt.setImageURI(albumArt);
+        } else {
+            songArt.setImageURI(null);
+            songArt.setImageURI(defaultAlbumArt);
+        }
+    }
 }
