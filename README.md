@@ -5,6 +5,7 @@
     <h1>BreadTunes</h1>
     <h3><i>A simple, family-friendly music player for Android.</i></h3>
 </div>
+
 <br/>
 
 
@@ -17,6 +18,8 @@
 Our group ended up choosing to create a music player for Android devices. The player we built, **BreadTunes**, allows a user to play songs from their device. We also built in the ability to flag songs as inappropriate, so that specific songs can be hidden from the music player. This feature was targeted towards parents, as they can let their children use their phone for music without fear of them listening to explicit or inappropriate songs they don't want their children to listen to.
 
 The initial vision for BreadTunes can be seen in the [vision](Documents/VISION.md) document.
+
+A document analyzing this group's work with the project velocity can be found in the [retrospective](Documents/RETROSPECTIVE.md) document.
 
 ## Design
 
