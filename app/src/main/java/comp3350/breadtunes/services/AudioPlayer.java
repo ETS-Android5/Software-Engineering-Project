@@ -84,9 +84,4 @@ public class AudioPlayer implements MediaManager {
         player.setOnCompletionListener(listener);
     }
 
-    @Override
-    public void setOnPreparedListener(MediaPlayer.OnPreparedListener listener){
-        player.setOnPreparedListener(listener);
-    }
-
 }
