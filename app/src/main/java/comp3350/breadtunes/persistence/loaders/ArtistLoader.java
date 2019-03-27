@@ -11,12 +11,6 @@ import comp3350.breadtunes.objects.Album;
 import comp3350.breadtunes.objects.Artist;
 
 public class ArtistLoader {
-    // Get songs from MediaStore before splitting them
-    public static List<Artist> getAllArtists(Context context) {
-        List<Album> albums = AlbumLoader.getAllAlbums(context);
-        return getArtistsFromSongs(albums);
-    }
-
     // Split an existing list of songs into albums
     public static List<Artist> getAllArtists(List<Album> albums) {
         return getArtistsFromSongs(albums);

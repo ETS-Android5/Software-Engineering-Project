@@ -5,7 +5,6 @@ import android.media.MediaPlayer;
 import android.net.Uri;
 
 public interface MediaManager {
-    void startPlayingSong(Context context, int resourceId);
 
     void startPlayingSong(Context context, Uri songUri);
 
@@ -23,5 +22,5 @@ public interface MediaManager {
 
     void setOnCompletionListener(MediaPlayer.OnCompletionListener listener);
 
-    void close();
+    //void close();
 }

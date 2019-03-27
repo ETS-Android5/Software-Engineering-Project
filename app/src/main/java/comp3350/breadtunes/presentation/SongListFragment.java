@@ -21,6 +21,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ListView;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import org.hsqldb.lib.tar.TarFileOutputStream;
@@ -28,11 +29,14 @@ import org.hsqldb.lib.tar.TarFileOutputStream;
 import java.util.Observable;
 import java.util.Observer;
 import comp3350.breadtunes.R;
+import comp3350.breadtunes.business.CredentialManager;
 import comp3350.breadtunes.business.LookUpSongs;
 import comp3350.breadtunes.business.MusicPlayerState;
+import comp3350.breadtunes.business.observables.ParentalControlStatusObservable;
 import comp3350.breadtunes.business.observables.PlayModeObservable;
 import comp3350.breadtunes.business.observables.SongObservable;
 import comp3350.breadtunes.objects.Song;
+import comp3350.breadtunes.services.ServiceGateway;
 
 import static comp3350.breadtunes.presentation.HomeActivity.sList;
 
@@ -46,6 +50,7 @@ public class SongListFragment extends Fragment implements Observer {
     ListView activitySongList;
     String[] songNameList;
     private final String TAG = "HomeActivity";
+    public static TextView parentalControlStatus;
     public static Button nowPlayingSongGui;
     String[] menuItems = new String[2];
     // make a updateQueue status
@@ -64,6 +69,7 @@ public class SongListFragment extends Fragment implements Observer {
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         MusicPlayerState.getInstance().subscribeToSongChange(this);
+        MusicPlayerState.getInstance().subscribeToParentalControlStatusChange(this);
         MusicPlayerState.getInstance().subscribeToPlayModeChange(this);
         return inflater.inflate(R.layout.fragment_song_list, container, false);
     }
@@ -74,15 +80,19 @@ public class SongListFragment extends Fragment implements Observer {
         populateSongListView();
         registerOnClickForSonglist();
         registerOnClickForNowPlayingButton();
+        parentalControlStatus = (TextView) getView().findViewById(R.id.parental_control_status);
     }
 
     public void onResume(){
         super.onResume();
         MusicPlayerState.getInstance().subscribeToSongChange(this);
+        MusicPlayerState.getInstance().subscribeToParentalControlStatusChange(this);
         getSongNames();
         populateSongListView();
         registerOnClickForSonglist();
         registerOnClickForNowPlayingButton();
+        parentalControlStatus = (TextView) getView().findViewById(R.id.parental_control_status);
+        parentalControlStatus.setText(MusicPlayerState.getInstance().getParentalControlStatus());
         nowPlayingSongGui.setText(MusicPlayerState.getInstance().getCurrentlyPlayingSongName()+"\n"+MusicPlayerState.getInstance().getPlayMode());
 
     }
@@ -119,15 +129,23 @@ public class SongListFragment extends Fragment implements Observer {
     public void update(Observable observable, Object o) {
 
         if(observable instanceof SongObservable){
+
             SongObservable songObservable = (SongObservable) observable;
             Song song = songObservable.getSong();
             String songName = song.getName();
             nowPlayingSongGui.setText(songName+"\n"+MusicPlayerState.getInstance().getPlayMode());
-        }else{
+        }else if(observable instanceof PlayModeObservable){
+
             PlayModeObservable playModeObservable = (PlayModeObservable) observable;
-            String playMode = playModeObservable.getPlayMode();;
+            String playMode = playModeObservable.getPlayMode();
             String songName = MusicPlayerState.getInstance().getCurrentlyPlayingSong().getName();
             nowPlayingSongGui.setText(songName+"\n"+playMode);
+        }else{
+            //ELSE its a parental control status observable notification
+
+            ParentalControlStatusObservable parentalControlStatusObservable = (ParentalControlStatusObservable) observable;
+            parentalControlStatus.setText(parentalControlStatusObservable.getParentalControlStatus());
+
         }
     }
 
@@ -145,20 +163,27 @@ public class SongListFragment extends Fragment implements Observer {
         int id = item.getItemId();
         if(id == R.id.parental_lock_on){
 
-            //logic to check in the database if credentials have been set up
-            // if(!credentialManager.credentialsHaveBeenSet())
-            //      homeActivity.showParentalControlSetupFragment();
-            // else
-            //      showLoginFragment
-            //               inside login fragment have option for "forgot password"
+            CredentialManager credentialManager = ServiceGateway.getCredentialManager();
+            if(credentialManager.credentialsHaveBeenSet()){
+
+                if(!MusicPlayerState.getInstance().getParentalControlModeOn()){     //only proceeed if parental control is off
+                    showPINInputDialog(true);
+                }else{
+                    Toast.makeText(homeActivity, "Parental Control is already on", Toast.LENGTH_LONG).show();
+
+                }
 
 
-
-            homeActivity.showParentalControlSetupFragment();
+            }else{
+                homeActivity.showParentalControlSetupFragment();
+            }
         }
         else if(id == R.id.parental_lock_off){
-            //musicPlayerState.setParentalControl( false );
-            showPINInputDialog();
+            if(MusicPlayerState.getInstance().getParentalControlModeOn()){        //only proceed if parental control is on
+                showPINInputDialog(false);
+            }else {
+                Toast.makeText(homeActivity, "Parental Control is already off", Toast.LENGTH_LONG).show();
+            }
         }
 
         return super.onOptionsItemSelected(item);
@@ -236,7 +261,9 @@ public class SongListFragment extends Fragment implements Observer {
             }
     }
 
-    private void showPINInputDialog() {
+
+
+    private void showPINInputDialog(boolean turnOn) {
         final EditText taskEditText = new EditText(homeActivity);
         AlertDialog dialog = new AlertDialog.Builder(homeActivity)
                 .setTitle("Parental Lock")
@@ -245,18 +272,35 @@ public class SongListFragment extends Fragment implements Observer {
                 .setPositiveButton("Submit", new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        String task = String.valueOf(taskEditText.getText());
-                        Toast.makeText(homeActivity, "PIN "+task,Toast.LENGTH_LONG ).show();
+                        String pin = String.valueOf(taskEditText.getText());
+                        CredentialManager credentialManager = ServiceGateway.getCredentialManager();
+                        boolean correctPIN = credentialManager.validatePIN(pin);
+
+                        if(correctPIN){
+
+                            if(turnOn){
+                                MusicPlayerState.getInstance().turnParentalControlOn(true); //parental control mode activated
+                                Toast.makeText(homeActivity, "Parental Control mode activated", Toast.LENGTH_LONG).show();
+                            }else{
+                                MusicPlayerState.getInstance().turnParentalControlOn(false); //turn it off
+                                Toast.makeText(homeActivity, "Parental Control mode deactivated", Toast.LENGTH_LONG).show();
+                            }
+                        }else{
+                            Toast.makeText(homeActivity, "Incorrect PIN, please try again", Toast.LENGTH_LONG).show();
+                        }
+
                     }
                 })
                 .setNeutralButton("Forgot Password?", new DialogInterface.OnClickListener() {
                     public void onClick(DialogInterface dialog, int which) {
-                        Toast.makeText(homeActivity, "too bad", Toast.LENGTH_LONG).show();
+                        homeActivity.showPINResetFragment();
                     }
                 })
                 .setNegativeButton("Cancel", null)
                 .create();
         dialog.show();
     }
+
+
 
 }

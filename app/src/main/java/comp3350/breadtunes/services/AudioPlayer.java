@@ -15,16 +15,6 @@ public class AudioPlayer implements MediaManager {
         player = null;
     }
 
-    @Override
-    public void startPlayingSong(Context context, int resourceId) {
-        if (player != null) {
-            player.reset();
-            player.release();
-        }
-
-        player = MediaPlayer.create(context, resourceId);
-        player.start();
-    }
 
     @Override
     public void startPlayingSong(Context context, Uri songUri) {
@@ -57,7 +47,7 @@ public class AudioPlayer implements MediaManager {
 
     @Override
     public void resumePlayingSong() {
-        if (player != null && songPaused) {
+        if (player != null && isPaused()) {
             player.start();
             songPaused = false;
         }
@@ -75,9 +65,8 @@ public class AudioPlayer implements MediaManager {
     }
 
     @Override
-    public boolean isPaused() {
-        return songPaused;
-    }
+    public boolean isPaused() { return songPaused; }
+
 
     @Override
     public int getCurrentPosition() {
@@ -90,6 +79,7 @@ public class AudioPlayer implements MediaManager {
     }
 
 
+    /*
     @Override
     public void close() {
         if (player != null) {
@@ -101,4 +91,6 @@ public class AudioPlayer implements MediaManager {
             player.release();
         }
     }
+    */
+
 }
