@@ -1,9 +1,9 @@
 <div align="center">
-    ![BreadTunes Logo](Images/breadtunes.png)
+    <img alt="BreadTunes Logo" src="Images/breadtunes.png" />
 </div>
 <div align="center">
     <h1>BreadTunes</h1>
-    <h3>A simple, family-friendly music player for Android.</h3>
+    <h3><i>A simple, family-friendly music player for Android.</i></h3>
 </div>
 <br/>
 
