@@ -1,19 +1,56 @@
-# Bread Tunes Vision Statement
+<div align="center">
+    <img alt="BreadTunes Logo" src="Images/breadtunes.png" />
+</div>
+<div align="center">
+    <h1>BreadTunes</h1>
+    <h3><i>A simple, family-friendly music player for Android.</i></h3>
+</div>
 
-Bread Tunes is a music manager and player for Android devices. This music player will be able to play music files in the device's internal and external memory (such as an SD card). People will be able to browse their music library and perform several actions on their music including: finding and playing songs, seeing information about what's playing, creating their own playlists, and adding songs to a queue. Bread Tunes will also feature a Parental Control that enables parents to hide flagged songs from children.
+<br/>
 
-Bread Tunes will have features focused on assisting people in finding their music painlessly. A person's music can be shown by Artist, Album, Track, Genre, or Playlist, depending on how they want to view their music. The music player will feature recently played, most played and recently added playlists, all of which are automatically updated by the application. A search function will also be included so that people can apply their own textual filter to their music.
 
-Since people may store their music on different places in their phone's storage or on an SD card, Bread Tunes will provide the ability for a person to choose the folder(s) where music is stored on their device. This gives people flexibility - allowing them to have their music in multiple folders contained inside external or internal storage.
+# Group 15 Final Project - Winter 2019
 
-The Parental Control for this music player will be simple to use so that parents can filter their music based on what they don't want their children to listen to. Music can be flagged as age restricted, which may then be filtered out by the interface with a Parental Control toggle. To turn off the parental filter, a password will need to be entered. If someone is not a parent and has no use for this feature, they will be able to turn the Parental Control feature off in the Settings.
+## Introduction
 
-This music player is targeted towards regular people of any age who want a no-frills music player, as well as to parents who want to share music with their children. Bread Tunes is not focused on satisfying the needs of "pro users" who require equalizers or extensive customization features.
+**This application was built for COMP3350 (Software Engineering 1) at the University of Manitoba for the Winter 2019 term**. The point of this project was to create an Android application with good coding practices, a 3-layer architecture, and various levels of testing.
 
-To stand out from the competition, Bread Tunes will provide a great user experience and user interface with optional Parental Controls. A lot of music players available for Android are cluttered with features that the average user does not need, such as being able to customize the interface and providing excessive settings. The aim will be to get rid of a lot of the clutter and keep things simple. Parental Controls are not usually included in music players and we think this feature will be appreciated by parents.
+Our group ended up choosing to create a music player for Android devices. The player we built, **BreadTunes**, allows a user to play songs from their device. We also built in the ability to flag songs as inappropriate, so that specific songs can be hidden from the music player. This feature was targeted towards parents, as they can let their children use their phone for music without fear of them listening to explicit or inappropriate songs they don't want their children to listen to.
 
-The success criteria for Bread Tunes are based on the following:
+The initial vision for BreadTunes can be seen in the [vision](Documents/VISION.md) document.
 
-- Our target users should be able to choose and play a song 15% faster than with a comparable music player.
-- 75% of our target users should rate the interface as cleaner and more intuitive than a comparable music player.
-- 75% of parents should indicate that the music flagging and parental control interface is not difficult to use and is sufficient for what they require.
+A document analyzing this group's work with the project velocity can be found in the [retrospective](Documents/RETROSPECTIVE.md) document.
+
+## Design
+
+BreadTunes was designed with a 3 layer architecture. Our application follows the typical MVC architecture, but we used the names "Presentation, Logic, and Persistence" for the layers throughout the school term. We also have another static _Services_ layer that supplies application-wide singletons.
+
+The general architecture for BreadTunes can be seen in the [architecture](Documents/Architecture.pdf) document
+
+## Running the Application
+
+BreadTunes was built using Android Studio. Running the code is as simple as cloning the repository, and opening it as a project in Android Studio and running it. The steps are as follows:
+
+1. Clone this project on the command line, into a folder that you want the project.
+
+   `git clone https://code.cs.umanitoba.ca/comp3350-winter2019/group-15-bread-tunes.git`
+
+2. Launch Android Studio, and open the cloned project by clicking File -> Open, and navigating to the project in the opened file explorer.
+
+3. Run the BreadTunes application on an emulator or physical Android device with the Run menu dropdown within Android Studio.
+
+## Running the Tests
+
+BreadTunes has 3 different types of tests: Unit, Integration, and System tests. To run any of the tests, first make sure the project is open in Android Studio.
+
+#### Unit Tests
+
+To run the unit tests, right click the file `AllTests.java` in the folder `src/test/java/comp3350/breadtunes/tests`. Then, click "Run AllTests.java".
+
+#### Integration Tests
+
+To run the integration tests... (will finish writing after we set up integration tests).
+
+#### System Tests
+
+To run the system tests... (will finish writing after we set up system tests).
