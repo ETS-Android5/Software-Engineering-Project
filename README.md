@@ -27,7 +27,7 @@ BreadTunes was designed with a 3 layer architecture. Our application follows the
 
 The general architecture for BreadTunes can be seen in the [architecture](Documents/Architecture.pdf) document
 
-## Running the Code
+## Running the Application
 
 BreadTunes was built using Android Studio. Running the code is as simple as cloning the repository, and opening it as a project in Android Studio and running it. The steps are as follows:
 
