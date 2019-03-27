@@ -20,5 +20,9 @@ The initial vision for BreadTunes can be seen in the [vision](Documents/VISION.m
 
 ## Design
 
+BreadTunes was designed with a 3 layer architecture. Our application follows the typical MVC architecture, but we used the names "Presentation, Logic, and Persistence" for the layers throughout the school term. We also have another static _Services_ layer that supplies application-wide singletons.
+
+The general architecture for BreadTunes can be seen in the [architecture](Documents/Architecture.pdf) document.
+
 
 ## Running the Code
