@@ -2,12 +2,11 @@
     ![BreadTunes Logo](Images/breadtunes.png)
 </div>
 <div align="center">
-    <h3>BreadTunes: A music player for the Android platform</h3>
+    <h1>BreadTunes</h1>
+    <h3>A simple, family-friendly music player for Android.</h3>
 </div>
 <br/>
 
-# Group 17 COMP3350 Project - Winter 2019
 
+# Group 15 COMP3350 Project - Winter 2019
 
-
-### Project name: BreadTunes
