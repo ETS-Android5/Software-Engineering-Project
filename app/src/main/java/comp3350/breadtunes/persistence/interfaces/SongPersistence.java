@@ -9,4 +9,6 @@ public interface SongPersistence {
     List<Song> getAllNotFlagged();
     boolean insertSongsNoDuplicates(List<Song> song);
     void setSongFlagged(Song song, boolean isFlagged);
+
+    boolean isSongFlagged(Song song);
 }

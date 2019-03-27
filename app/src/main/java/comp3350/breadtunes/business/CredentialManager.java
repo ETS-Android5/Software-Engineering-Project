@@ -115,4 +115,6 @@ public class CredentialManager {
         CredentialPersistence credentialPersistence = ServiceGateway.getCredentialPersistence();
         credentialPersistence.updateMostRecentCredentialsPin(pinHashed);
     }
+
+
 }

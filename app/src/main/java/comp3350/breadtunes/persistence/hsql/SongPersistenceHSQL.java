@@ -140,6 +140,31 @@ public class SongPersistenceHSQL implements SongPersistence {
         }
     }
 
+    /**
+     * Check if a song is flagged in the database, return true if it is.
+     * the song that will be looked for in the database
+        @param song the song that will be looked up in the database
+     */
+    public boolean isSongFlagged(Song song){
+
+        try{
+            Connection dbConnection = databaseManager.getDbConnection();
+            String query = "SELECT * FROM Songs WHERE URI=?";
+            final PreparedStatement statement = dbConnection.prepareStatement(query);
+            statement.setString(1,song.getSongUri().toString());
+            final ResultSet resultSet = statement.executeQuery();
+            if(resultSet.next()){
+                final Song songInDB = getSongFromResultSet(resultSet);
+                return songInDB.getFlaggedStatus();
+            }else{
+                throw new PersistenceException("Failed to find song");
+            }
+        }catch(Exception e){
+            throw new PersistenceException(e.getMessage());
+        }
+
+    }
+
     private void insertSongs(List<Song> songs) {
         try {
             Connection dbConnection = databaseManager.getDbConnection();
@@ -178,6 +203,8 @@ public class SongPersistenceHSQL implements SongPersistence {
             throw new PersistenceException(e.getMessage());
         }
     }
+
+
 
     private Song getSongFromResultSet(ResultSet resultSet) throws SQLException {
         return new Song.Builder()

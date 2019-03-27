@@ -290,7 +290,6 @@ public class MusicPlayerState {
 
 
     public void addToQueue(Song s){
-       // queue.insert(s);
         queue.add(s);
         Log.i(TAG, "Added song "+s.getName()+" to queue");
         Log.i(TAG, "song at top of queue is "+musicPlayerState.queue.peek().getName());
