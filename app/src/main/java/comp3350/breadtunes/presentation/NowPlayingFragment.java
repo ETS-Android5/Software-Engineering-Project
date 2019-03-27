@@ -75,7 +75,7 @@ public class NowPlayingFragment extends Fragment implements Observer {
         nowPlayingAlbumGui.setText(MusicPlayerState.getInstance().getCurrentlyPlayingSong().getAlbumName());
         nowPlayingArtistGui.setText(MusicPlayerState.getInstance().getCurrentlyPlayingSong().getArtistName());
 
-
+        /*
         ServiceGateway.getMediaManager().setOnPreparedListener(new MediaPlayer.OnPreparedListener(){
             @Override
             public void onPrepared(MediaPlayer mediaPlayer){
@@ -83,6 +83,7 @@ public class NowPlayingFragment extends Fragment implements Observer {
                 changeSeekbar();
             }
         });//???
+        */
 
         if(MusicPlayerState.getInstance().isSongPlaying()){
             seekBar.setMax(ServiceGateway.getMediaManager().getDuration());
@@ -96,7 +97,6 @@ public class NowPlayingFragment extends Fragment implements Observer {
                 if(b){
                     ServiceGateway.getMediaManager().seekTo(i);
                     seekBar.setMax(ServiceGateway.getMediaManager().getDuration());
-                    //changeSeekbar();
                 }
             }
 
@@ -148,15 +148,13 @@ public class NowPlayingFragment extends Fragment implements Observer {
     public void changeSeekbar(){
         seekBar.setProgress(ServiceGateway.getMediaManager().getCurrentPosition());
 
-        if(ServiceGateway.getMediaManager().isPlaying()){
-            runnable = new Runnable(){
-                @Override
-                public void run(){
-                    changeSeekbar();
-                }
-            };
-            handler.postDelayed(runnable, 50);
-        }
+        runnable = new Runnable(){
+            @Override
+            public void run(){
+                changeSeekbar();
+            }
+        };
+        handler.postDelayed(runnable, 50);
     }
 
 }
