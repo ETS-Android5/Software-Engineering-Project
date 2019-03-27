@@ -8,91 +8,103 @@
 
     <TextView
         android:id="@+id/textTitle"
-        android:layout_width="fill_parent"
+        android:layout_width="wrap_content"
         android:layout_height="0dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
         android:text="Songs"
-        android:textAlignment="center"
-        android:textSize="23sp"
+        android:textAppearance="@style/TextAppearance.AppCompat"
+        android:textSize="24sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/parental_control_status"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="160dp"
+        android:layout_height="31dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
         android:text=""
         android:textAlignment="center"
-        android:textSize="23sp"
+        android:textSize="18sp"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textTitle" />
-
+        app:layout_constraintTop_toBottomOf="@+id/textTitle" />
 
 
     <ImageButton
         android:id="@+id/pause_button"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="148dp"
-        android:layout_marginTop="8dp"
+        android:layout_height="55dp"
+        android:layout_marginStart="16dp"
         android:focusable="false"
         android:onClick="onClickPause"
         android:src="@drawable/pause"
         android:textSize="15sp"
         android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/parental_control_status" />
+        app:layout_constraintBottom_toBottomOf="@+id/play_previous_button"
+        app:layout_constraintEnd_toStartOf="@+id/resume_button"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/play_previous_button"
+        app:layout_constraintTop_toTopOf="@+id/play_previous_button" />
 
     <ImageButton
         android:id="@+id/resume_button"
-        android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_width="wrap_content"
+        android:layout_height="55dp"
+        android:layout_marginEnd="16dp"
         android:focusable="false"
         android:onClick="onClickResume"
+        android:src="@drawable/play"
         android:text="Resume"
         android:textSize="15sp"
         android:textStyle="bold"
-        app:layout_constraintLeft_toRightOf="@id/pause_button"
-        app:layout_constraintTop_toBottomOf="@id/parental_control_status"
-        android:src="@drawable/play"/>
-
+        app:layout_constraintBottom_toBottomOf="@+id/pause_button"
+        app:layout_constraintEnd_toStartOf="@+id/play_next_button"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/pause_button"
+        app:layout_constraintTop_toTopOf="@+id/pause_button" />
 
 
     <ImageButton
         android:id="@+id/play_previous_button"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
+        android:layout_height="55dp"
         android:layout_marginTop="8dp"
+        android:focusable="false"
         android:onClick="onClickPlayPrevious"
+        android:src="@drawable/previous"
         android:textSize="15sp"
         android:textStyle="bold"
-        app:layout_constraintLeft_toRightOf="@id/resume_button"
-        app:layout_constraintTop_toBottomOf="@id/parental_control_status"
-        android:focusable="false"
-        android:src="@drawable/previous"/>
+        app:layout_constraintEnd_toStartOf="@+id/pause_button"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/linearLayout3"
+        app:layout_constraintTop_toBottomOf="@+id/parental_control_status" />
 
     <ImageButton
         android:id="@+id/play_next_button"
         android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="16dp"
-        android:layout_marginTop="8dp"
+        android:layout_height="55dp"
+        android:focusable="false"
         android:onClick="onClickPlayNext"
+        android:src="@drawable/next"
         android:text="Next"
         android:textSize="15sp"
         android:textStyle="bold"
-        app:layout_constraintLeft_toRightOf="@id/play_previous_button"
-        app:layout_constraintTop_toBottomOf="@id/parental_control_status"
-        android:focusable="false"
-        android:src="@drawable/next"/>
+        app:layout_constraintBottom_toBottomOf="@+id/resume_button"
+        app:layout_constraintEnd_toStartOf="@+id/linearLayout3"
+        app:layout_constraintHorizontal_bias="0.5"
+        app:layout_constraintStart_toEndOf="@+id/resume_button"
+        app:layout_constraintTop_toTopOf="@+id/resume_button" />
 
     <ListView
         android:id="@+id/songList"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="731dp"
         android:layout_marginTop="8dp"
         android:background="@color/lightGray"
         app:layout_constraintTop_toBottomOf="@id/pause_button"
@@ -100,11 +112,13 @@
 
 
     <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+        android:id="@+id/linearLayout3"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="bottom|end"
         android:orientation="vertical"
-        app:layout_constraintStart_toStartOf="parent">
+        app:layout_constraintStart_toStartOf="parent"
+        tools:layout_editor_absoluteY="8dp">
 
         <Button
             android:id="@+id/song_name"
