@@ -64,7 +64,17 @@ public class LookUpSongs {
         return matchingArtists;
     }
 
+    // DO NOT REMOVE, it is used; talk to mario if questions
+    public static Song getSong(List<Song> songList, String songName){
+        for (Song song: songList) {
+            if (song.getName().equals(songName)) {
+                return song;
+            }
+        }
+        return null;
+    }
 
+    //DO NOT REMOVE, - talk to Mario if questions
     public static Song getSong(ArrayList<Song> songList, String songName){
         for (Song song: songList) {
             if (song.getName().equals(songName)) {
