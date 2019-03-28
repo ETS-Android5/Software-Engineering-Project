@@ -12,6 +12,7 @@ import comp3350.breadtunes.tests.objects.*;
         SongTest.class,
         LookUpSongsTest.class,
         MusicPlayerStateTest.class,
+        CredentialManagerTest.class,
 })
 public class AllTests {
 }
