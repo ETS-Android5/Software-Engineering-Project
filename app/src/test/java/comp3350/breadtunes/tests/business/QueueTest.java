@@ -2,9 +2,7 @@ package comp3350.breadtunes.tests.business;
 
 import org.junit.Test;
 
-import comp3350.breadtunes.business.SongQueue;
 import comp3350.breadtunes.objects.Song;
-import comp3350.breadtunes.objects.SongDuration;
 import comp3350.breadtunes.tests.watchers.TestLogger;
 
 import static org.junit.Assert.*;
@@ -111,7 +109,7 @@ public class QueueTest extends TestLogger {
         Song expectedSong = q.remove();
 
         // Assert
-        assertEquals(expectedSong, song1); // Expect that the only item in the queue was song1
+        assertEquals(expectedSong, song1); // Expect that the only item in the updateQueue was song1
         assertNotNull(expectedSong);
         assertFalse(q.isFull());
         assertTrue(q.isEmpty());

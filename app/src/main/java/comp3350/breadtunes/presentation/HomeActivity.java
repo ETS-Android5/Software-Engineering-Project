@@ -2,6 +2,7 @@ package comp3350.breadtunes.presentation;
 import comp3350.breadtunes.R;
 import comp3350.breadtunes.business.LookUpSongs;
 import comp3350.breadtunes.business.observables.DatabaseUpdatedObservable;
+import comp3350.breadtunes.business.observables.ParentalControlStatusObservable;
 import comp3350.breadtunes.presentation.MediaController.MediaPlayerController;
 import comp3350.breadtunes.services.ServiceGateway;
 import comp3350.breadtunes.business.MusicPlayerState;
@@ -16,6 +17,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.Toast;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -31,77 +33,108 @@ import java.util.Observer;
 //    // PLAY SONGS https://developer.android.com/guide/topics/media/mediaplayer#java
 //==============================
 
-//@// TODO: 20/03/19 agregar accion para forgot pin, agregar cambios en music player state que represente si esta activado, agregar checksa credentials have been set in parental lock activation, agregar ui element que diga "PARENTAL LOCK ON/OFF"
 
 
 public class HomeActivity extends BaseActivity implements Observer {
     MediaPlayerController mediaPlayerController;  // controls playback operations
     public static ArrayList<Song> sList = new ArrayList<>();
-    String[] songNamesToDisplay;
-    private final String TAG = "HomeActivity";
-    LookUpSongs findSong;
+    String[] songNamesToDisplay; //song names displayed in the songlist fragment
+    private final String TAG = "HomeActivity"; // tag for logs
+    String[] queueFragSongsDisplay; //songs displayed in the queue fragment
+
     private FragmentTransaction fragmentTransaction;
 
     // fragments used in the main activity
     private NowPlayingFragment nowPlayingFragment;
     private SearchResultsFragment searchSongFragment;
     private SongListFragment songListFragment;
+    private QueueFragment queueSongFragment;
     private ParentalControlSetupFragment parentalControlSetupFragment;
     private ResetPINFragment resetPINFragment;
 
     // the list of songs acquired from Persistance layer
-    List<Song> songList;
+    List<Song> persistanceSongList;
 
     //variables for getting search query and launching search results fragment
     List<Song> sResult;
     String[] result;
+    LookUpSongs findSong; //loook up service to search for songs on the search bar
 
 
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_home);
-        ServiceGateway.subscribeToDatabaseStateChanges(this);
 
+        // Set subscriptions
+        ServiceGateway.subscribeToDatabaseStateChanges(this);
+        MusicPlayerState.getInstance().subscribeToParentalControlStatusChange(this);
+
+        // Prepare fragments
         if (savedInstanceState == null) {
             resetPINFragment = new ResetPINFragment();
             nowPlayingFragment = new NowPlayingFragment();
             searchSongFragment = new SearchResultsFragment();
             songListFragment = new SongListFragment();
+            queueSongFragment = new QueueFragment();
             parentalControlSetupFragment = new ParentalControlSetupFragment();
         } else {
             //retrieve the state of the fragment
             songListFragment = (SongListFragment) getSupportFragmentManager().getFragment(savedInstanceState, "songlist_fragment");
         }
 
-
+        // Retrieve songs from database
         getSongsFromPersistance();
 
-
+        // Create media controller
         mediaPlayerController = new MediaPlayerController();
-        findSong = new LookUpSongs(songList);
 
+        // Create song search helper
+        findSong = new LookUpSongs();
 
-        refreshSongList();
-        showSongListFragment(); //put the song list fragment on top of the main activity
+        // Show the list of songs
+        getSongNameList();
+        showSongListFragment();
+
         handleIntent(getIntent());
-    }//on create
-
-    public void getSongsFromPersistance() {
-        songList = new ArrayList<>();
-        songList.addAll(ServiceGateway.getSongPersistence().getAll());
     }
 
-    public void refreshSongList() {
-        sList.addAll(songList);
-        songNamesToDisplay = new String[songList.size()];
+    public void getSongsFromPersistance() {
+        persistanceSongList = new ArrayList<>();
+        persistanceSongList.addAll(ServiceGateway.getSongPersistence().getAll());
+    }
+
+    public void getUnflaggedSongsFromPersistence() {
+        persistanceSongList = new ArrayList<>();
+        persistanceSongList.addAll(ServiceGateway.getSongPersistence().getAllNotFlagged());
+    }
+
+    //update the song names in the list that gets displayed
+    public void getSongNameList() {
+        sList = new ArrayList<>();
+        sList.addAll(persistanceSongList);
+        songNamesToDisplay = new String[persistanceSongList.size()];
         for (int i = 0; i < songNamesToDisplay.length; i++)
-            songNamesToDisplay[i] = songList.get(i).getName();
+            songNamesToDisplay[i] = persistanceSongList.get(i).getName();
+    }
+
+
+    public void refreshSongList() {
+        getSongNameList();
+        MusicPlayerState.getInstance().setCurrentSongList(sList);
+        songListFragment = new SongListFragment();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.fragment_placeholder, songListFragment).commitAllowingStateLoss();
     }
 
     protected void onResume() {
         super.onResume();
-        getSongsFromPersistance();
-        refreshSongList();
+        if(MusicPlayerState.getInstance().getParentalControlModeOn()){
+            getUnflaggedSongsFromPersistence();
+        }else{
+            getSongsFromPersistance();
+        }
+
+        getSongNameList();
     }
 
     protected void onStart() {
@@ -131,14 +164,16 @@ public class HomeActivity extends BaseActivity implements Observer {
     }
 
     protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
     }
 
 
     //method called by fragments to avoid context issues
     public void playSong(Song song) {
         String playStatus = mediaPlayerController.playSong(song, this);
+        if(playStatus.equals("Parental control does not allow this song to be played")) //only show this message
+            Toast.makeText(this, playStatus, Toast.LENGTH_SHORT).show();
         Log.i(TAG, playStatus);
+
     }
 
     public void showSongListFragment() {
@@ -279,14 +314,42 @@ public class HomeActivity extends BaseActivity implements Observer {
         if(searchSongFragment.isAdded()){
             fragmentTransaction.hide(searchSongFragment);
         }
-        if(parentalControlSetupFragment.isAdded()){
-            fragmentTransaction.hide(parentalControlSetupFragment);
-        }
         if(resetPINFragment.isAdded()){
             fragmentTransaction.hide(resetPINFragment);
         }
 
         fragmentTransaction.commit();
+    }
+
+    public void showQueueFragment() {
+
+        if(MusicPlayerState.getInstance().getQueueSize() > 0) {
+            fragmentTransaction = getSupportFragmentManager().beginTransaction();
+            queueFragSongsDisplay = MusicPlayerState.getInstance().getQueueSongNames();
+            //if the fragment is already in the container, show it
+
+            queueSongFragment = new QueueFragment();
+            fragmentTransaction.remove(songListFragment);
+            fragmentTransaction.add(R.id.fragment_placeholder, queueSongFragment);
+
+            if (nowPlayingFragment.isAdded()) {
+                fragmentTransaction.hide(nowPlayingFragment);
+            }
+            if (parentalControlSetupFragment.isAdded()) {
+                fragmentTransaction.hide(parentalControlSetupFragment);
+            }
+            if (searchSongFragment.isAdded()) {
+                fragmentTransaction.hide(searchSongFragment);
+            }
+            if(resetPINFragment.isAdded()){
+                fragmentTransaction.hide(resetPINFragment);
+            }
+
+            fragmentTransaction.addToBackStack(null);
+            fragmentTransaction.commit();
+        }else{
+            Toast.makeText(this, "Queue is empty", Toast.LENGTH_LONG).show();
+        }
     }
 
     public boolean onCreateOptionsMenu(Menu menu) {
@@ -327,8 +390,13 @@ public class HomeActivity extends BaseActivity implements Observer {
             Log.i(TAG, response); //display result of operation to log
         } else {
             Log.i(TAG, "Song is not paused");
-        }git
+        }
 
+    }
+
+    //QUEUE BUTTON
+    public void onClickViewQueue(View view){
+        showQueueFragment();
     }
 
     //NEXT BUTTON
@@ -383,13 +451,21 @@ public class HomeActivity extends BaseActivity implements Observer {
                 case DatabaseUpdated:
                     getSongsFromPersistance();
                     refreshSongList();
-                    MusicPlayerState.getInstance().setCurrentSongList(sList);
-                    songListFragment = new SongListFragment();
-                    getSupportFragmentManager().beginTransaction()
-                            .replace(R.id.fragment_placeholder, songListFragment).commit();
                     break;
                 case DatabaseEmpty:
                     break;
+            }
+        }
+        else if (observable instanceof ParentalControlStatusObservable) {
+            boolean parentalModeOn = ((ParentalControlStatusObservable) observable).getParentalControlStatusBoolean();
+
+            MusicPlayerState.getInstance().clearQueue(); //clear the queue on any mode change
+            if (parentalModeOn) {
+                getUnflaggedSongsFromPersistence();
+                refreshSongList();
+            } else {
+                getSongsFromPersistance();
+                refreshSongList();
             }
         }
     }

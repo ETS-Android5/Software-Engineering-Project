@@ -8,13 +8,10 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.EditText;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import comp3350.breadtunes.R;
 import comp3350.breadtunes.business.CredentialManager;
-import comp3350.breadtunes.objects.SecureCredentials;
-import comp3350.breadtunes.persistence.CredentialPersistence;
 import comp3350.breadtunes.services.ServiceGateway;
 
 /**

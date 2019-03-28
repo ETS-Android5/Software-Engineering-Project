@@ -1,4 +1,4 @@
-package comp3350.breadtunes.business.enums;
+package comp3350.breadtunes.presentation.enums;
 
 public enum DatabaseState {
     DatabaseEmpty,

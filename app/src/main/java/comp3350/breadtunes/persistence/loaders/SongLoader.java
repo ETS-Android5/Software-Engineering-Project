@@ -57,36 +57,30 @@ public class SongLoader {
     }
 
     private static Song getSongFromCursor(Cursor cursor) {
-        try {
-            int songIdIndex = cursor.getColumnIndex(MediaStore.MediaColumns._ID);
-            int titleIndex = cursor.getColumnIndex(MediaStore.Audio.AudioColumns.TITLE);
-            int trackIndex = cursor.getColumnIndex(MediaStore.Audio.AudioColumns.TRACK);
-            int yearIndex = cursor.getColumnIndex(MediaStore.Audio.AudioColumns.YEAR);
-            int durationIndex = cursor.getColumnIndex(MediaStore.Audio.AudioColumns.DURATION);
-            int albumIdIndex = cursor.getColumnIndex(MediaStore.Audio.AudioColumns.ALBUM_ID);
-            int artistIdIndex = cursor.getColumnIndex(MediaStore.Audio.AudioColumns.ARTIST_ID);
-            int albumNameIndex = cursor.getColumnIndex(MediaStore.Audio.AudioColumns.ALBUM);
-            int artistNameIndex = cursor.getColumnIndex(MediaStore.Audio.AudioColumns.ARTIST);
+        int songIdIndex = cursor.getColumnIndex(MediaStore.MediaColumns._ID);
+        int titleIndex = cursor.getColumnIndex(MediaStore.Audio.AudioColumns.TITLE);
+        int trackIndex = cursor.getColumnIndex(MediaStore.Audio.AudioColumns.TRACK);
+        int yearIndex = cursor.getColumnIndex(MediaStore.Audio.AudioColumns.YEAR);
+        int durationIndex = cursor.getColumnIndex(MediaStore.Audio.AudioColumns.DURATION);
+        int albumIdIndex = cursor.getColumnIndex(MediaStore.Audio.AudioColumns.ALBUM_ID);
+        int artistIdIndex = cursor.getColumnIndex(MediaStore.Audio.AudioColumns.ARTIST_ID);
+        int albumNameIndex = cursor.getColumnIndex(MediaStore.Audio.AudioColumns.ALBUM);
+        int artistNameIndex = cursor.getColumnIndex(MediaStore.Audio.AudioColumns.ARTIST);
 
-            int songId = cursor.getInt(songIdIndex);
+        int songId = cursor.getInt(songIdIndex);
 
-            return new Song.Builder()
-                    .songId(cursor.getInt(songIdIndex))
-                    .name(cursor.getString(titleIndex))
-                    .trackNumber(cursor.getInt(trackIndex))
-                    .year(cursor.getInt(yearIndex))
-                    .duration(SongDuration.convertMillisToDuration(cursor.getLong(durationIndex)))
-                    .songUri(Uri.withAppendedPath(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, String.valueOf(songId)))
-                    .albumId(cursor.getInt(albumIdIndex))
-                    .artistId(cursor.getInt(artistIdIndex))
-                    .albumName(cursor.getString(albumNameIndex))
-                    .artistName(cursor.getString(artistNameIndex))
-                    .flaggedAsInappropriate(false)
-                    .build();
-
-        } catch (Exception ex) {
-            System.out.println(ex);
-            return new Song.Builder().build();
-        }
+        return new Song.Builder()
+                .songId(cursor.getInt(songIdIndex))
+                .name(cursor.getString(titleIndex))
+                .trackNumber(cursor.getInt(trackIndex))
+                .year(cursor.getInt(yearIndex))
+                .duration(SongDuration.convertMillisToDuration(cursor.getLong(durationIndex)))
+                .songUri(Uri.withAppendedPath(MediaStore.Audio.Media.EXTERNAL_CONTENT_URI, String.valueOf(songId)))
+                .albumId(cursor.getInt(albumIdIndex))
+                .artistId(cursor.getInt(artistIdIndex))
+                .albumName(cursor.getString(albumNameIndex))
+                .artistName(cursor.getString(artistNameIndex))
+                .flaggedAsInappropriate(false)
+                .build();
     }
 }
