@@ -380,25 +380,6 @@ public class HomeActivity extends BaseActivity implements Observer {
         }
         return songNames;
     }
-//
-//    // PAUSE BUTTON
-//    public void onClickPause(View view) {
-//        String response = mediaPlayerController.pauseSong();
-//        Log.i(TAG, response);
-//
-//    }
-//
-//    //RESUME BUTTON
-//    public void onClickResume(View view) {
-//        //make sure a song is actually paused
-//        if (MusicPlayerState.getInstance().isSongPaused()) {
-//            String response = mediaPlayerController.resumeSong();
-//            Log.i(TAG, response); //display result of operation to log
-//        } else {
-//            Log.i(TAG, "Song is not paused");
-//        }
-//
-//    }
 
 
     public void onClickPlayPause(View view){
@@ -448,12 +429,14 @@ public class HomeActivity extends BaseActivity implements Observer {
     //SHUFFLE Button
     public void onClickShuffle(View view) {
         String response = mediaPlayerController.setShuffle();
+        nowPlayingFragment.updateShuffleRepeatButtons();
         Log.i(TAG, response);
     }
 
     //REPEAT button
     public void onClickRepeat(View view) {
         String response = mediaPlayerController.setRepeat();
+        nowPlayingFragment.updateShuffleRepeatButtons();
         Log.i(TAG, response);
     }
 

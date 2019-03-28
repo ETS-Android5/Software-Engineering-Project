@@ -174,6 +174,23 @@ public class NowPlayingFragment extends Fragment implements Observer {
         }
     }
 
+    public void updateShuffleRepeatButtons(){
+
+        ImageButton shuffleButton = (ImageButton) Objects.requireNonNull(getView().findViewById(R.id.shuffle_button));
+        if(ServiceGateway.getMusicPlayerState().getShuffleMode()){
+            shuffleButton.setImageResource(R.drawable.shuffle_on);
+        }else{
+            shuffleButton.setImageResource(R.drawable.shuffle);
+        }
+
+        ImageButton repeatButton = (ImageButton) Objects.requireNonNull(getView().findViewById(R.id.repeat_button));
+        if(ServiceGateway.getMusicPlayerState().getRepeatMode()){
+            repeatButton.setImageResource(R.drawable.repeat_on);
+        }else{
+            repeatButton.setImageResource(R.drawable.repeat);
+        }
+    }
+
 
     private void setAlbumArt(Song song) {
         AlbumArtLoader artLoader = ServiceGateway.getAlbumArtLoader();
