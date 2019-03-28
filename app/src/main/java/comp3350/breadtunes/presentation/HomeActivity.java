@@ -459,6 +459,7 @@ public class HomeActivity extends BaseActivity implements Observer {
         else if (observable instanceof ParentalControlStatusObservable) {
             boolean parentalModeOn = ((ParentalControlStatusObservable) observable).getParentalControlStatusBoolean();
 
+            MusicPlayerState.getInstance().clearQueue(); //clear the queue on any mode change
             if (parentalModeOn) {
                 getUnflaggedSongsFromPersistence();
                 refreshSongList();

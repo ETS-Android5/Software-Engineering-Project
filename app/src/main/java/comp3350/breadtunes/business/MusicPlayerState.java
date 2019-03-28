@@ -287,6 +287,9 @@ public class MusicPlayerState {
         musicPlayerState.updateNextSong();
     }
 
+    public void clearQueue(){
+        musicPlayerState.queue.clear();
+    }
 
     public void addToQueue(Song s){
         queue.add(s);
