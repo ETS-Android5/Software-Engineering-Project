@@ -42,7 +42,6 @@ public class MusicPlayerState {
     private String currentPlayingSongName; //the name of the current song, must be saved and restored in main activity
 
     //queue
-   // private SongQueue queue;
     private Deque<Song> queue;
 
     //to get random song

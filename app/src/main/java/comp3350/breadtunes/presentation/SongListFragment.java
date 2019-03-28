@@ -234,7 +234,7 @@ public class SongListFragment extends Fragment implements Observer {
 
     public void onCreateContextMenu(ContextMenu menu, View v,ContextMenu.ContextMenuInfo menuInfo) {
             AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
-            menu.setHeaderTitle(sList.get(info.position).getName());
+            menu.setHeaderTitle(MusicPlayerState.getInstance().getCurrentSongList().get(info.position).getName());
             menu.add(Menu.NONE, 0,0, "Add to Queue");
             menu.add(Menu.NONE, 1,1, "Play Next");
 
@@ -254,7 +254,7 @@ public class SongListFragment extends Fragment implements Observer {
     public boolean onContextItemSelected(MenuItem item){
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
         int menuItemIndex = item.getItemId();
-        String listItemName = sList.get(info.position).getName();
+        String listItemName = MusicPlayerState.getInstance().getCurrentSongList().get(info.position).getName();
 
         switch(item.getItemId()) {
             case 0:

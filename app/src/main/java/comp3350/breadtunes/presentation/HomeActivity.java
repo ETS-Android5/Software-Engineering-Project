@@ -39,8 +39,7 @@ public class HomeActivity extends BaseActivity implements Observer {
     MediaPlayerController mediaPlayerController;  // controls playback operations
     public static ArrayList<Song> sList = new ArrayList<>();
     String[] songNamesToDisplay; //song names displayed in the songlist fragment
-    private final String TAG = "HomeActivity";
-    LookUpSongs findSong;
+    private final String TAG = "HomeActivity"; // tag for logs
     String[] queueFragSongsDisplay; //songs displayed in the queue fragment
 
     private FragmentTransaction fragmentTransaction;
@@ -54,11 +53,12 @@ public class HomeActivity extends BaseActivity implements Observer {
     private ResetPINFragment resetPINFragment;
 
     // the list of songs acquired from Persistance layer
-    List<Song> songList;
+    List<Song> persistanceSongList;
 
     //variables for getting search query and launching search results fragment
     List<Song> sResult;
     String[] result;
+    LookUpSongs findSong; //loook up service to search for songs on the search bar
 
 
     protected void onCreate(Bundle savedInstanceState) {
@@ -89,7 +89,7 @@ public class HomeActivity extends BaseActivity implements Observer {
         mediaPlayerController = new MediaPlayerController();
 
         // Create song search helper
-        findSong = new LookUpSongs(songList);
+        findSong = new LookUpSongs();
 
         // Show the list of songs
         getSongNameList();
@@ -99,28 +99,31 @@ public class HomeActivity extends BaseActivity implements Observer {
     }
 
     public void getSongsFromPersistance() {
-        songList = new ArrayList<>();
-        songList.addAll(ServiceGateway.getSongPersistence().getAll());
+        persistanceSongList = new ArrayList<>();
+        persistanceSongList.addAll(ServiceGateway.getSongPersistence().getAll());
     }
 
     public void getUnflaggedSongsFromPersistence() {
-        songList = new ArrayList<>();
-        songList.addAll(ServiceGateway.getSongPersistence().getAllNotFlagged());
+        persistanceSongList = new ArrayList<>();
+        persistanceSongList.addAll(ServiceGateway.getSongPersistence().getAllNotFlagged());
     }
 
+    //update the song names in the list that gets displayed
     public void getSongNameList() {
-        sList.addAll(songList);
-        songNamesToDisplay = new String[songList.size()];
+        sList = new ArrayList<>();
+        sList.addAll(persistanceSongList);
+        songNamesToDisplay = new String[persistanceSongList.size()];
         for (int i = 0; i < songNamesToDisplay.length; i++)
-            songNamesToDisplay[i] = songList.get(i).getName();
+            songNamesToDisplay[i] = persistanceSongList.get(i).getName();
     }
+
 
     public void refreshSongList() {
         getSongNameList();
         MusicPlayerState.getInstance().setCurrentSongList(sList);
         songListFragment = new SongListFragment();
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_placeholder, songListFragment).commit();
+                .replace(R.id.fragment_placeholder, songListFragment).commitAllowingStateLoss();
     }
 
     protected void onResume() {
@@ -161,15 +164,16 @@ public class HomeActivity extends BaseActivity implements Observer {
     }
 
     protected void onSaveInstanceState(Bundle outState) {
-        super.onSaveInstanceState(outState);
     }
 
 
     //method called by fragments to avoid context issues
     public void playSong(Song song) {
         String playStatus = mediaPlayerController.playSong(song, this);
+        if(playStatus.equals("Parental control does not allow this song to be played")) //only show this message
+            Toast.makeText(this, playStatus, Toast.LENGTH_SHORT).show();
         Log.i(TAG, playStatus);
-        Toast.makeText(this, playStatus, Toast.LENGTH_SHORT).show();
+
     }
 
     public void showSongListFragment() {
