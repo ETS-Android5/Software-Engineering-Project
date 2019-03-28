@@ -6,11 +6,11 @@ import comp3350.breadtunes.business.observables.ParentalControlStatusObservable;
 import comp3350.breadtunes.presentation.MediaController.MediaPlayerController;
 import comp3350.breadtunes.services.ObservableService;
 import comp3350.breadtunes.services.ServiceGateway;
-import comp3350.breadtunes.business.MusicPlayerState;
 import comp3350.breadtunes.objects.Song;
 import comp3350.breadtunes.presentation.AbstractActivities.BaseActivity;
 
 import android.app.SearchManager;
+import android.app.Service;
 import android.content.Intent;
 import android.os.Bundle;
 import android.support.v4.app.FragmentTransaction;
@@ -87,7 +87,7 @@ public class HomeActivity extends BaseActivity implements Observer {
         getSongsFromPersistance();
 
         // Create media controller
-        mediaPlayerController = new MediaPlayerController();
+        mediaPlayerController = new MediaPlayerController(ServiceGateway.getMusicPlayerState());
 
         // Create song search helper
         findSong = new LookUpSongs();
@@ -121,7 +121,7 @@ public class HomeActivity extends BaseActivity implements Observer {
 
     public void refreshSongList() {
         getSongNameList();
-        MusicPlayerState.getInstance().setCurrentSongList(sList);
+        ServiceGateway.getMusicPlayerState().setCurrentSongList(sList);
         songListFragment = new SongListFragment();
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_placeholder, songListFragment).commitAllowingStateLoss();
@@ -129,9 +129,12 @@ public class HomeActivity extends BaseActivity implements Observer {
 
     protected void onResume() {
         super.onResume();
-        if(MusicPlayerState.getInstance().getParentalControlModeOn()){
+
+        boolean parentalModeOn = ServiceGateway.getMusicPlayerState().getParentalControlModeOn();
+
+        if (parentalModeOn) {
             getUnflaggedSongsFromPersistence();
-        }else{
+        } else {
             getSongsFromPersistance();
         }
 
@@ -323,10 +326,9 @@ public class HomeActivity extends BaseActivity implements Observer {
     }
 
     public void showQueueFragment() {
-
-        if(MusicPlayerState.getInstance().getQueueSize() > 0) {
+        if(ServiceGateway.getMusicPlayerState().getQueueSize() > 0) {
             fragmentTransaction = getSupportFragmentManager().beginTransaction();
-            queueFragSongsDisplay = MusicPlayerState.getInstance().getQueueSongNames();
+            queueFragSongsDisplay = ServiceGateway.getMusicPlayerState().getQueueSongNames();
             //if the fragment is already in the container, show it
 
             queueSongFragment = new QueueFragment();
@@ -384,15 +386,12 @@ public class HomeActivity extends BaseActivity implements Observer {
 
     //RESUME BUTTON
     public void onClickResume(View view) {
-        //make sure a song is actually paused
-        if (MusicPlayerState.getInstance().isSongPaused()) {
-            Song pausedSong = MusicPlayerState.getInstance().getCurrentlyPlayingSong();   //get the current playing song from the app state
+        if (ServiceGateway.getMusicPlayerState().isSongPaused()) {
             String response = mediaPlayerController.resumeSong();
             Log.i(TAG, response); //display result of operation to log
         } else {
             Log.i(TAG, "Song is not paused");
         }
-
     }
 
     //QUEUE BUTTON
@@ -460,7 +459,7 @@ public class HomeActivity extends BaseActivity implements Observer {
         else if (observable instanceof ParentalControlStatusObservable) {
             boolean parentalModeOn = ((ParentalControlStatusObservable) observable).getParentalControlStatusBoolean();
 
-            MusicPlayerState.getInstance().clearQueue(); //clear the queue on any mode change
+            ServiceGateway.getMusicPlayerState().clearQueue(); // clear the queue on any mode change
             if (parentalModeOn) {
                 getUnflaggedSongsFromPersistence();
                 refreshSongList();

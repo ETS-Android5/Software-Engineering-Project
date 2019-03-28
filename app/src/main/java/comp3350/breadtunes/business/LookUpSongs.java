@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import comp3350.breadtunes.objects.Song;
+import comp3350.breadtunes.services.ServiceGateway;
 
 public class LookUpSongs {
 
@@ -11,8 +12,10 @@ public class LookUpSongs {
     public List<Song> searchSongs(String input) {
         List<Song> matchingSongs = new ArrayList<>();
 
-        for (int i = 0; i < MusicPlayerState.getInstance().getCurrentSongList().size(); i++) {
-            Song ss = MusicPlayerState.getInstance().getCurrentSongList().get(i);
+        List<Song> currentSongList = ServiceGateway.getMusicPlayerState().getCurrentSongList();
+
+        for (int i = 0; i < currentSongList.size(); i++) {
+            Song ss = currentSongList.get(i);
 
             if (input.length() != 0 && ss.getName().toUpperCase().contains(input.toUpperCase())) {
                 matchingSongs.add(ss);

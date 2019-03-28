@@ -70,7 +70,7 @@ public class NowPlayingFragment extends Fragment implements Observer {
         handler = new Handler();
 
 
-        Song currentSong = MusicPlayerState.getInstance().getCurrentlyPlayingSong();
+        Song currentSong = ServiceGateway.getMusicPlayerState().getCurrentlyPlayingSong();
 
         //populate the fields in the fragment
         nowPlayingSongGui.setText(currentSong.getName());
@@ -79,7 +79,7 @@ public class NowPlayingFragment extends Fragment implements Observer {
         setAlbumArt(currentSong);
 
 
-        if(MusicPlayerState.getInstance().isSongPlaying()){
+        if(ServiceGateway.getMusicPlayerState().isSongPlaying()){
             seekBar.setMax(ServiceGateway.getMediaManager().getDuration());
             changeSeekbar();
         }
