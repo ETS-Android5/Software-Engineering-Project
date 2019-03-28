@@ -73,7 +73,7 @@ public class ServiceGateway
 
     public static synchronized CredentialManager getCredentialManager() {
         if (credentialManager == null) {
-            credentialManager = new CredentialManager();
+            credentialManager = new CredentialManager(getCredentialPersistence());
         }
 
         return credentialManager;

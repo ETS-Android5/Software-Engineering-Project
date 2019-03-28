@@ -7,9 +7,10 @@ import comp3350.breadtunes.persistence.interfaces.CredentialPersistence;
 import comp3350.breadtunes.services.ServiceGateway;
 
 public class CredentialManager {
+    CredentialPersistence credentialPersistence;
 
-    public CredentialManager() {
-
+    public CredentialManager(CredentialPersistence credentialPersistence) {
+        this.credentialPersistence = credentialPersistence;
     }
 
     /**
@@ -18,7 +19,6 @@ public class CredentialManager {
      * @return true if there are existing credentials, false if not.
      */
     public boolean credentialsHaveBeenSet(){
-        CredentialPersistence credentialPersistence = ServiceGateway.getCredentialPersistence();
         SecureCredentials credentials = credentialPersistence.getMostRecentCredentials();
 
         if (credentials == null) {
@@ -43,7 +43,6 @@ public class CredentialManager {
         SecureCredentials newCredentials = new SecureCredentials(pinHashed, secretQ, secretAnswerHashed, currentTime);
 
         // Insert the new credentials into the database
-        CredentialPersistence credentialPersistence = ServiceGateway.getCredentialPersistence();
         credentialPersistence.insertNewCredentials(newCredentials);
     }
 
@@ -58,7 +57,6 @@ public class CredentialManager {
         String pinHashed = StringHasher.sha256HexHash(pin);
 
         // Get most recent hashed pin from database
-        CredentialPersistence credentialPersistence = ServiceGateway.getCredentialPersistence();
         SecureCredentials credentials = credentialPersistence.getMostRecentCredentials();
         String pinHashedStored = credentials.getHashedPin();
 
@@ -81,7 +79,6 @@ public class CredentialManager {
         String securityAnswerHashed = StringHasher.sha256HexHash(answer);
 
         // Get most recent secret question answer from database
-        CredentialPersistence credentialPersistence = ServiceGateway.getCredentialPersistence();
         SecureCredentials credentials = credentialPersistence.getMostRecentCredentials();
         String securityAnswerHashedStored = credentials.getHashedSecurityQuestionAnswer();
 
@@ -99,7 +96,6 @@ public class CredentialManager {
      * @return The security question for the most recent credentials in the database.
      */
     public String getSecretQuestion() {
-        CredentialPersistence credentialPersistence = ServiceGateway.getCredentialPersistence();
         SecureCredentials credentials = credentialPersistence.getMostRecentCredentials();
         return credentials.getSecurityQuestion();
     }
@@ -112,9 +108,6 @@ public class CredentialManager {
      */
     public void updatePIN(String newPIN) {
         String pinHashed = StringHasher.sha256HexHash(newPIN);
-        CredentialPersistence credentialPersistence = ServiceGateway.getCredentialPersistence();
         credentialPersistence.updateMostRecentCredentialsPin(pinHashed);
     }
-
-
 }
