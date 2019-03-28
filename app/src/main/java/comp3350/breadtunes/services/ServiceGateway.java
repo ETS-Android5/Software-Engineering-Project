@@ -33,7 +33,7 @@ public class ServiceGateway
 
     public static synchronized SongFlagger getSongFlagger(){
         if (songFlagger == null){
-            songFlagger = new SongFlagger();
+            songFlagger = new SongFlagger(getSongPersistence());
         }
 
         return songFlagger;
