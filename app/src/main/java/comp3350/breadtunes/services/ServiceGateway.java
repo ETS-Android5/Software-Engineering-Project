@@ -18,18 +18,9 @@ public class ServiceGateway
     private static AudioPlayer audioPlayer = null;
     private static CredentialManager credentialManager = null;
     private static CredentialPersistence credentialPersistence = null;
-    private static DatabaseUpdatedObservable dbObservable = new DatabaseUpdatedObservable();
     private static DatabaseManager dbManager = null;
     private static AlbumArtLoader albumArtLoader = null;
     private static SongFlagger songFlagger = null;
-
-    public static void subscribeToDatabaseStateChanges(Observer observer) {
-        dbObservable.addObserver(observer);
-    }
-
-    public static void updateDatabaseState(DatabaseState state) {
-        dbObservable.setState(state);
-    }
 
     public static synchronized SongFlagger getSongFlagger(){
         if (songFlagger == null){

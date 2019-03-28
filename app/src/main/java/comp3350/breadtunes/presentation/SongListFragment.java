@@ -36,6 +36,7 @@ import comp3350.breadtunes.business.observables.ParentalControlStatusObservable;
 import comp3350.breadtunes.business.observables.PlayModeObservable;
 import comp3350.breadtunes.business.observables.SongObservable;
 import comp3350.breadtunes.objects.Song;
+import comp3350.breadtunes.services.ObservableService;
 import comp3350.breadtunes.services.ServiceGateway;
 
 import static comp3350.breadtunes.presentation.HomeActivity.sList;
@@ -68,9 +69,10 @@ public class SongListFragment extends Fragment implements Observer {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        MusicPlayerState.getInstance().subscribeToSongChange(this);
-        MusicPlayerState.getInstance().subscribeToParentalControlStatusChange(this);
-        MusicPlayerState.getInstance().subscribeToPlayModeChange(this);
+        // Set subscriptions
+        ObservableService.subscribeToSongChanges(this);
+        ObservableService.subscribeToParentalModeStatus(this);
+        ObservableService.subscribeToPlayModeChange(this);
         return inflater.inflate(R.layout.fragment_song_list, container, false);
     }
 
@@ -85,8 +87,12 @@ public class SongListFragment extends Fragment implements Observer {
 
     public void onResume(){
         super.onResume();
-        MusicPlayerState.getInstance().subscribeToSongChange(this);
-        MusicPlayerState.getInstance().subscribeToParentalControlStatusChange(this);
+
+        // Set subscriptions
+        ObservableService.subscribeToSongChanges(this);
+        ObservableService.subscribeToParentalModeStatus(this);
+        ObservableService.subscribeToPlayModeChange(this);
+
         getSongNames();
         populateSongListView();
         registerOnClickForSonglist();
@@ -140,12 +146,10 @@ public class SongListFragment extends Fragment implements Observer {
             String playMode = playModeObservable.getPlayMode();
             String songName = MusicPlayerState.getInstance().getCurrentlyPlayingSong().getName();
             nowPlayingSongGui.setText(songName+"\n"+playMode);
-        }else{
-            //ELSE its a parental control status observable notification
+        } else if (observable instanceof ParentalControlStatusObservable) {
 
             ParentalControlStatusObservable parentalControlStatusObservable = (ParentalControlStatusObservable) observable;
             parentalControlStatus.setText(parentalControlStatusObservable.getParentalControlStatus());
-
         }
     }
 

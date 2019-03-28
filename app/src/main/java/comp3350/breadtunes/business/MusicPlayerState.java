@@ -3,18 +3,12 @@ import android.util.Log;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Observer;
-import java.util.Queue;
 import java.util.Random;
 
-import comp3350.breadtunes.business.observables.ParentalControlStatusObservable;
-import comp3350.breadtunes.business.observables.PlayModeObservable;
-import comp3350.breadtunes.business.observables.SongObservable;
 import comp3350.breadtunes.exception.InvalidSongIndex;
 import comp3350.breadtunes.objects.Song;
-import comp3350.breadtunes.presentation.HomeActivity;
+import comp3350.breadtunes.services.ObservableService;
 import comp3350.breadtunes.services.ServiceGateway;
 
 
@@ -31,11 +25,6 @@ public class MusicPlayerState {
     private boolean shuffleModeOn;         //is the player playing songs randomly?
     private boolean repeatModeOn;           //is the repeat mode on
     private boolean parentalControlModeOn;   // is the parental control mode on?
-
-    //observables
-    private SongObservable songObservable;
-    private PlayModeObservable playModeObservable;
-    private ParentalControlStatusObservable parentalControlStatusObservable;
 
     private static MusicPlayerState musicPlayerState;
     private final String TAG = "State: ";
@@ -58,15 +47,11 @@ public class MusicPlayerState {
             musicPlayerState.currentSongList = ServiceGateway.getSongPersistence().getAll();
             musicPlayerState. nextSong = null;
             musicPlayerState.previousSong = null;
-            musicPlayerState.songObservable = new SongObservable();
-            musicPlayerState.playModeObservable = new PlayModeObservable();
-            musicPlayerState.parentalControlStatusObservable = new ParentalControlStatusObservable();
             musicPlayerState.currentPlayingSongName = "";
             musicPlayerState.shuffleModeOn = false;
             musicPlayerState.repeatModeOn = false;
             musicPlayerState.randomNumberGen = new Random();
             musicPlayerState.parentalControlModeOn = false;
-            //musicPlayerState.queue = new SongQueue(MAX_Q_SIZE);
             musicPlayerState.queue = new ArrayDeque<>(100);
         }
 
@@ -101,21 +86,19 @@ public class MusicPlayerState {
 
     public void turnParentalControlOn(boolean On){
         musicPlayerState.parentalControlModeOn = On;
-        parentalControlStatusObservable.setParentalControlStatus(On);
+        ObservableService.updateParentalModeStatus(On);
     }
 
     public void setRepeatMode(boolean mode){
         musicPlayerState.repeatModeOn = mode;
-        musicPlayerState.playModeObservable.setPlayMode(musicPlayerState.getPlayMode());
+        ObservableService.updatePlayMode(musicPlayerState.getPlayMode());
     }
 
     public void setShuffleMode(boolean mode){
         musicPlayerState.shuffleModeOn = mode;
         musicPlayerState.updateNextSong();
-        musicPlayerState.playModeObservable.setPlayMode(musicPlayerState.getPlayMode());
+        ObservableService.updatePlayMode(musicPlayerState.getPlayMode());
     }
-
-
 
 
     //update the song playing
@@ -133,7 +116,7 @@ public class MusicPlayerState {
         updateNextSong();
         updatePreviousSong();
 
-        musicPlayerState.songObservable.setSong(newCurrentSong); // Notify any listeners that the song has changed
+        ObservableService.updateCurrentSong(newCurrentSong); // Notify any listeners that the song has changed
     }
 
     //update the next song instance variable based on the current playing song
@@ -182,18 +165,6 @@ public class MusicPlayerState {
                 musicPlayerState.previousSong = null; //no previous song , we are the start of the list
             }
         }
-    }
-
-    public void subscribeToSongChange(Observer observer) {
-        musicPlayerState.songObservable.addObserver(observer);
-    }
-
-    public void subscribeToPlayModeChange(Observer observer){
-        musicPlayerState.playModeObservable.addObserver(observer);
-    }
-
-    public void subscribeToParentalControlStatusChange(Observer observer){
-        musicPlayerState.parentalControlStatusObservable.addObserver(observer);
     }
 
     //called to set next and previous when random mode is on
@@ -254,9 +225,6 @@ public class MusicPlayerState {
         musicPlayerState.currentSongList = songList;
         musicPlayerState. nextSong = null;
         musicPlayerState.previousSong = null;
-        musicPlayerState.songObservable = new SongObservable();
-        musicPlayerState.parentalControlStatusObservable = new ParentalControlStatusObservable();
-        musicPlayerState.playModeObservable = new PlayModeObservable();
         musicPlayerState.currentPlayingSongName = "";
         musicPlayerState.shuffleModeOn = false;
         musicPlayerState.repeatModeOn = false;

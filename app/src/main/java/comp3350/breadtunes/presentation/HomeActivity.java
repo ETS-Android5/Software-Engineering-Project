@@ -4,6 +4,7 @@ import comp3350.breadtunes.business.LookUpSongs;
 import comp3350.breadtunes.business.observables.DatabaseUpdatedObservable;
 import comp3350.breadtunes.business.observables.ParentalControlStatusObservable;
 import comp3350.breadtunes.presentation.MediaController.MediaPlayerController;
+import comp3350.breadtunes.services.ObservableService;
 import comp3350.breadtunes.services.ServiceGateway;
 import comp3350.breadtunes.business.MusicPlayerState;
 import comp3350.breadtunes.objects.Song;
@@ -66,8 +67,8 @@ public class HomeActivity extends BaseActivity implements Observer {
         setContentView(R.layout.activity_home);
 
         // Set subscriptions
-        ServiceGateway.subscribeToDatabaseStateChanges(this);
-        MusicPlayerState.getInstance().subscribeToParentalControlStatusChange(this);
+        ObservableService.subscribeToDatabaseStateChanges(this);
+        ObservableService.subscribeToParentalModeStatus(this);
 
         // Prepare fragments
         if (savedInstanceState == null) {
