@@ -1,6 +1,7 @@
 package comp3350.breadtunes.presentation.MediaController;
 import android.content.Context;
 import android.media.MediaPlayer;
+import android.widget.Toast;
 
 import comp3350.breadtunes.business.LookUpSongs;
 import comp3350.breadtunes.business.MusicPlayerState;
@@ -23,36 +24,40 @@ public class MediaPlayerController{
         if (song.getSongUri() == null){
             response = "Could not find location of song";
         }
-        else{
-            if(ServiceGateway.getMediaManager() != null && ServiceGateway.getMediaManager().isPlaying()) {
-                ServiceGateway.getMediaManager().stopPlayingSong();
-            }
+        else {
+            if (MusicPlayerState.getInstance().getParentalControlModeOn() && ServiceGateway.getSongFlagger().songIsFlagged(song)) {
+                response = "Parental control does not allow this song to be played";
+            } else {
 
-            ServiceGateway.getMediaManager().startPlayingSong(context, song.getSongUri());
-            MusicPlayerState.getInstance().setCurrentSong(song);  //update the state of the music player!
-            MusicPlayerState.getInstance().setIsSongPlaying(true);
-            MusicPlayerState.getInstance().setIsSongPaused(false);
-            ServiceGateway.getMediaManager().setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                public void onCompletion(MediaPlayer mediaPlayer) {
-
-                    //get reference to next from app state
-                    Song nextSong;
-
-                    if(MusicPlayerState.getInstance().getRepeatMode()){ //if repeat mode is on, the next song is the same song
-                        nextSong = song;
-                    }else{
-                        nextSong = MusicPlayerState.getInstance().getNextSong(); //if repeat mode not on, next song is as usual
-                    }
-
-                    if(nextSong != null){
-                        playSong(nextSong, context);
-                    }
+                if (ServiceGateway.getMediaManager() != null && ServiceGateway.getMediaManager().isPlaying()) {
+                    ServiceGateway.getMediaManager().stopPlayingSong();
                 }
-            });
 
-            response = "Playing "+song.getName();
+                ServiceGateway.getMediaManager().startPlayingSong(context, song.getSongUri());
+                MusicPlayerState.getInstance().setCurrentSong(song);  //update the state of the music player!
+                MusicPlayerState.getInstance().setIsSongPlaying(true);
+                MusicPlayerState.getInstance().setIsSongPaused(false);
+                ServiceGateway.getMediaManager().setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                    public void onCompletion(MediaPlayer mediaPlayer) {
+
+                        //get reference to next from app state
+                        Song nextSong;
+
+                        if (MusicPlayerState.getInstance().getRepeatMode()) { //if repeat mode is on, the next song is the same song
+                            nextSong = song;
+                        } else {
+                            nextSong = MusicPlayerState.getInstance().getNextSong(); //if repeat mode not on, next song is as usual
+                        }
+
+                        if (nextSong != null) {
+                            playSong(nextSong, context);
+                        }
+                    }
+                });
+
+                response = "Playing " + song.getName();
+            }
         }
-
         return response;
     }
 
