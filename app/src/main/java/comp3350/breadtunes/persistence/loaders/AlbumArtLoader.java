@@ -32,7 +32,10 @@ public class AlbumArtLoader {
         if (cursor != null && cursor.moveToFirst()) {
             int albumArtColumnIndex = cursor.getColumnIndex(MediaStore.Audio.Albums.ALBUM_ART);
             String path = cursor.getString(albumArtColumnIndex);
-            albumArt = Uri.parse(path);
+
+            if (path != null) {
+                albumArt = Uri.parse(path);
+            }
         }
 
         return albumArt;
