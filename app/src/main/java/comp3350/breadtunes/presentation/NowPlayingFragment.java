@@ -25,6 +25,7 @@ import comp3350.breadtunes.business.MusicPlayerState;
 import comp3350.breadtunes.business.observables.SongObservable;
 import comp3350.breadtunes.objects.Song;
 import comp3350.breadtunes.persistence.loaders.AlbumArtLoader;
+import comp3350.breadtunes.services.ObservableService;
 import comp3350.breadtunes.services.ServiceGateway;
 
 /**
@@ -46,7 +47,6 @@ public class NowPlayingFragment extends Fragment implements Observer {
     private Uri defaultAlbumArt;
 
     public NowPlayingFragment() {
-        // Required empty public constructor
         defaultAlbumArt = Uri.parse("android.resource://comp3350.breadtunes/drawable/default_album_art");
     }
 
@@ -67,7 +67,7 @@ public class NowPlayingFragment extends Fragment implements Observer {
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         homeActivity = (HomeActivity) getActivity();
-        MusicPlayerState.getInstance().subscribeToSongChange(this);
+        ObservableService.subscribeToSongChanges(this);
         return inflater.inflate(R.layout.fragment_now_playing, container, false);
     }
 
@@ -81,7 +81,7 @@ public class NowPlayingFragment extends Fragment implements Observer {
         handler = new Handler();
 
 
-        Song currentSong = MusicPlayerState.getInstance().getCurrentlyPlayingSong();
+        Song currentSong = ServiceGateway.getMusicPlayerState().getCurrentlyPlayingSong();
 
         //populate the fields in the fragment
         nowPlayingSongGui.setText(currentSong.getName());
@@ -90,7 +90,7 @@ public class NowPlayingFragment extends Fragment implements Observer {
         setAlbumArt(currentSong);
 
 
-        if(MusicPlayerState.getInstance().isSongPlaying()){
+        if(ServiceGateway.getMusicPlayerState().isSongPlaying()){
             seekBar.setMax(ServiceGateway.getMediaManager().getDuration());
             changeSeekbar();
         }

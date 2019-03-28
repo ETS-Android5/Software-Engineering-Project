@@ -3,6 +3,7 @@ package comp3350.breadtunes.presentation;
 
 import android.app.AlertDialog;
 import android.app.SearchManager;
+import android.app.Service;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.os.Bundle;
@@ -25,8 +26,6 @@ import android.widget.SearchView;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.hsqldb.lib.tar.TarFileOutputStream;
-
 import java.util.Observable;
 import java.util.Observer;
 import comp3350.breadtunes.R;
@@ -37,20 +36,19 @@ import comp3350.breadtunes.business.observables.ParentalControlStatusObservable;
 import comp3350.breadtunes.business.observables.PlayModeObservable;
 import comp3350.breadtunes.business.observables.SongObservable;
 import comp3350.breadtunes.objects.Song;
+import comp3350.breadtunes.services.ObservableService;
 import comp3350.breadtunes.services.ServiceGateway;
 
 import static comp3350.breadtunes.presentation.HomeActivity.sList;
 
-
 // REFERENCE : https://github.com/codepath/android_guides/wiki/Creating-and-Using-Fragments
-
 public class SongListFragment extends Fragment implements Observer {
 
 
     public HomeActivity homeActivity;
     ListView activitySongList;
     String[] songNameList;
-    private final String TAG = "HomeActivity";
+    private final String TAG = "SongListFragment";
     public static TextView parentalControlStatus;
     public static Button nowPlayingSongGui;
     String[] menuItems = new String[4];
@@ -69,9 +67,10 @@ public class SongListFragment extends Fragment implements Observer {
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-        MusicPlayerState.getInstance().subscribeToSongChange(this);
-        MusicPlayerState.getInstance().subscribeToParentalControlStatusChange(this);
-        MusicPlayerState.getInstance().subscribeToPlayModeChange(this);
+        // Set subscriptions
+        ObservableService.subscribeToSongChanges(this);
+        ObservableService.subscribeToParentalModeStatus(this);
+        ObservableService.subscribeToPlayModeChange(this);
         return inflater.inflate(R.layout.fragment_song_list, container, false);
     }
 
@@ -83,7 +82,7 @@ public class SongListFragment extends Fragment implements Observer {
         registerOnClickForNowPlayingButton();
         parentalControlStatus = (TextView) getView().findViewById(R.id.parental_control_status);  //set play button according to the playing mode
 
-        if(MusicPlayerState.getInstance().isSongPlaying()){
+        if(ServiceGateway.getMusicPlayerState().isSongPlaying()){
             ImageButton button = (ImageButton) getView().findViewById(R.id.play_pause);
             button.setImageResource(R.drawable.pause);
         }else{
@@ -94,17 +93,24 @@ public class SongListFragment extends Fragment implements Observer {
 
     public void onResume(){
         super.onResume();
-        MusicPlayerState.getInstance().subscribeToSongChange(this);
-        MusicPlayerState.getInstance().subscribeToParentalControlStatusChange(this);
+
+        // Set subscriptions
+        ObservableService.subscribeToSongChanges(this);
+        ObservableService.subscribeToParentalModeStatus(this);
+        ObservableService.subscribeToPlayModeChange(this);
+
         getSongNames();
         populateSongListView();
         registerOnClickForSonglist();
         registerOnClickForNowPlayingButton();
-        parentalControlStatus = (TextView) getView().findViewById(R.id.parental_control_status);
-        parentalControlStatus.setText(MusicPlayerState.getInstance().getParentalControlStatus());
-        nowPlayingSongGui.setText(MusicPlayerState.getInstance().getCurrentlyPlayingSongName()+"\n"+MusicPlayerState.getInstance().getPlayMode());
 
-        if(MusicPlayerState.getInstance().isSongPlaying()){
+        MusicPlayerState mps = ServiceGateway.getMusicPlayerState();
+
+        parentalControlStatus = (TextView) getView().findViewById(R.id.parental_control_status);
+        parentalControlStatus.setText(mps.getParentalControlStatus());
+        nowPlayingSongGui.setText(mps.getCurrentlyPlayingSongName() + "\n" + mps.getPlayMode());
+
+        if(ServiceGateway.getMusicPlayerState().isSongPlaying()){
             ImageButton button = (ImageButton) getView().findViewById(R.id.play_pause);
             button.setImageResource(R.drawable.pause);
         }else{
@@ -150,19 +156,17 @@ public class SongListFragment extends Fragment implements Observer {
             SongObservable songObservable = (SongObservable) observable;
             Song song = songObservable.getSong();
             String songName = song.getName();
-            nowPlayingSongGui.setText(songName+"\n"+MusicPlayerState.getInstance().getPlayMode());
+            nowPlayingSongGui.setText(songName + "\n" + ServiceGateway.getMusicPlayerState().getPlayMode());
         }else if(observable instanceof PlayModeObservable){
 
             PlayModeObservable playModeObservable = (PlayModeObservable) observable;
             String playMode = playModeObservable.getPlayMode();
-            String songName = MusicPlayerState.getInstance().getCurrentlyPlayingSong().getName();
+            String songName = ServiceGateway.getMusicPlayerState().getCurrentlyPlayingSong().getName();
             nowPlayingSongGui.setText(songName+"\n"+playMode);
-        }else{
-            //ELSE its a parental control status observable notification
+        } else if (observable instanceof ParentalControlStatusObservable) {
 
             ParentalControlStatusObservable parentalControlStatusObservable = (ParentalControlStatusObservable) observable;
             parentalControlStatus.setText(parentalControlStatusObservable.getParentalControlStatus());
-
         }
     }
 
@@ -183,22 +187,21 @@ public class SongListFragment extends Fragment implements Observer {
             CredentialManager credentialManager = ServiceGateway.getCredentialManager();
             if(credentialManager.credentialsHaveBeenSet()){
 
-                if(!MusicPlayerState.getInstance().getParentalControlModeOn()){     //only proceeed if parental control is off
+                // Only proceed if parental control is off
+                if (!ServiceGateway.getMusicPlayerState().getParentalControlModeOn()) {
                     showPINInputDialog(true);
-                }else{
+                } else {
                     Toast.makeText(homeActivity, "Parental Control is already on", Toast.LENGTH_LONG).show();
-
                 }
-
-
             }else{
                 homeActivity.showParentalControlSetupFragment();
             }
         }
         else if(id == R.id.parental_lock_off){
-            if(MusicPlayerState.getInstance().getParentalControlModeOn()){        //only proceed if parental control is on
+            // Only proceed if parental control is on
+            if (ServiceGateway.getMusicPlayerState().getParentalControlModeOn()){
                 showPINInputDialog(false);
-            }else {
+            } else {
                 Toast.makeText(homeActivity, "Parental Control is already off", Toast.LENGTH_LONG).show();
             }
         }
@@ -241,25 +244,25 @@ public class SongListFragment extends Fragment implements Observer {
         //get reference to the now playing song gui
         nowPlayingSongGui = (Button) getView().findViewById(R.id.song_name);
 
-        nowPlayingSongGui.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View view) {
-                if(MusicPlayerState.getInstance().isSongPaused() || MusicPlayerState.getInstance().isSongPlaying()) {
-                    homeActivity.showNowPlayingFragment();
-                }else{
-                    Log.e(TAG, "no song playing or paused");
-                }
+        nowPlayingSongGui.setOnClickListener(view -> {
+            MusicPlayerState mps = ServiceGateway.getMusicPlayerState();
+            if (mps.isSongPaused() || mps.isSongPlaying()) {
+                homeActivity.showNowPlayingFragment();
+            } else {
+                Log.e(TAG, "no song playing or paused");
             }
         });
     }
 
     public void onCreateContextMenu(ContextMenu menu, View v,ContextMenu.ContextMenuInfo menuInfo) {
+            MusicPlayerState mps = ServiceGateway.getMusicPlayerState() ;
+
             AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
-            menu.setHeaderTitle(MusicPlayerState.getInstance().getCurrentSongList().get(info.position).getName());
+            menu.setHeaderTitle(mps.getCurrentSongList().get(info.position).getName());
             menu.add(Menu.NONE, 0,0, "Add to Queue");
             menu.add(Menu.NONE, 1,1, "Play Next");
 
-            if(!MusicPlayerState.getInstance().getParentalControlModeOn()){
+            if(!mps.getParentalControlModeOn()){
                 menu.add(Menu.NONE, 2, 2, "Flag song");
                 menu.add(Menu.NONE, 3, 3, "Remove song flag");
                 menuItems[2] ="Flag song";
@@ -268,26 +271,28 @@ public class SongListFragment extends Fragment implements Observer {
 
             menuItems[0]= "Add to Queue";
             menuItems[1]= "Play Next";
-
     }
 
 
     public boolean onContextItemSelected(MenuItem item){
+        MusicPlayerState mps = ServiceGateway.getMusicPlayerState();
+
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
         int menuItemIndex = item.getItemId();
-        String listItemName = MusicPlayerState.getInstance().getCurrentSongList().get(info.position).getName();
+        String listItemName = mps.getCurrentSongList().get(info.position).getName();
 
         switch(item.getItemId()) {
             case 0:
-                MusicPlayerState.getInstance().addToQueue(LookUpSongs.getSong(sList, listItemName));
-                homeActivity.queueFragSongsDisplay = MusicPlayerState.getInstance().getQueueSongNames(); //refresh the songs to be displayed
+                mps.addToQueue(LookUpSongs.getSong(sList, listItemName));
+                homeActivity.queueFragSongsDisplay = mps.getQueueSongNames(); //refresh the songs to be displayed
                 return true;
             case 1:
-                MusicPlayerState.getInstance().addSongToPlayNext(LookUpSongs.getSong(sList, listItemName));
-                homeActivity.queueFragSongsDisplay = MusicPlayerState.getInstance().getQueueSongNames();
+                mps.addSongToPlayNext(LookUpSongs.getSong(sList, listItemName));
+                homeActivity.queueFragSongsDisplay = mps.getQueueSongNames();
                 return true;
-            case 2: //addd flag
-                if(!MusicPlayerState.getInstance().getParentalControlModeOn()){    //only proceed if parental control is not on
+            case 2:
+                // Add flag if parental control is off
+                if(!mps.getParentalControlModeOn()){
                     boolean songIsFlagged = ServiceGateway.getSongFlagger().songIsFlagged(LookUpSongs.getSong(sList, listItemName));
                     if(!songIsFlagged){
                         ServiceGateway.getSongFlagger().flagSong(LookUpSongs.getSong(sList, listItemName), true);
@@ -296,9 +301,9 @@ public class SongListFragment extends Fragment implements Observer {
                     }
                 }
                 return true;
-
-            case 3: //remove flag
-                if(!MusicPlayerState.getInstance().getParentalControlModeOn()){
+            case 3:
+                // Remove flag if parental control is off
+                if(!mps.getParentalControlModeOn()){
                     boolean songIsFlagged = ServiceGateway.getSongFlagger().songIsFlagged(LookUpSongs.getSong(sList, listItemName));
                     if(songIsFlagged){
                         ServiceGateway.getSongFlagger().flagSong(LookUpSongs.getSong(sList, listItemName), false);
@@ -321,33 +326,26 @@ public class SongListFragment extends Fragment implements Observer {
                 .setTitle("Parental Lock")
                 .setMessage("What is your PIN?")
                 .setView(taskEditText)
-                .setPositiveButton("Submit", new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        String pin = String.valueOf(taskEditText.getText());
-                        CredentialManager credentialManager = ServiceGateway.getCredentialManager();
-                        boolean correctPIN = credentialManager.validatePIN(pin);
+                .setPositiveButton("Submit", (dialogPositive, which) -> {
+                    String pin = String.valueOf(taskEditText.getText());
+                    CredentialManager credentialManager = ServiceGateway.getCredentialManager();
+                    boolean correctPIN = credentialManager.validatePIN(pin);
 
-                        if(correctPIN){
+                    if(correctPIN){
 
-                            if(turnOn){
-                                MusicPlayerState.getInstance().turnParentalControlOn(true); //parental control mode activated
-                                Toast.makeText(homeActivity, "Parental Control mode activated", Toast.LENGTH_LONG).show();
-                            }else{
-                                MusicPlayerState.getInstance().turnParentalControlOn(false); //turn it off
-                                Toast.makeText(homeActivity, "Parental Control mode deactivated", Toast.LENGTH_LONG).show();
-                            }
+                        if(turnOn){
+                            ServiceGateway.getMusicPlayerState().turnParentalControlOn(true); //parental control mode activated
+                            Toast.makeText(homeActivity, "Parental Control mode activated", Toast.LENGTH_LONG).show();
                         }else{
-                            Toast.makeText(homeActivity, "Incorrect PIN, please try again", Toast.LENGTH_LONG).show();
+                            ServiceGateway.getMusicPlayerState().turnParentalControlOn(false); //turn it off
+                            Toast.makeText(homeActivity, "Parental Control mode deactivated", Toast.LENGTH_LONG).show();
                         }
+                    }else{
+                        Toast.makeText(homeActivity, "Incorrect PIN, please try again", Toast.LENGTH_LONG).show();
+                    }
 
-                    }
                 })
-                .setNeutralButton("Forgot Password?", new DialogInterface.OnClickListener() {
-                    public void onClick(DialogInterface dialog, int which) {
-                        homeActivity.showPINResetFragment();
-                    }
-                })
+                .setNeutralButton("Forgot Password?", (dialogNeutral, which) -> homeActivity.showPINResetFragment())
                 .setNegativeButton("Cancel", null)
                 .create();
         dialog.show();
@@ -355,7 +353,7 @@ public class SongListFragment extends Fragment implements Observer {
 
     //used to update buttons if the state is changed in another fragment
     public void updateButtons(){
-        if(MusicPlayerState.getInstance().isSongPlaying()){
+        if(ServiceGateway.getMusicPlayerState().isSongPlaying()){
             ImageButton button = (ImageButton) getView().findViewById(R.id.play_pause);
             button.setImageResource(R.drawable.pause);
         }else{
@@ -363,7 +361,5 @@ public class SongListFragment extends Fragment implements Observer {
             button.setImageResource(R.drawable.play);
         }
     }
-
-
 
 }

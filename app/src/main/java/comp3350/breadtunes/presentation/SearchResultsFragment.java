@@ -8,7 +8,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
-import android.widget.Toast;
 import comp3350.breadtunes.R;
 import comp3350.breadtunes.business.LookUpSongs;
 import comp3350.breadtunes.objects.Song;

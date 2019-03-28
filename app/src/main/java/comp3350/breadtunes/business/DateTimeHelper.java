@@ -12,10 +12,6 @@ public class DateTimeHelper {
        dateFormatter = new SimpleDateFormat(this.format);
     }
 
-    public String getCurrentTimeString() {
-        return dateFormatter.format(new Date());
-    }
-
     public Date parseTimeString(String dateString) throws ParseException {
         return dateFormatter.parse(dateString);
     }
