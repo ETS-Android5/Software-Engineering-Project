@@ -5,15 +5,19 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.os.Handler;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageButton;
 import android.widget.ImageView;
 import android.widget.SeekBar;
 import android.widget.TextView;
+
+import java.util.Objects;
 import java.util.Observable;
 import java.util.Observer;
 import comp3350.breadtunes.R;
@@ -32,6 +36,7 @@ public class NowPlayingFragment extends Fragment implements Observer {
     public SeekBar seekBar;
     private Handler handler;
     private Runnable runnable;
+    private String TAG = "Now Playing Fragment";
 
     public static ImageView songArt;
     public static TextView nowPlayingSongGui;
@@ -49,6 +54,12 @@ public class NowPlayingFragment extends Fragment implements Observer {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
 
+    }
+
+    public void onPause(){
+        super.onPause();
+        homeActivity.updateSongListFragmentButtons();
+        Log.i(TAG, "user pressed back button!");
     }
 
 
@@ -104,6 +115,16 @@ public class NowPlayingFragment extends Fragment implements Observer {
 
             }
         });
+
+
+        //set play button according to the playing mode
+        if(MusicPlayerState.getInstance().isSongPlaying()){
+            ImageButton button = (ImageButton) getView().findViewById(R.id.play_pause_button);
+            button.setImageResource(R.drawable.pause);
+        }else{
+            ImageButton button = (ImageButton) getView().findViewById(R.id.play_pause_button);
+            button.setImageResource(R.drawable.play);
+        }
     }
 
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -138,11 +159,18 @@ public class NowPlayingFragment extends Fragment implements Observer {
             nowPlayingSongGui.setText(songName);
             nowPlayingAlbumGui.setText(albumName);
             nowPlayingArtistGui.setText(artistName);
-
-            nowPlayingSongGui.setText(songName);
-            nowPlayingAlbumGui.setText(albumName);
-            nowPlayingArtistGui.setText(artistName);
             setAlbumArt(song);
+
+            //try and catch is necessary, as the fragment will still receive updates when it is not on focus and when searching for
+            //layout elements, it will get a null ptr
+            try {
+                if (MusicPlayerState.getInstance().isSongPlaying()) {
+                    ImageButton button = (ImageButton) Objects.requireNonNull(getView()).findViewById(R.id.play_pause_button);
+                    button.setImageResource(R.drawable.pause);
+                }
+            }catch(Exception e){
+                Log.i(TAG, "Avoided null ptr excpetion when updating UI");
+            }
         }
     }
 

@@ -37,39 +37,18 @@
 
 
     <ImageButton
-        android:id="@+id/pause_button"
+        android:id="@+id/play-pause"
         android:layout_width="wrap_content"
-        android:layout_height="55dp"
-        android:layout_marginStart="16dp"
-        android:focusable="false"
-        android:onClick="onClickPause"
-        android:src="@drawable/pause"
-        android:textSize="15sp"
+        android:layout_height="wrap_content"
+        android:onClick="onClickPlayPause"
+        android:src="@drawable/play"
         android:textStyle="bold"
         app:layout_constraintBottom_toBottomOf="@+id/play_previous_button"
-        app:layout_constraintEnd_toStartOf="@+id/resume_button"
+        app:layout_constraintEnd_toStartOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/play_previous_button"
-        app:layout_constraintTop_toTopOf="@+id/play_previous_button" />
-
-    <ImageButton
-        android:id="@+id/resume_button"
-        android:layout_width="wrap_content"
-        android:layout_height="55dp"
-        android:layout_marginStart="16dp"
-        android:layout_marginEnd="16dp"
-        android:focusable="false"
-        android:onClick="onClickResume"
-        android:src="@drawable/play"
-        android:text="Resume"
-        android:textSize="15sp"
-        android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/pause_button"
-        app:layout_constraintEnd_toStartOf="@+id/play_next_button"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/pause_button"
-        app:layout_constraintTop_toTopOf="@+id/pause_button" />
-
+        app:layout_constraintTop_toTopOf="@+id/play_previous_button"
+        app:layout_constraintVertical_bias="0.0" />
 
     <ImageButton
         android:id="@+id/play_previous_button"
@@ -81,7 +60,7 @@
         android:src="@drawable/previous"
         android:textSize="15sp"
         android:textStyle="bold"
-        app:layout_constraintEnd_toStartOf="@+id/pause_button"
+        app:layout_constraintEnd_toStartOf="@+id/play-pause"
         app:layout_constraintHorizontal_bias="0.5"
         app:layout_constraintStart_toEndOf="@+id/linearLayout3"
         app:layout_constraintTop_toBottomOf="@+id/parental_control_status" />
@@ -93,14 +72,14 @@
         android:focusable="false"
         android:onClick="onClickPlayNext"
         android:src="@drawable/next"
-        android:text="Next"
         android:textSize="15sp"
         android:textStyle="bold"
-        app:layout_constraintBottom_toBottomOf="@+id/resume_button"
+        app:layout_constraintBottom_toBottomOf="@+id/play-pause"
         app:layout_constraintEnd_toStartOf="@+id/linearLayout3"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toEndOf="@+id/resume_button"
-        app:layout_constraintTop_toTopOf="@+id/resume_button" />
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintLeft_toRightOf="@id/play-pause"
+        app:layout_constraintStart_toEndOf="@+id/play-pause"
+        app:layout_constraintVertical_bias="1.0" />
 
     <ListView
         android:id="@+id/songList"
@@ -108,7 +87,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:background="@color/lightGray"
-        app:layout_constraintTop_toBottomOf="@id/pause_button"
+        app:layout_constraintTop_toBottomOf="@id/play-pause"
         tools:layout_editor_absoluteX="38dp" />
 
 
@@ -128,7 +107,7 @@
             android:text="Queue"
             android:textSize="17dp"
             android:onClick="onClickViewQueue"
-            />
+         />
 
         <Button
             android:id="@+id/song_name"

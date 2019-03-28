@@ -19,6 +19,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageButton;
 import android.widget.ListView;
 import android.widget.SearchView;
 import android.widget.TextView;
@@ -80,7 +81,15 @@ public class SongListFragment extends Fragment implements Observer {
         populateSongListView();
         registerOnClickForSonglist();
         registerOnClickForNowPlayingButton();
-        parentalControlStatus = (TextView) getView().findViewById(R.id.parental_control_status);
+        parentalControlStatus = (TextView) getView().findViewById(R.id.parental_control_status);  //set play button according to the playing mode
+
+        if(MusicPlayerState.getInstance().isSongPlaying()){
+            ImageButton button = (ImageButton) getView().findViewById(R.id.play_pause);
+            button.setImageResource(R.drawable.pause);
+        }else{
+            ImageButton button = (ImageButton) getView().findViewById(R.id.play_pause);
+            button.setImageResource(R.drawable.play);
+        }
     }
 
     public void onResume(){
@@ -94,6 +103,14 @@ public class SongListFragment extends Fragment implements Observer {
         parentalControlStatus = (TextView) getView().findViewById(R.id.parental_control_status);
         parentalControlStatus.setText(MusicPlayerState.getInstance().getParentalControlStatus());
         nowPlayingSongGui.setText(MusicPlayerState.getInstance().getCurrentlyPlayingSongName()+"\n"+MusicPlayerState.getInstance().getPlayMode());
+
+        if(MusicPlayerState.getInstance().isSongPlaying()){
+            ImageButton button = (ImageButton) getView().findViewById(R.id.play_pause);
+            button.setImageResource(R.drawable.pause);
+        }else{
+            ImageButton button = (ImageButton) getView().findViewById(R.id.play_pause);
+            button.setImageResource(R.drawable.play);
+        }
 
     }
 
@@ -209,11 +226,15 @@ public class SongListFragment extends Fragment implements Observer {
                 //get the song object associated with the song name that was clicked
                 Song selectedSong = LookUpSongs.getSong(sList, selectedSongName);
 
+                ImageButton button = (ImageButton) getView().findViewById(R.id.play_pause);
+                button.setImageResource(R.drawable.pause);
+
                 homeActivity.playSong(selectedSong);
 
             }
         });// on item click listener for listview
     }
+
 
 
     public void registerOnClickForNowPlayingButton(){
@@ -250,7 +271,7 @@ public class SongListFragment extends Fragment implements Observer {
 
     }
 
-    // TODO: 27/03/19  callback for context menu
+
     public boolean onContextItemSelected(MenuItem item){
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
         int menuItemIndex = item.getItemId();
@@ -330,6 +351,17 @@ public class SongListFragment extends Fragment implements Observer {
                 .setNegativeButton("Cancel", null)
                 .create();
         dialog.show();
+    }
+
+    //used to update buttons if the state is changed in another fragment
+    public void updateButtons(){
+        if(MusicPlayerState.getInstance().isSongPlaying()){
+            ImageButton button = (ImageButton) getView().findViewById(R.id.play_pause);
+            button.setImageResource(R.drawable.pause);
+        }else{
+            ImageButton button = (ImageButton) getView().findViewById(R.id.play_pause);
+            button.setImageResource(R.drawable.play);
+        }
     }
 
 

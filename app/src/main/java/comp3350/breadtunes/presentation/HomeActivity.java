@@ -17,6 +17,7 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageButton;
 import android.widget.Toast;
 
 import java.util.ArrayList;
@@ -170,8 +171,11 @@ public class HomeActivity extends BaseActivity implements Observer {
     //method called by fragments to avoid context issues
     public void playSong(Song song) {
         String playStatus = mediaPlayerController.playSong(song, this);
-        if(playStatus.equals("Parental control does not allow this song to be played")) //only show this message
+        if(playStatus.equals("Parental control does not allow this song to be played")) { //only show this message to user
             Toast.makeText(this, playStatus, Toast.LENGTH_SHORT).show();
+        }else{
+            //playing succesful
+        }
         Log.i(TAG, playStatus);
 
     }
@@ -373,26 +377,52 @@ public class HomeActivity extends BaseActivity implements Observer {
         }
         return songNames;
     }
+//
+//    // PAUSE BUTTON
+//    public void onClickPause(View view) {
+//        String response = mediaPlayerController.pauseSong();
+//        Log.i(TAG, response);
+//
+//    }
+//
+//    //RESUME BUTTON
+//    public void onClickResume(View view) {
+//        //make sure a song is actually paused
+//        if (MusicPlayerState.getInstance().isSongPaused()) {
+//            String response = mediaPlayerController.resumeSong();
+//            Log.i(TAG, response); //display result of operation to log
+//        } else {
+//            Log.i(TAG, "Song is not paused");
+//        }
+//
+//    }
 
-    // PAUSE BUTTON
-    public void onClickPause(View view) {
-        String response = mediaPlayerController.pauseSong();
-        Log.i(TAG, response);
 
-    }
+    public void onClickPlayPause(View view){
 
-    //RESUME BUTTON
-    public void onClickResume(View view) {
-        //make sure a song is actually paused
-        if (MusicPlayerState.getInstance().isSongPaused()) {
-            Song pausedSong = MusicPlayerState.getInstance().getCurrentlyPlayingSong();   //get the current playing song from the app state
-            String response = mediaPlayerController.resumeSong();
-            Log.i(TAG, response); //display result of operation to log
-        } else {
-            Log.i(TAG, "Song is not paused");
+        ImageButton button = (ImageButton)view;
+
+        if(MusicPlayerState.getInstance().getCurrentlyPlayingSong()  != null) {
+            //if song is playing then we want to pause
+            if (MusicPlayerState.getInstance().isSongPlaying()) {
+
+                String response = mediaPlayerController.pauseSong();
+                Log.i(TAG, response);
+                button.setImageResource(R.drawable.play);
+
+            } else {
+                //if song not playing then we want resume playing
+                String response = mediaPlayerController.resumeSong();
+                Log.i(TAG, response);
+                button.setImageResource(R.drawable.pause);
+            }
         }
-
     }
+
+    public void updateSongListFragmentButtons(){
+        songListFragment.updateButtons();
+    }
+
 
     //QUEUE BUTTON
     public void onClickViewQueue(View view){
