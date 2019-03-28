@@ -6,6 +6,7 @@ import comp3350.breadtunes.business.SongFlagger;
 import comp3350.breadtunes.persistence.interfaces.CredentialPersistence;
 import comp3350.breadtunes.persistence.interfaces.SongPersistence;
 import comp3350.breadtunes.persistence.loaders.AlbumArtLoader;
+import comp3350.breadtunes.presentation.Logger.Logger;
 import comp3350.breadtunes.presentation.interfaces.MediaManager;
 import comp3350.breadtunes.persistence.*;
 import comp3350.breadtunes.persistence.hsql.*;
@@ -39,7 +40,7 @@ public class ServiceGateway
 
     public static synchronized MusicPlayerState getMusicPlayerState() {
         if (musicPlayerState == null) {
-            musicPlayerState = new MusicPlayerState(getSongPersistence());
+            musicPlayerState = new MusicPlayerState(getSongPersistence(), new Logger());
         }
 
         return musicPlayerState;
