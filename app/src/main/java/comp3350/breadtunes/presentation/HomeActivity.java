@@ -38,10 +38,11 @@ import java.util.Observer;
 public class HomeActivity extends BaseActivity implements Observer {
     MediaPlayerController mediaPlayerController;  // controls playback operations
     public static ArrayList<Song> sList = new ArrayList<>();
-    String[] songNamesToDisplay;
+    String[] songNamesToDisplay; //song names displayed in the songlist fragment
     private final String TAG = "HomeActivity";
     LookUpSongs findSong;
     String[] queueFragSongsDisplay; //songs displayed in the queue fragment
+
     private FragmentTransaction fragmentTransaction;
 
     // fragments used in the main activity
@@ -124,7 +125,12 @@ public class HomeActivity extends BaseActivity implements Observer {
 
     protected void onResume() {
         super.onResume();
-        getSongsFromPersistance();
+        if(MusicPlayerState.getInstance().getParentalControlModeOn()){
+            getUnflaggedSongsFromPersistence();
+        }else{
+            getSongsFromPersistance();
+        }
+
         getSongNameList();
     }
 
@@ -163,6 +169,7 @@ public class HomeActivity extends BaseActivity implements Observer {
     public void playSong(Song song) {
         String playStatus = mediaPlayerController.playSong(song, this);
         Log.i(TAG, playStatus);
+        Toast.makeText(this, playStatus, Toast.LENGTH_SHORT).show();
     }
 
     public void showSongListFragment() {
@@ -303,9 +310,6 @@ public class HomeActivity extends BaseActivity implements Observer {
         if(searchSongFragment.isAdded()){
             fragmentTransaction.hide(searchSongFragment);
         }
-        if(parentalControlSetupFragment.isAdded()){
-            fragmentTransaction.hide(parentalControlSetupFragment);
-        }
         if(resetPINFragment.isAdded()){
             fragmentTransaction.hide(resetPINFragment);
         }
@@ -332,6 +336,9 @@ public class HomeActivity extends BaseActivity implements Observer {
             }
             if (searchSongFragment.isAdded()) {
                 fragmentTransaction.hide(searchSongFragment);
+            }
+            if(resetPINFragment.isAdded()){
+                fragmentTransaction.hide(resetPINFragment);
             }
 
             fragmentTransaction.addToBackStack(null);
