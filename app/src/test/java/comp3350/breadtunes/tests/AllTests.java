@@ -13,6 +13,7 @@ import comp3350.breadtunes.tests.objects.*;
         LookUpSongsTest.class,
         MusicPlayerStateTest.class,
         CredentialManagerTest.class,
+        DateTimeHelperTest.class,
 })
 public class AllTests {
 }
