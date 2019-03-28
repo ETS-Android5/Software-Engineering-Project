@@ -327,7 +327,7 @@ public class HomeActivity extends BaseActivity implements Observer {
             Log.i(TAG, response); //display result of operation to log
         } else {
             Log.i(TAG, "Song is not paused");
-        }
+        }git
 
     }
 
