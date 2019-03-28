@@ -74,7 +74,7 @@ public class CredentialManager {
      * @param answer The answer the user submitted for the security question, in plaintext.
      * @return true if the answer's hash matches the database value, false otherwise.
      */
-    public boolean validateSecretQuestionAswer(String answer) {
+    public boolean validateSecretQuestionAnswer(String answer) {
         // Hash the security question answer
         String securityAnswerHashed = StringHasher.sha256HexHash(answer);
 

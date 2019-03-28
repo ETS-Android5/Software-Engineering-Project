@@ -11,8 +11,6 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import org.w3c.dom.Text;
-
 import comp3350.breadtunes.R;
 import comp3350.breadtunes.business.CredentialManager;
 import comp3350.breadtunes.services.ServiceGateway;
@@ -81,7 +79,7 @@ public class ResetPINFragment extends Fragment {
         if(secretQuestionAnswerOK && secretPINOk){
 
                CredentialManager credentialManager = ServiceGateway.getCredentialManager();
-               if(credentialManager.validateSecretQuestionAswer(secretQuestionAnswer)){   //validate secret question answer and update records with new pin
+               if(credentialManager.validateSecretQuestionAnswer(secretQuestionAnswer)){   //validate secret question answer and update records with new pin
                    credentialManager.updatePIN(PIN);
                    Toast.makeText(homeActivity, "New PIN saved.", Toast.LENGTH_LONG).show();
                    homeActivity.showSongListFragment();
