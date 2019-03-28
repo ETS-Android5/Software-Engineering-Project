@@ -124,7 +124,11 @@ public class Song {
     }
 
     public boolean equals(Object object){
+        if (!(object instanceof Song)) {
+            return false;
+        }
+
         Song otherSongObject = (Song) object;
-        return this.getSongUri().toString().equals(otherSongObject.getSongUri().toString());
+        return this.songId == otherSongObject.getSongId();
     }
 }

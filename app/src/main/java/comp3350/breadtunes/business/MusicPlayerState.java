@@ -1,5 +1,4 @@
 package comp3350.breadtunes.business;
-import android.util.Log;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
@@ -9,11 +8,14 @@ import java.util.Random;
 import comp3350.breadtunes.exception.InvalidSongIndex;
 import comp3350.breadtunes.objects.Song;
 import comp3350.breadtunes.persistence.interfaces.SongPersistence;
+import comp3350.breadtunes.presentation.Logger.Logger;
 import comp3350.breadtunes.services.ObservableService;
 
 
 // Logic class that represents the state of the music player SINGLETON PATTERN
 public class MusicPlayerState {
+
+    private Logger logger;
 
     private boolean songPlaying; //is a song currently being played?
     private boolean songPaused;     //is a song currently paused?
@@ -35,7 +37,7 @@ public class MusicPlayerState {
     //to get random song
     Random randomNumberGen;
 
-    public MusicPlayerState(SongPersistence songPersistence) {
+    public MusicPlayerState(SongPersistence songPersistence, Logger logger) {
         this.songPlaying = false;
         this.songPaused = false;
         this.currentSong = null;
@@ -49,6 +51,7 @@ public class MusicPlayerState {
         this.randomNumberGen = new Random();
         this.parentalControlModeOn = false;
         this.queue = new ArrayDeque<>(100);
+        this.logger = logger;
     }
 
     //state getters
@@ -97,9 +100,9 @@ public class MusicPlayerState {
     public void setCurrentSong(Song newCurrentSong) {
 
         if(queue!= null && queue.size() > 0 && newCurrentSong.getName().equals(queue.peek().getName())){
-            Log.i(TAG, "song playing equals top of queue");
+            logger.i(TAG, "song playing equals top of queue");
             queue.remove(); //remove the top of the queue
-            Log.i(TAG, "removed top of queue");
+            logger.i(TAG, "removed top of queue");
         }
 
         currentSong = newCurrentSong; //when the song is changed, update the new next and previous
@@ -119,7 +122,7 @@ public class MusicPlayerState {
             Song queueTop = queue.peek();
             if(queueTop != null) {
                 nextSong = queueTop;
-                Log.i(TAG, "Next song is "+nextSong.getName());
+                logger.i(TAG, "Next song is "+nextSong.getName());
             }
         }else{
             if (getShuffleMode()) {
@@ -135,7 +138,7 @@ public class MusicPlayerState {
                     int currentSongIndex = currentSongList.indexOf(currentSong);
                     if (currentSongIndex + 1 < currentSongList.size()) {
                         nextSong = currentSongList.get(++currentSongIndex);//make sure we do not go out of bounds
-                        Log.i(TAG, "Next song is "+nextSong.getName());
+                        logger.i(TAG, "Next song is "+nextSong.getName());
                     } else {
                         nextSong = null; //no next song to play, we are the end of the list
                     }
@@ -223,8 +226,8 @@ public class MusicPlayerState {
     //add a song to the top of the queue
     public void addSongToPlayNext(Song s){
         queue.addFirst(s);
-        Log.i(TAG, "Added song "+s.getName()+" to play next");
-        Log.i(TAG, "song at top of queue is "+queue.peek().getName());
+        logger.i(TAG, "Added song "+s.getName()+" to play next");
+        logger.i(TAG, "song at top of queue is "+queue.peek().getName());
         updateNextSong();
     }
 
@@ -234,8 +237,8 @@ public class MusicPlayerState {
 
     public void addToQueue(Song s){
         queue.add(s);
-        Log.i(TAG, "Added song "+s.getName()+" to queue");
-        Log.i(TAG, "song at top of queue is "+queue.peek().getName());
+        logger.i(TAG, "Added song "+s.getName()+" to queue");
+        logger.i(TAG, "song at top of queue is "+queue.peek().getName());
         updateNextSong();
     }
 
