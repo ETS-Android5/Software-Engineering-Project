@@ -14,6 +14,7 @@ import comp3350.breadtunes.tests.objects.*;
         MusicPlayerStateTest.class,
         CredentialManagerTest.class,
         DateTimeHelperTest.class,
+        StringHasherTest.class,
 })
 public class AllTests {
 }
