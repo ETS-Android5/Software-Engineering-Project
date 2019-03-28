@@ -3,19 +3,13 @@ import android.util.Log;
 
 import java.util.ArrayDeque;
 import java.util.Deque;
-import java.util.LinkedList;
 import java.util.List;
-import java.util.Observer;
-import java.util.Queue;
 import java.util.Random;
 
-import comp3350.breadtunes.business.observables.ParentalControlStatusObservable;
-import comp3350.breadtunes.business.observables.PlayModeObservable;
-import comp3350.breadtunes.business.observables.SongObservable;
 import comp3350.breadtunes.exception.InvalidSongIndex;
 import comp3350.breadtunes.objects.Song;
-import comp3350.breadtunes.presentation.HomeActivity;
-import comp3350.breadtunes.services.ServiceGateway;
+import comp3350.breadtunes.persistence.interfaces.SongPersistence;
+import comp3350.breadtunes.services.ObservableService;
 
 
 // Logic class that represents the state of the music player SINGLETON PATTERN
@@ -32,12 +26,6 @@ public class MusicPlayerState {
     private boolean repeatModeOn;           //is the repeat mode on
     private boolean parentalControlModeOn;   // is the parental control mode on?
 
-    //observables
-    private SongObservable songObservable;
-    private PlayModeObservable playModeObservable;
-    private ParentalControlStatusObservable parentalControlStatusObservable;
-
-    private static MusicPlayerState musicPlayerState;
     private final String TAG = "State: ";
     private String currentPlayingSongName; //the name of the current song, must be saved and restored in main activity
 
@@ -47,122 +35,109 @@ public class MusicPlayerState {
     //to get random song
     Random randomNumberGen;
 
-    public synchronized static MusicPlayerState getInstance(){
-
-        if(musicPlayerState == null){
-            musicPlayerState = new MusicPlayerState();
-            musicPlayerState.songPlaying = false;
-            musicPlayerState.songPaused = false;
-            musicPlayerState.currentSong = null;
-            musicPlayerState.pausedPosition = 0;
-            musicPlayerState.currentSongList = ServiceGateway.getSongPersistence().getAll();
-            musicPlayerState. nextSong = null;
-            musicPlayerState.previousSong = null;
-            musicPlayerState.songObservable = new SongObservable();
-            musicPlayerState.playModeObservable = new PlayModeObservable();
-            musicPlayerState.parentalControlStatusObservable = new ParentalControlStatusObservable();
-            musicPlayerState.currentPlayingSongName = "";
-            musicPlayerState.shuffleModeOn = false;
-            musicPlayerState.repeatModeOn = false;
-            musicPlayerState.randomNumberGen = new Random();
-            musicPlayerState.parentalControlModeOn = false;
-            //musicPlayerState.queue = new SongQueue(MAX_Q_SIZE);
-            musicPlayerState.queue = new ArrayDeque<>(100);
-        }
-
-        return musicPlayerState;
+    public MusicPlayerState(SongPersistence songPersistence) {
+        this.songPlaying = false;
+        this.songPaused = false;
+        this.currentSong = null;
+        this.pausedPosition = 0;
+        this.currentSongList = songPersistence.getAll();
+        this.nextSong = null;
+        this.previousSong = null;
+        this.currentPlayingSongName = "";
+        this.shuffleModeOn = false;
+        this.repeatModeOn = false;
+        this.randomNumberGen = new Random();
+        this.parentalControlModeOn = false;
+        this.queue = new ArrayDeque<>(100);
     }
 
-
     //state getters
-    public String getCurrentlyPlayingSongName(){if(musicPlayerState.currentSong == null){return "";}else{return musicPlayerState.currentPlayingSongName;}}
-    public boolean isSongPlaying() { return musicPlayerState.songPlaying; }
-    public void setPausedPosition(int pausedPosition) { musicPlayerState.pausedPosition = pausedPosition; }
-    public boolean isSongPaused() { return musicPlayerState.songPaused; }
-    public int getPausedPosition() { return musicPlayerState.pausedPosition; }
-    public boolean getShuffleMode(){return musicPlayerState.shuffleModeOn;}
-    public boolean getRepeatMode(){return musicPlayerState.repeatModeOn;}
-    public boolean getParentalControlModeOn(){return musicPlayerState.parentalControlModeOn;}
-    public int getQueueSize(){return  musicPlayerState.queue.size();}
+    public String getCurrentlyPlayingSongName(){if(currentSong == null){return "";}else{return currentPlayingSongName;}}
+    public boolean isSongPlaying() { return songPlaying; }
+    public void setPausedPosition(int pausedPosition) { this.pausedPosition = pausedPosition; }
+    public boolean isSongPaused() { return songPaused; }
+    public int getPausedPosition() { return pausedPosition; }
+    public boolean getShuffleMode(){return shuffleModeOn;}
+    public boolean getRepeatMode(){return repeatModeOn;}
+    public boolean getParentalControlModeOn(){return parentalControlModeOn;}
+    public int getQueueSize(){return  queue.size();}
 
 
     //getters that return song objects
-    public Song getCurrentlyPlayingSong() { return musicPlayerState.currentSong;}
-    public List<Song> getCurrentSongList(){ return musicPlayerState.currentSongList;}
-    public Song getNextSong(){return musicPlayerState.nextSong;}
-    public Song getPreviousSong(){return musicPlayerState.previousSong;}
+    public Song getCurrentlyPlayingSong() { return currentSong;}
+    public List<Song> getCurrentSongList(){ return currentSongList;}
+    public Song getNextSong(){return nextSong;}
+    public Song getPreviousSong(){return previousSong;}
 
 
     //state modifiers
-    public void setIsSongPlaying(boolean songPlaying) { musicPlayerState.songPlaying = songPlaying; }
-    public void setIsSongPaused(boolean songPaused) { musicPlayerState.songPaused = songPaused; }
-    public void setCurrentSongList(List<Song> newSongList){musicPlayerState.currentSongList = newSongList;}
-    public void setCurrentSongPlayingName(String name){musicPlayerState.currentPlayingSongName = name;}
+    public void setIsSongPlaying(boolean songPlaying) { this.songPlaying = songPlaying; }
+    public void setIsSongPaused(boolean songPaused) { this.songPaused = songPaused; }
+    public void setCurrentSongList(List<Song> newSongList){currentSongList = newSongList;}
+    public void setCurrentSongPlayingName(String name){currentPlayingSongName = name;}
 
     public void turnParentalControlOn(boolean On){
-        musicPlayerState.parentalControlModeOn = On;
-        parentalControlStatusObservable.setParentalControlStatus(On);
+        parentalControlModeOn = On;
+        ObservableService.updateParentalModeStatus(On);
     }
 
     public void setRepeatMode(boolean mode){
-        musicPlayerState.repeatModeOn = mode;
-        musicPlayerState.playModeObservable.setPlayMode(musicPlayerState.getPlayMode());
+        repeatModeOn = mode;
+        ObservableService.updatePlayMode(getPlayMode());
     }
 
     public void setShuffleMode(boolean mode){
-        musicPlayerState.shuffleModeOn = mode;
-        musicPlayerState.updateNextSong();
-        musicPlayerState.playModeObservable.setPlayMode(musicPlayerState.getPlayMode());
+        shuffleModeOn = mode;
+        updateNextSong();
+        ObservableService.updatePlayMode(getPlayMode());
     }
-
-
 
 
     //update the song playing
     public void setCurrentSong(Song newCurrentSong) {
 
-        if(musicPlayerState.queue!= null && musicPlayerState.queue.size() > 0 && newCurrentSong.getName().equals(musicPlayerState.queue.peek().getName())){
+        if(queue!= null && queue.size() > 0 && newCurrentSong.getName().equals(queue.peek().getName())){
             Log.i(TAG, "song playing equals top of queue");
-            musicPlayerState.queue.remove(); //remove the top of the queue
+            queue.remove(); //remove the top of the queue
             Log.i(TAG, "removed top of queue");
         }
 
-        musicPlayerState.currentSong = newCurrentSong; //when the song is changed, update the new next and previous
-        musicPlayerState.currentPlayingSongName = musicPlayerState.currentSong.getName();
+        currentSong = newCurrentSong; //when the song is changed, update the new next and previous
+        currentPlayingSongName = currentSong.getName();
 
         updateNextSong();
         updatePreviousSong();
 
-        musicPlayerState.songObservable.setSong(newCurrentSong); // Notify any listeners that the song has changed
+        ObservableService.updateCurrentSong(newCurrentSong); // Notify any listeners that the song has changed
     }
 
     //update the next song instance variable based on the current playing song
     public void updateNextSong() {
 
-        if(musicPlayerState.queue != null && musicPlayerState.queue.size() > 0){
+        if(queue != null && queue.size() > 0){
 
-            Song queueTop = musicPlayerState.queue.peek();
+            Song queueTop = queue.peek();
             if(queueTop != null) {
-                musicPlayerState.nextSong = queueTop;
-                Log.i(TAG, "Next song is "+musicPlayerState.nextSong.getName());
+                nextSong = queueTop;
+                Log.i(TAG, "Next song is "+nextSong.getName());
             }
         }else{
-            if (musicPlayerState.getShuffleMode()) {
-                if (musicPlayerState.currentSongList != null && musicPlayerState.currentSong != null) {
+            if (getShuffleMode()) {
+                if (currentSongList != null && currentSong != null) {
                     int randomNextSongIndex = getRandomSongIndex();
-                    musicPlayerState.nextSong = musicPlayerState.getCurrentSongList().get(randomNextSongIndex);
+                    nextSong = getCurrentSongList().get(randomNextSongIndex);
                 }
             } else {
 
                 //shuffle not on
-                if (musicPlayerState.currentSongList != null && musicPlayerState.currentSong != null) { //make sure that the song is being played
+                if (currentSongList != null && currentSong != null) { //make sure that the song is being played
 
-                    int currentSongIndex = musicPlayerState.currentSongList.indexOf(currentSong);
-                    if (currentSongIndex + 1 < musicPlayerState.currentSongList.size()) {
-                        musicPlayerState.nextSong = musicPlayerState.currentSongList.get(++currentSongIndex);//make sure we do not go out of bounds
-                        Log.i(TAG, "Next song is "+musicPlayerState.nextSong.getName());
+                    int currentSongIndex = currentSongList.indexOf(currentSong);
+                    if (currentSongIndex + 1 < currentSongList.size()) {
+                        nextSong = currentSongList.get(++currentSongIndex);//make sure we do not go out of bounds
+                        Log.i(TAG, "Next song is "+nextSong.getName());
                     } else {
-                        musicPlayerState.nextSong = null; //no next song to play, we are the end of the list
+                        nextSong = null; //no next song to play, we are the end of the list
                     }
 
                 }
@@ -173,27 +148,15 @@ public class MusicPlayerState {
     //update the previous song instance variable based on the current playing song
     public void updatePreviousSong(){
 
-        if(musicPlayerState.currentSongList != null && musicPlayerState.currentSong != null) { //make sure that the song is being played
+        if(currentSongList != null && currentSong != null) { //make sure that the song is being played
 
-            int currentSongIndex = currentSongList.indexOf(musicPlayerState.currentSong);
+            int currentSongIndex = currentSongList.indexOf(currentSong);
             if (currentSongIndex -1 > -1) {
-                musicPlayerState.previousSong = musicPlayerState.currentSongList.get(--currentSongIndex); //make sure we do not go out of bounds if the current song is the first song in the list
+                previousSong = currentSongList.get(--currentSongIndex); //make sure we do not go out of bounds if the current song is the first song in the list
             }else{
-                musicPlayerState.previousSong = null; //no previous song , we are the start of the list
+                previousSong = null; //no previous song , we are the start of the list
             }
         }
-    }
-
-    public void subscribeToSongChange(Observer observer) {
-        musicPlayerState.songObservable.addObserver(observer);
-    }
-
-    public void subscribeToPlayModeChange(Observer observer){
-        musicPlayerState.playModeObservable.addObserver(observer);
-    }
-
-    public void subscribeToParentalControlStatusChange(Observer observer){
-        musicPlayerState.parentalControlStatusObservable.addObserver(observer);
     }
 
     //called to set next and previous when random mode is on
@@ -203,15 +166,15 @@ public class MusicPlayerState {
 
         //generate random numbers until we get an index different from the song we are curently playing
         while(!differentFromCurrent){
-           randomIndex = musicPlayerState.randomNumberGen.nextInt((musicPlayerState.getCurrentSongList().size()));
+           randomIndex = randomNumberGen.nextInt((getCurrentSongList().size()));
             //randomNum = rand.nextInt((max - min) + 1) + min;
-            if(randomIndex != musicPlayerState.getCurrentSongList().indexOf(musicPlayerState.currentSong))
+            if(randomIndex != getCurrentSongList().indexOf(currentSong))
                 differentFromCurrent = true;
         }
 
         try {
 
-            if (randomIndex < 0 || randomIndex >= musicPlayerState.getCurrentSongList().size()){
+            if (randomIndex < 0 || randomIndex >= getCurrentSongList().size()){
                 randomIndex = 0;
                 throw new InvalidSongIndex("Invalid song index in getRandomSongIndex( )  in Music Player State");
             }
@@ -240,32 +203,10 @@ public class MusicPlayerState {
             return "Parental Control Mode Off";
         }
     }
-    public MusicPlayerState getMusicPlayerStateInstance(){return this.musicPlayerState;}
-
-    public MusicPlayerState(){}
-
-    public MusicPlayerState(List<Song> songList){
-
-        musicPlayerState = new MusicPlayerState();
-        musicPlayerState.songPlaying = false;
-        musicPlayerState.songPaused = false;
-        musicPlayerState.currentSong = null;
-        musicPlayerState.pausedPosition = 0;
-        musicPlayerState.currentSongList = songList;
-        musicPlayerState. nextSong = null;
-        musicPlayerState.previousSong = null;
-        musicPlayerState.songObservable = new SongObservable();
-        musicPlayerState.parentalControlStatusObservable = new ParentalControlStatusObservable();
-        musicPlayerState.playModeObservable = new PlayModeObservable();
-        musicPlayerState.currentPlayingSongName = "";
-        musicPlayerState.shuffleModeOn = false;
-        musicPlayerState.repeatModeOn = false;
-        musicPlayerState.randomNumberGen = new Random();
-    }
 
     private String getShuffleStatus(){
         String status ="";
-        if(musicPlayerState.getShuffleMode()){
+        if(getShuffleMode()){
             status = "Shuffle on ";
         }
         return status;
@@ -273,7 +214,7 @@ public class MusicPlayerState {
 
     private String getRepeatStatus(){
         String status = "";
-        if(musicPlayerState.getRepeatMode()){
+        if(getRepeatMode()){
             status = "- Repeat on";
         }
         return status;
@@ -281,30 +222,30 @@ public class MusicPlayerState {
 
     //add a song to the top of the queue
     public void addSongToPlayNext(Song s){
-        musicPlayerState.queue.addFirst(s);
+        queue.addFirst(s);
         Log.i(TAG, "Added song "+s.getName()+" to play next");
-        Log.i(TAG, "song at top of queue is "+musicPlayerState.queue.peek().getName());
-        musicPlayerState.updateNextSong();
+        Log.i(TAG, "song at top of queue is "+queue.peek().getName());
+        updateNextSong();
     }
 
     public void clearQueue(){
-        musicPlayerState.queue.clear();
+        queue.clear();
     }
 
     public void addToQueue(Song s){
         queue.add(s);
         Log.i(TAG, "Added song "+s.getName()+" to queue");
-        Log.i(TAG, "song at top of queue is "+musicPlayerState.queue.peek().getName());
-        musicPlayerState.updateNextSong();
+        Log.i(TAG, "song at top of queue is "+queue.peek().getName());
+        updateNextSong();
     }
 
 
     //get the song names in the queue to populate the queue fragment
     public String[] getQueueSongNames(){
-        String[] queueSongNames = new String[musicPlayerState.queue.size()];
+        String[] queueSongNames = new String[queue.size()];
 
         int i=0;
-        for(Song song: musicPlayerState.queue){
+        for(Song song: queue){
             queueSongNames[i++] = song.getName();
         }
 

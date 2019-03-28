@@ -14,6 +14,7 @@ import comp3350.breadtunes.objects.*;
 import comp3350.breadtunes.persistence.interfaces.SongPersistence;
 import comp3350.breadtunes.persistence.loaders.*;
 import comp3350.breadtunes.services.AppState;
+import comp3350.breadtunes.services.ObservableService;
 import comp3350.breadtunes.services.ServiceGateway;
 import java8.util.concurrent.CompletableFuture;
 
@@ -102,9 +103,9 @@ public abstract class BaseActivity extends AppCompatActivity {
     private CompletableFuture<Void> notifyDatabaseUpdateAsync(CompletableFuture<Boolean> cf) {
         return cf.thenAccept(databaseUpdated -> {
             if (databaseUpdated) {
-                ServiceGateway.updateDatabaseState(DatabaseState.DatabaseUpdated);
+                ObservableService.updateDatabaseState(DatabaseState.DatabaseUpdated);
             } else if (songs == null || songs.isEmpty()) {
-                ServiceGateway.updateDatabaseState(DatabaseState.DatabaseEmpty);
+                ObservableService.updateDatabaseState(DatabaseState.DatabaseEmpty);
             }
         });
     }
