@@ -10,11 +10,13 @@ import comp3350.breadtunes.tests.objects.*;
 @Suite.SuiteClasses({
         SongDurationTest.class,
         SongTest.class,
+        SecureCredentialsTest.class,
         LookUpSongsTest.class,
         MusicPlayerStateTest.class,
         CredentialManagerTest.class,
         DateTimeHelperTest.class,
         StringHasherTest.class,
+        SongFlaggerTest.class,
 })
 public class AllTests {
 }
