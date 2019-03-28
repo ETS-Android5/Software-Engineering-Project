@@ -118,7 +118,7 @@ public class NowPlayingFragment extends Fragment implements Observer {
 
 
         //set play button according to the playing mode
-        if(MusicPlayerState.getInstance().isSongPlaying()){
+        if(ServiceGateway.getMusicPlayerState().isSongPlaying()){
             ImageButton button = (ImageButton) getView().findViewById(R.id.play_pause_button);
             button.setImageResource(R.drawable.pause);
         }else{
@@ -164,7 +164,7 @@ public class NowPlayingFragment extends Fragment implements Observer {
             //try and catch is necessary, as the fragment will still receive updates when it is not on focus and when searching for
             //layout elements, it will get a null ptr
             try {
-                if (MusicPlayerState.getInstance().isSongPlaying()) {
+                if (ServiceGateway.getMusicPlayerState().isSongPlaying()) {
                     ImageButton button = (ImageButton) Objects.requireNonNull(getView()).findViewById(R.id.play_pause_button);
                     button.setImageResource(R.drawable.pause);
                 }
