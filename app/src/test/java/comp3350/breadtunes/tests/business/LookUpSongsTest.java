@@ -6,8 +6,8 @@ import org.junit.Test;
 import java.util.List;
 
 import comp3350.breadtunes.objects.*;
-import comp3350.breadtunes.tests.mocks.MockSongs;
-import comp3350.breadtunes.tests.watchers.TestLogger;
+import comp3350.breadtunes.testhelpers.mocks.MockSongs;
+import comp3350.breadtunes.testhelpers.watchers.TestLogger;
 
 import static junit.framework.TestCase.assertEquals;
 import static org.junit.Assert.assertTrue;

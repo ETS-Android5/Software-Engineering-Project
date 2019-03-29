@@ -9,7 +9,7 @@ import java.util.Calendar;
 import java.util.Date;
 
 import comp3350.breadtunes.business.DateTimeHelper;
-import comp3350.breadtunes.tests.watchers.TestLogger;
+import comp3350.breadtunes.testhelpers.watchers.TestLogger;
 
 public class DateTimeHelperTest extends TestLogger {
     DateTimeHelper testTarget = new DateTimeHelper();
