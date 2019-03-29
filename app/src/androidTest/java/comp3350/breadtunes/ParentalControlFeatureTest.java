@@ -1,4 +1,4 @@
-package comp3350.breadtunes.tests.system_tests;
+package comp3350.breadtunes;
 
 public class ParentalControlFeatureTest {
 
