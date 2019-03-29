@@ -4,7 +4,6 @@ import java.util.ArrayList;
 import java.util.List;
 
 import comp3350.breadtunes.objects.Song;
-import comp3350.breadtunes.services.ServiceGateway;
 
 public class LookUpSongs {
     MusicPlayerState mps;
@@ -38,16 +37,4 @@ public class LookUpSongs {
         }
         return null;
     }
-
-    //DO NOT REMOVE, - talk to Mario if questions
-    public static Song getSong(ArrayList<Song> songList, String songName){
-        for (Song song: songList) {
-            if (song.getName().equals(songName)) {
-                return song;
-            }
-        }
-        return null;
-    }
-
-
 }
