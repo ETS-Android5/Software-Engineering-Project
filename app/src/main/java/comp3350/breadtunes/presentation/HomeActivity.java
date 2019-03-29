@@ -91,7 +91,7 @@ public class HomeActivity extends BaseActivity implements Observer {
         mediaPlayerController = new MediaPlayerController(ServiceGateway.getMusicPlayerState());
 
         // Create song search helper
-        findSong = new LookUpSongs();
+        findSong = new LookUpSongs(ServiceGateway.getMusicPlayerState());
 
         // Show the list of songs
         getSongNameList();

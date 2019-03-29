@@ -7,12 +7,16 @@ import comp3350.breadtunes.objects.Song;
 import comp3350.breadtunes.services.ServiceGateway;
 
 public class LookUpSongs {
+    MusicPlayerState mps;
 
+    public LookUpSongs(MusicPlayerState mps) {
+        this.mps = mps;
+    }
 
     public List<Song> searchSongs(String input) {
         List<Song> matchingSongs = new ArrayList<>();
 
-        List<Song> currentSongList = ServiceGateway.getMusicPlayerState().getCurrentSongList();
+        List<Song> currentSongList = mps.getCurrentSongList();
 
         for (int i = 0; i < currentSongList.size(); i++) {
             Song ss = currentSongList.get(i);
