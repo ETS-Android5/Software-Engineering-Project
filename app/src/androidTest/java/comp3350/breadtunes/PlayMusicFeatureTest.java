@@ -26,6 +26,7 @@ import static org.hamcrest.core.IsAnything.anything;
 
 
 // https://github.com/codepath/android_guides/wiki/UI-Testing-with-Espresso
+// https://code.cs.umanitoba.ca/comp3350-summer2018/sample/blob/master/app/src/androidTest/java/comp3350/srsys/CoursesTest.java
 
 
 public class PlayMusicFeatureTest {
