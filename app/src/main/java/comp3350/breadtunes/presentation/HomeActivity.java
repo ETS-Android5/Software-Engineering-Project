@@ -38,7 +38,7 @@ import java.util.Observer;
 
 
 public class HomeActivity extends BaseActivity implements Observer {
-    MediaPlayerController mediaPlayerController;  // controls playback operations
+    private static MediaPlayerController mediaPlayerController;  // controls playback operations
     public static ArrayList<Song> sList = new ArrayList<>();
     String[] songNamesToDisplay; //song names displayed in the songlist fragment
     private final String TAG = "HomeActivity"; // tag for logs
@@ -88,7 +88,7 @@ public class HomeActivity extends BaseActivity implements Observer {
         getSongsFromPersistance();
 
         // Create media controller
-        mediaPlayerController = new MediaPlayerController(ServiceGateway.getMusicPlayerState());
+        //mediaPlayerController = new MediaPlayerController(ServiceGateway.getMusicPlayerState());
 
         // Create song search helper
         findSong = new LookUpSongs();
@@ -174,11 +174,18 @@ public class HomeActivity extends BaseActivity implements Observer {
 
     //method called by fragments to avoid context issues
     public void playSong(Song song) {
+
+        if(mediaPlayerController == null){
+            mediaPlayerController = MediaPlayerController.getInstance(this);
+        }
+
+        //mediaPlayerController = new MediaPlayerController(ServiceGateway.getMusicPlayerState());
+
         String playStatus = mediaPlayerController.playSong(song, this);
         if(playStatus.equals("Parental control does not allow this song to be played")) { //only show this message to user
             Toast.makeText(this, playStatus, Toast.LENGTH_SHORT).show();
         }else{
-            //playing succesful
+            //playing successful
         }
         Log.i(TAG, playStatus);
 
