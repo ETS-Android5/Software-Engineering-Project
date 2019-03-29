@@ -146,8 +146,7 @@ public class NowPlayingFragment extends Fragment implements Observer {
 
             SongObservable songObservable = (SongObservable) observable;
 
-            Song song = songObservable.getSong();
-
+            Song song = songObservable.getValue();
 
             seekBar.setMax(ServiceGateway.getMediaManager().getDuration());
             changeSeekbar();

@@ -17,7 +17,7 @@ public class ObservableService {
     }
 
     public static void updateDatabaseState(DatabaseState state) {
-        databaseState.setState(state);
+        databaseState.setValue(state);
     }
 
     public static void subscribeToSongChanges(Observer observer) {
@@ -25,7 +25,7 @@ public class ObservableService {
     }
 
     public static void updateCurrentSong(Song song) {
-        songState.setSong(song);
+        songState.setValue(song);
     }
 
     public static void subscribeToParentalModeStatus(Observer observer) {
@@ -33,7 +33,7 @@ public class ObservableService {
     }
 
     public static void updateParentalModeStatus(boolean status) {
-        parentalStatus.setParentalControlStatus(status);
+        parentalStatus.setValue(status);
     }
 
     public static void subscribeToPlayModeChange(Observer observer) {
@@ -41,6 +41,6 @@ public class ObservableService {
     }
 
     public static void updatePlayMode(String mode) {
-        playMode.setPlayMode(mode);
+        playMode.setValue(mode);
     }
 }

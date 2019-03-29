@@ -3,52 +3,51 @@ package comp3350.breadtunes.tests.business.observables;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.Observable;
+import java.util.List;
 
 import comp3350.breadtunes.business.observables.SongObservable;
 import comp3350.breadtunes.objects.Song;
 import comp3350.breadtunes.testhelpers.mocks.MockSongs;
-import comp3350.breadtunes.testhelpers.observers.TestObserver;
+import comp3350.breadtunes.testhelpers.observers.BreadTunesTestObserver;
 import comp3350.breadtunes.testhelpers.watchers.TestLogger;
 
 import static junit.framework.Assert.*;
 
 public class SongObservableTest extends TestLogger {
-    TestObserver<Song> testSongObserver;
+    BreadTunesTestObserver<Song> testSongObserver;
+    SongObservable songObservable;
 
     @Before
     public void setup() {
-        // Create anonymous instance of TestObserver
-        testSongObserver = new TestObserver<Song>() {
-            Song lastReceived = null;
+        testSongObserver = new BreadTunesTestObserver<>();
+        songObservable = new SongObservable();
 
-            @Override
-            public Song getMostRecent() {
-                return lastReceived;
-            }
-
-            @Override
-            public void update(Observable obs, Object obj) {
-                if (obs instanceof SongObservable) {
-                    lastReceived = ((SongObservable) obs).getSong();
-                }
-            }
-        };
+        songObservable.addObserver(testSongObserver);
     }
 
     @Test
-    public void songObservableTest() {
-        // Arrange
+    public void songObservable_singleValue_Test() {
         Song testSong = MockSongs.getMockSongList().get(1);
-        SongObservable observable = new SongObservable();
-        observable.addObserver(testSongObserver);
 
-        // Act
-        observable.setSong(testSong);
+        songObservable.setValue(testSong);
 
-        // Assert
-        Song observedSong = testSongObserver.getMostRecent();
+        Song observedSong = testSongObserver.getMostRecentReceived();
         assertNotNull(observedSong);
         assertEquals(observedSong, testSong);
+    }
+
+    @Test
+    public void songObservable_multipleValues_Test() {
+        List<Song> songList = MockSongs.getMockSongList();
+        Song testSong1 = songList.get(0);
+        Song testSong2 = songList.get(1);
+
+        songObservable.setValue(testSong1);
+        songObservable.setValue(testSong2);
+
+        List<Song> observedValues = testSongObserver.getAllReceived();
+        assertEquals(observedValues.size(), 2);
+        assertEquals(observedValues.get(0), testSong1);
+        assertEquals(observedValues.get(1), testSong2);
     }
 }
