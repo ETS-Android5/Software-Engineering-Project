@@ -10,6 +10,9 @@ android {
         targetSdkVersion 23
         versionCode 1
         versionName "1.0"
+
+        testInstrumentationRunner "androidx.test.runner.AndroidJUnitRunner"
+
     }
     buildTypes {
         release {
@@ -35,6 +38,10 @@ dependencies {
     implementation group: 'org.hsqldb', name: 'hsqldb', version: '2.4.1'
     implementation 'net.sourceforge.streamsupport:streamsupport-cfuture:1.7.0'
     implementation 'net.sourceforge.streamsupport:streamsupport:1.7.0'
+    androidTestImplementation 'androidx.test.espresso:espresso-core:3.1.0'
+    androidTestImplementation 'androidx.test:runner:1.1.0'
+    androidTestImplementation 'androidx.test:rules:1.1.0'
+
 }
 
 sourceSets {
