@@ -3,6 +3,10 @@ package comp3350.breadtunes.tests.business;
 import org.junit.Test;
 import org.junit.Before;
 
+import java.util.Arrays;
+import java.util.List;
+import java.util.Observer;
+
 import static junit.framework.Assert.*;
 import static org.mockito.Mockito.*;
 
@@ -27,250 +31,167 @@ public class MusicPlayerStateTest extends TestLogger {
         testTarget = new MusicPlayerState(mockSongPersistence, mockLogger);
     }
 
+    // *******
     @Test
     public void getCurrentlyPlayingSongTest() {
-        Song testSong = new Song.Builder()
-                .songId(100000)
-                .build();
+        Song testSong = mock(Song.class);
 
         testTarget.setCurrentSong(testSong);
-
         assertEquals(testSong, testTarget.getCurrentlyPlayingSong());
     }
 
     @Test
     public void setCurrentSongTest() {
-        /*
-        List<Song> songList = Arrays.asList(a, b, c, d);
-        MusicPlayerState mps = new MusicPlayerState(songList);
-        MusicPlayerState mps2 = mps.getMusicPlayerStateInstance();
-
-        for(int i = 0; i < songList.size()-1; i++)
-        {
-            mps2.setCurrentSong(songList.get(i));
-            assertTrue(mps2.getCurrentlyPlayingSong() == songList.get(i));
-        }
-        assertFalse(mps2.getCurrentlyPlayingSong() == songList.get(0));
-        */
+        testTarget.setCurrentSong(testTarget.getCurrentSongList().get(0));
+        assertEquals(testTarget.getCurrentSongList().get(0), testTarget.getCurrentlyPlayingSong());
     }
 
+    // *******
     @Test
     public void getCurrentSongList() {
-        /*
-        List<Song> songList = Arrays.asList(a, b, c, d);
-        MusicPlayerState mps = new MusicPlayerState(songList);
-        MusicPlayerState mps2 = mps.getMusicPlayerStateInstance();
-
-        mps2.setCurrentSongList(songList);
-        assertTrue(mps2.getCurrentSongList() == songList);
-        assertFalse(mps2.getCurrentSongList() == null);
-        */
+        assertEquals(MockSongs.getMockSongList(), testTarget.getCurrentSongList());
     }
 
     @Test
     public void setCurrentSongListTest() {
-        /*
-        List<Song> songList = Arrays.asList(a, b, c, d);
-        List<Song> testSongList = Arrays.asList(a,b,c);
-        MusicPlayerState mps = new MusicPlayerState(songList);
-        MusicPlayerState mps2 = mps.getMusicPlayerStateInstance();
+        List<Song> testList1 = mock(List.class);
 
-        mps2.setCurrentSongList(songList);
-
-        assertTrue(songList == mps2.getCurrentSongList());
-        assertFalse(testSongList == mps2.getCurrentSongList());
-
-        mps2.setCurrentSongList(testSongList);
-
-        assertTrue(testSongList == mps2.getCurrentSongList());
-        assertFalse(songList == mps2.getCurrentSongList());
-        */
+        assertEquals(MockSongs.getMockSongList(), testTarget.getCurrentSongList());
+        testTarget.setCurrentSongList(testList1);
+        assertEquals(testList1, testTarget.getCurrentSongList());
     }
 
     @Test
     public void getNextSongTest() {
-        /*
-        List<Song> songList = Arrays.asList(a, b, c, d);
-        MusicPlayerState mps = new MusicPlayerState(songList);
-        MusicPlayerState mps2 = mps.getMusicPlayerStateInstance();
+        testTarget.setCurrentSong(testTarget.getCurrentSongList().get(0)); // set currently playing song as first item in songlist
+        assertEquals(MockSongs.getMockSongList().get(0), testTarget.getCurrentlyPlayingSong());
 
-        mps2.setCurrentSongList(songList);
-
-        List<Song> testList = mps2.getCurrentSongList();
-
-        mps2.setCurrentSong(testList.get(0)); // initial song is first item in the initial updateQueue
-
-        assertEquals(songList.get(0), mps2.getCurrentlyPlayingSong());
-        mps2.setCurrentSong(mps2.getNextSong());
-        assertEquals(songList.get(1), mps2.getCurrentlyPlayingSong());
-        */
+        testTarget.setCurrentSong(testTarget.getNextSong()); // get next song in queue
+        assertEquals(MockSongs.getMockSongList().get(1), testTarget.getCurrentlyPlayingSong());
     }
 
     @Test
     public void getPreviousSongTest() {
-        /*
-        List<Song> songList = Arrays.asList(a, b, c, d);
-        MusicPlayerState mps = new MusicPlayerState(songList);
-        MusicPlayerState mps2 = mps.getMusicPlayerStateInstance();
+        testTarget.setCurrentSong(testTarget.getCurrentSongList().get(2)); // set currently playing song as third item in songlist
+        assertEquals(MockSongs.getMockSongList().get(2), testTarget.getCurrentlyPlayingSong());
 
-
-        mps2.setCurrentSongList(songList);
-        List<Song> testList = mps2.getCurrentSongList();
-
-        mps2.setCurrentSong(testList.get(3)); // initial song is last item in the initial updateQueue
-
-        assertEquals(songList.get(3), mps2.getCurrentlyPlayingSong());
-        mps2.setCurrentSong(mps2.getPreviousSong());
-        assertEquals(songList.get(2), mps2.getCurrentlyPlayingSong());
-        */
+        testTarget.setCurrentSong(testTarget.getPreviousSong()); // get previous song in the list
+        assertEquals(MockSongs.getMockSongList().get(1), testTarget.getCurrentlyPlayingSong());
     }
 
     @Test
-    public void getSetPausedPositionTest() {
-        /*
-        List<Song> songList = Arrays.asList(a, b, c, d);
-        MusicPlayerState mps = new MusicPlayerState(songList);
-        MusicPlayerState mps2 = mps.getMusicPlayerStateInstance();
-
-        mps2.setPausedPosition(30);
-        assertEquals(mps2.getPausedPosition(),30);
-        assertFalse(mps2.getPausedPosition() == 0);
-        */
+    public void pausedPositionTest() {
+        testTarget.setPausedPosition(30);
+        assertEquals(30, testTarget.getPausedPosition());
     }
 
     @Test
-    public void songPlayingTest() {
-        // 4 commands will be functions will be used here:
-        // setIsSongPlaying, isSongPlaying
-        // setIsSongPaused, isSongPaused
+    public void currentSongPlayingNameTest(){
+        Song testSong = mock(Song.class);
+        testTarget.setCurrentSong(testSong);
 
-        /*
-        List<Song> songList = Arrays.asList(a, b, c, d);
-        MusicPlayerState mps = new MusicPlayerState(songList);
-        MusicPlayerState mps2 = mps.getMusicPlayerStateInstance();
+        testTarget.setCurrentSongPlayingName("test");
+        assertEquals("test", testTarget.getCurrentlyPlayingSongName());
+    }
 
-        mps2.setIsSongPlaying(true);
-        assertTrue(mps2.isSongPlaying() == true);
-        assertFalse(mps2.isSongPlaying() == false);
+    @Test
+    public void songPlayingPausedTest() {
+        // song is playing
+        testTarget.setIsSongPlaying(true);
+        testTarget.setIsSongPaused(false);
+        assertTrue(testTarget.isSongPlaying());
+        assertFalse(testTarget.isSongPaused());
 
-        mps.getInstance().setIsSongPaused(true);
-        assertTrue(mps2.isSongPaused() == true);
-        assertFalse(mps2.isSongPaused() == false);
-
-        mps.getInstance().setIsSongPlaying(false);
-        assertTrue(mps2.isSongPlaying() == false);
-        assertFalse(mps2.isSongPlaying() == true);
-
-        mps.getInstance().setIsSongPaused(false);
-        assertTrue(mps2.isSongPaused() == false);
-        assertFalse(mps2.isSongPaused() == true);
-        */
+        // song is paused
+        testTarget.setIsSongPlaying(false);
+        testTarget.setIsSongPaused(true);
+        assertFalse(testTarget.isSongPlaying());
+        assertTrue(testTarget.isSongPaused());
     }
 
     @Test
     public void updateSongTest() {
-        /*
-        List<Song> songList = Arrays.asList(a, b, c, d);
-        MusicPlayerState mps = new MusicPlayerState(songList);
-        MusicPlayerState mps2 = mps.getMusicPlayerStateInstance();
+        Song testSong1 = mock(Song.class);
+        Song testSong2 = mock(Song.class);
+        Song testSong3 = mock(Song.class);
 
-        mps2.setCurrentSongList(songList);
+        List<Song> testList = Arrays.asList(testSong1, testSong2, testSong3);
 
-        mps2.setCurrentSong(mps2.getCurrentSongList().get(1));
-        mps2.updateNextSong();
-        mps2.updatePreviousSong();
+        testTarget.setCurrentSongList(testList);
 
-        assertTrue(mps2.getNextSong() == songList.get(2));
-        assertTrue(mps2.getPreviousSong() == songList.get(0));
+        testTarget.setCurrentSong(testTarget.getCurrentSongList().get(1));
+        testTarget.updateNextSong();
+        testTarget.updatePreviousSong();
 
-        assertFalse(mps2.getNextSong() == songList.get(3));
-        assertFalse(mps2.getPreviousSong() == songList.get(1));
-        */
+        assertEquals(testList.get(2), testTarget.getNextSong());
+        assertEquals(testList.get(0), testTarget.getPreviousSong());
+
+        //shuffle mode
     }
 
     @Test
-    public void subscribeToSongChangeTest() {
-        /*
-        List<Song> songList = Arrays.asList(a, b, c, d);
-        MusicPlayerState mps = new MusicPlayerState(songList);
-        MusicPlayerState mps2 = mps.getMusicPlayerStateInstance();
+    public void getPlayModeTest(){
+        // initial state, repeat & shuffle off
+        assertEquals("", testTarget.getPlayMode());
 
-        Observer mockObserver = Mockito.mock(Observer.class);
+        testTarget.setShuffleMode(true);
+        testTarget.updateNextSong();
+        testTarget.setRepeatMode(true);
 
-        mps2.subscribeToSongChange(mockObserver);
-        */
+        assertEquals("Shuffle on - Repeat on", testTarget.getPlayMode());
+
+        testTarget.setShuffleMode(false);
+        testTarget.setRepeatMode(false);
+
+        assertEquals("", testTarget.getPlayMode());
     }
 
     @Test
-    public void subscribeToPlayModeChangeTest()
-    {
-        /*
-        List<Song> songList = Arrays.asList(a, b, c, d);
-        MusicPlayerState mps = new MusicPlayerState(songList);
-        MusicPlayerState mps2 = mps.getMusicPlayerStateInstance();
+    public void getParentalControlStatusTest(){
+        // this will test both getParentalControlStatus and getParentalControlModeOn
 
-        Observer mockObserver = Mockito.mock(Observer.class);
+        testTarget.turnParentalControlOn(false);
+        assertEquals("Parental Control Mode Off", testTarget.getParentalControlStatus());
+        assertEquals(false, testTarget.getParentalControlModeOn());
 
-        mps2.subscribeToPlayModeChange(mockObserver);
-        */
+        testTarget.turnParentalControlOn(true);
+        assertEquals("Parental Control Mode On", testTarget.getParentalControlStatus());
+        assertEquals(true, testTarget.getParentalControlModeOn());
     }
 
     @Test
-    public void getMusicPlayerStateTest()
-    {
-        /*
-        List<Song> songList = Arrays.asList(a, b, c, d);
-        MusicPlayerState mps = new MusicPlayerState(songList);
-        MusicPlayerState mps2 = mps.getMusicPlayerStateInstance();
+    public void addSongToPlayNextTest(){
+        Song testSong = mock(Song.class);
 
-        mps2.setCurrentSong(a);
+        testTarget.setCurrentSong(testTarget.getCurrentSongList().get(0)); // make sure we are first in the queue
+        testTarget.addSongToPlayNext(testSong);
 
-        System.out.println(mps2.getMusicPlayerStateInstance());
-        assertEquals( "Current song not null song is null song paused: false song playing falsevariable currentSongname is null",
-
-        mps2.getMusicPlayerStateInstance());
-        */
+        assertEquals(testSong, testTarget.getNextSong());
     }
 
     @Test
-    public void getPlayModeTest()
-    {
-        /*
-        List<Song> songList = Arrays.asList(a, b, c, d);
-        MusicPlayerState mps = new MusicPlayerState(songList);
-        MusicPlayerState mps2 = mps.getMusicPlayerStateInstance();
-
-        mps2.setCurrentSongList(songList);
-
-        assertEquals("", mps2.getPlayMode());
-
-        mps2.setShuffleMode(true);
-        mps2.updateNextSong();
-        mps2.setRepeatMode(true);
-
-        assertEquals("Shuffle on - Repeat on", mps2.getPlayMode());
-
-        mps2.setShuffleMode(false);
-        mps2.setRepeatMode(false);
-
-        assertEquals("", mps2.getPlayMode());
-        */
+    public void clearQueueTest(){
+        testTarget.clearQueue();
+        assertEquals(0, testTarget.getQueueSize());
     }
 
     @Test
-    public void testCurrentlyPlayingSongNameMutator()
-    {
-        /*
-        List<Song> songList = Arrays.asList(a, b, c, d);
-        MusicPlayerState mps = new MusicPlayerState(songList);
-        MusicPlayerState mps2 = mps.getMusicPlayerStateInstance();
+    public void addToQueueTest(){
+        Song testSong = mock(Song.class);
 
-        mps2.setCurrentSong(a);
-        mps2.setCurrentSongPlayingName("test");
-
-        assertEquals("test", mps2.getCurrentlyPlayingSongName());
-        */
+        testTarget.addToQueue(testSong);
+        // set current song to last song in the current list
+        testTarget.setCurrentSong(testTarget.getCurrentSongList().get(testTarget.getCurrentSongList().size()-1));
+        // check if the next song has been added to the end of the list
+        assertEquals(testSong, testTarget.getNextSong());
     }
 
+    @Test
+    public void getQueueSongNamesTest(){
+        String[] queueSongNames = testTarget.getQueueSongNames();
 
+        for(int i = 0; i < queueSongNames.length; i++)
+        {assertEquals(testTarget.getCurrentSongList().get(i).getName(), queueSongNames[i]);}
+
+    }
 }
