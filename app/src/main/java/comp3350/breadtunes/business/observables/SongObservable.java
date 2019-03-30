@@ -4,19 +4,19 @@ import java.util.Observable;
 
 import comp3350.breadtunes.objects.Song;
 
-public class SongObservable extends Observable {
+public class SongObservable extends BreadTunesObservable<Song> {
     private Song song;
 
     public SongObservable() {
     }
 
-    public void setSong(Song song) {
+    public void setValue(Song song) {
         this.song = song;
         setChanged();
         notifyObservers();
     }
 
-    public Song getSong() {
+    public Song getValue() {
        return song;
     }
 }

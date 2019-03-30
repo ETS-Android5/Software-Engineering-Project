@@ -91,7 +91,7 @@ public class HomeActivity extends BaseActivity implements Observer {
         mediaPlayerController = new MediaPlayerController(ServiceGateway.getMusicPlayerState());
 
         // Create song search helper
-        findSong = new LookUpSongs();
+        findSong = new LookUpSongs(ServiceGateway.getMusicPlayerState());
 
         // Show the list of songs
         getSongNameList();
@@ -463,7 +463,7 @@ public class HomeActivity extends BaseActivity implements Observer {
 
     public void update(Observable observable, Object o) {
         if (observable instanceof DatabaseUpdatedObservable) {
-            switch (((DatabaseUpdatedObservable) observable).getState()) {
+            switch (((DatabaseUpdatedObservable) observable).getValue()) {
                 case DatabaseUpdated:
                     getSongsFromPersistance();
                     refreshSongList();
@@ -473,7 +473,7 @@ public class HomeActivity extends BaseActivity implements Observer {
             }
         }
         else if (observable instanceof ParentalControlStatusObservable) {
-            boolean parentalModeOn = ((ParentalControlStatusObservable) observable).getParentalControlStatusBoolean();
+            boolean parentalModeOn = ((ParentalControlStatusObservable) observable).getValue();
 
             ServiceGateway.getMusicPlayerState().clearQueue(); // clear the queue on any mode change
             if (parentalModeOn) {

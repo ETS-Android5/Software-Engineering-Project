@@ -10,8 +10,8 @@ import comp3350.breadtunes.business.MusicPlayerState;
 import comp3350.breadtunes.objects.Song;
 import comp3350.breadtunes.persistence.interfaces.SongPersistence;
 import comp3350.breadtunes.presentation.Logger.Logger;
-import comp3350.breadtunes.tests.mocks.MockSongs;
-import comp3350.breadtunes.tests.watchers.TestLogger;
+import comp3350.breadtunes.testhelpers.mocks.MockSongs;
+import comp3350.breadtunes.testhelpers.watchers.TestLogger;
 
 public class MusicPlayerStateTest extends TestLogger {
 

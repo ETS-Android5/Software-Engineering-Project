@@ -4,15 +4,18 @@ import java.util.ArrayList;
 import java.util.List;
 
 import comp3350.breadtunes.objects.Song;
-import comp3350.breadtunes.services.ServiceGateway;
 
 public class LookUpSongs {
+    MusicPlayerState mps;
 
+    public LookUpSongs(MusicPlayerState mps) {
+        this.mps = mps;
+    }
 
     public List<Song> searchSongs(String input) {
         List<Song> matchingSongs = new ArrayList<>();
 
-        List<Song> currentSongList = ServiceGateway.getMusicPlayerState().getCurrentSongList();
+        List<Song> currentSongList = mps.getCurrentSongList();
 
         for (int i = 0; i < currentSongList.size(); i++) {
             Song ss = currentSongList.get(i);
@@ -34,16 +37,4 @@ public class LookUpSongs {
         }
         return null;
     }
-
-    //DO NOT REMOVE, - talk to Mario if questions
-    public static Song getSong(ArrayList<Song> songList, String songName){
-        for (Song song: songList) {
-            if (song.getName().equals(songName)) {
-                return song;
-            }
-        }
-        return null;
-    }
-
-
 }
