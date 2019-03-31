@@ -113,7 +113,6 @@ public class MediaPlayerController{
 
                     if (!mAudioFocusGranted && requestAudioFocus()) {
                         // 2. Kill off any other play back sources
-                        System.out.println("to be killed");
                         forceMusicStop();
                         // 3. Register broadcast receiver for player intents
                         setupBroadcastReceiver();
@@ -349,7 +348,6 @@ public class MediaPlayerController{
         AudioManager am = (AudioManager) mContext
                 .getSystemService(Context.AUDIO_SERVICE);
         if (am.isMusicActive()) {
-            System.out.println("forcemusic");
             Intent intentToStop = new Intent(SERVICE_CMD);
             intentToStop.putExtra(CMD_NAME, CMD_STOP);
             mContext.sendBroadcast(intentToStop);
