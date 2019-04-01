@@ -130,7 +130,7 @@
         app:layout_constraintTop_toTopOf="@+id/play_next_button_nowplaying_fragment" />
 
     <TextView
-        android:id="@+id/current_duration"
+        android:id="@+id/song_duration"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:text="0:00"
@@ -141,7 +141,7 @@
         app:layout_constraintTop_toBottomOf="@+id/artist_name" />
 
     <TextView
-        android:id="@+id/song_duration"
+        android:id="@+id/current_duration"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:text="0:00"
