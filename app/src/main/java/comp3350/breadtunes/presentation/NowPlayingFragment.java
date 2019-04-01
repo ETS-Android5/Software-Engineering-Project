@@ -216,6 +216,7 @@ public class NowPlayingFragment extends Fragment implements Observer {
     }
 
     public void changeSeekbar(){
+        //get current position in milliseconds and convert to hours,minutes,seconds
         currentDuration = ServiceGateway.getMediaManager().getCurrentPosition();
         hours = (int) TimeUnit.MILLISECONDS.toHours(currentDuration);
         minutes = (int) (TimeUnit.MILLISECONDS.toMinutes(currentDuration) -
@@ -223,8 +224,8 @@ public class NowPlayingFragment extends Fragment implements Observer {
         seconds = (int) (TimeUnit.MILLISECONDS.toSeconds(currentDuration) -
                 TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(currentDuration)));
 
+        //update seekBar and currentDurationGui
         seekBar.setProgress(ServiceGateway.getMediaManager().getCurrentPosition());
-
         if(hours != 0){
             currentDurationGui.setText(hours+":"+minutes+":"+seconds);
         }else{
