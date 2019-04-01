@@ -71,6 +71,7 @@ public class NowPlayingFragment extends Fragment implements Observer {
         return inflater.inflate(R.layout.fragment_now_playing, container, false);
     }
 
+    @Override
     public void onViewCreated(View view, Bundle savedInstanceState){
         nowPlayingSongGui = (TextView) view.findViewById(R.id.song_name);
         nowPlayingArtistGui = (TextView) view.findViewById(R.id.artist_name);
@@ -79,22 +80,6 @@ public class NowPlayingFragment extends Fragment implements Observer {
 
         seekBar = (SeekBar) view.findViewById(R.id.seek_bar);
         handler = new Handler();
-
-
-        Song currentSong = ServiceGateway.getMusicPlayerState().getCurrentlyPlayingSong();
-
-        //populate the fields in the fragment
-        nowPlayingSongGui.setText(currentSong.getName());
-        nowPlayingAlbumGui.setText(currentSong.getAlbumName());
-        nowPlayingArtistGui.setText(currentSong.getArtistName());
-        setAlbumArt(currentSong);
-
-
-        if(ServiceGateway.getMusicPlayerState().isSongPlaying()){
-            seekBar.setMax(ServiceGateway.getMediaManager().getDuration());
-            changeSeekbar();
-        }
-
 
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
             @Override
@@ -115,11 +100,31 @@ public class NowPlayingFragment extends Fragment implements Observer {
 
             }
         });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
+        Song currentSong = ServiceGateway.getMusicPlayerState().getCurrentlyPlayingSong();
+
+        //populate the fields in the fragment
+        nowPlayingSongGui.setText(currentSong.getName());
+        nowPlayingAlbumGui.setText(currentSong.getAlbumName());
+        nowPlayingArtistGui.setText(currentSong.getArtistName());
+        setAlbumArt(currentSong);
+
+        if(ServiceGateway.getMusicPlayerState().isSongPlaying() || ServiceGateway.getMusicPlayerState().isSongPaused()){
+            seekBar.setMax(ServiceGateway.getMediaManager().getDuration());
+            changeSeekbar();
+        }
 
         // Make sure the button images are all correct
         updatePlayPauseButtons();
         updateShuffleRepeatButtons();
     }
+
+
 
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
         // Inflate the menu; this adds items to the action bar if it is present.
@@ -217,6 +222,4 @@ public class NowPlayingFragment extends Fragment implements Observer {
         };
         handler.postDelayed(runnable, 50);
     }
-
-
 }

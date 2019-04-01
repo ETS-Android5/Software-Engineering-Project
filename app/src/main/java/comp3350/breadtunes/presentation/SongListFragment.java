@@ -74,21 +74,13 @@ public class SongListFragment extends Fragment implements Observer {
         return inflater.inflate(R.layout.fragment_song_list, container, false);
     }
 
-
-
     public void onViewCreated(View view, Bundle savedInstanceState){
         populateSongListView();
         registerOnClickForSonglist();
         registerOnClickForNowPlayingButton();
         parentalControlStatus = (TextView) getView().findViewById(R.id.parental_control_status);  //set play button according to the playing mode
 
-        if(ServiceGateway.getMusicPlayerState().isSongPlaying()){
-            ImageButton button = (ImageButton) getView().findViewById(R.id.play_pause);
-            button.setImageResource(R.drawable.pause);
-        }else{
-            ImageButton button = (ImageButton) getView().findViewById(R.id.play_pause);
-            button.setImageResource(R.drawable.play);
-        }
+        updateButtons();
     }
 
     public void onResume(){
@@ -110,14 +102,7 @@ public class SongListFragment extends Fragment implements Observer {
         parentalControlStatus.setText(mps.getParentalControlStatus());
         nowPlayingSongGui.setText(mps.getCurrentlyPlayingSongName() + "\n" + mps.getPlayMode());
 
-        if(ServiceGateway.getMusicPlayerState().isSongPlaying()){
-            ImageButton button = (ImageButton) getView().findViewById(R.id.play_pause);
-            button.setImageResource(R.drawable.pause);
-        }else{
-            ImageButton button = (ImageButton) getView().findViewById(R.id.play_pause);
-            button.setImageResource(R.drawable.play);
-        }
-
+        updateButtons();
     }
 
     public void onStop(){

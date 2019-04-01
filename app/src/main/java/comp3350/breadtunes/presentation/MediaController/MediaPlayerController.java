@@ -1,23 +1,58 @@
 package comp3350.breadtunes.presentation.MediaController;
 
 import android.content.Context;
+import android.media.AudioManager;
 import android.media.MediaPlayer;
 
 import comp3350.breadtunes.business.MusicPlayerState;
 import comp3350.breadtunes.objects.Song;
+import comp3350.breadtunes.services.AppState;
 import comp3350.breadtunes.services.ServiceGateway;
 
 // Class that controls the playing, pausing, and playing next/previous
 public class MediaPlayerController{
-
     MusicPlayerState musicPlayerState;
+    private AudioManager.OnAudioFocusChangeListener afChangeListener = null;
 
     public MediaPlayerController(MusicPlayerState musicPlayerState){
         this.musicPlayerState = musicPlayerState;
+        setAfChangeListener();
+    }
+
+    // Create a change listener, must be associated with audio focus request to work
+    private void setAfChangeListener() {
+        afChangeListener =  focusChange -> {
+            switch (focusChange) {
+                case AudioManager.AUDIOFOCUS_LOSS:
+                    pauseSong();
+                    break;
+                case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
+                    pauseSong();
+                    break;
+                case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
+                    pauseSong();
+                    break;
+                case AudioManager.AUDIOFOCUS_GAIN:
+                    resumeSong();
+                    break;
+            }
+        };
+    }
+
+    private boolean requestAudioFocus() {
+        int result = AppState.audioManager.requestAudioFocus(afChangeListener,
+                AudioManager.STREAM_MUSIC,
+                AudioManager.AUDIOFOCUS_GAIN);
+
+        return result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED;
     }
 
     //plays a song, returns a string "succesful" or "failed to find resource" so that activity that calls this metjod can display toast message
-    public String playSong(Song song, Context context){
+    public String playSong(Song song, Context context) {
+        if (!requestAudioFocus()) {
+            return "Audio focus denied";
+        }
+
         String response;
 
         if (song.getSongUri() == null){
@@ -129,7 +164,11 @@ public class MediaPlayerController{
 
     // resume the playing of a song
     public String resumeSong(){
-     String response;
+        if (!requestAudioFocus()) {
+            return "Audio focus denied";
+        }
+
+        String response;
         try{
             if(musicPlayerState.isSongPaused()) {
                 ServiceGateway.getMediaManager().resumePlayingSong();
@@ -184,6 +223,4 @@ public class MediaPlayerController{
         }
         return response;
     }
-
-
-}//media player controller class
+} //media player controller class
