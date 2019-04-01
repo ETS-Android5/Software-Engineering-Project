@@ -20,6 +20,8 @@ import android.widget.TextView;
 import java.util.Objects;
 import java.util.Observable;
 import java.util.Observer;
+import java.util.concurrent.TimeUnit;
+
 import comp3350.breadtunes.R;
 import comp3350.breadtunes.business.MusicPlayerState;
 import comp3350.breadtunes.business.observables.SongObservable;
@@ -34,15 +36,18 @@ import comp3350.breadtunes.services.ServiceGateway;
 public class NowPlayingFragment extends Fragment implements Observer {
 
     public HomeActivity homeActivity;
-    public SeekBar seekBar;
-    private Handler handler;
-    private Runnable runnable;
     private String TAG = "Now Playing Fragment";
 
     public static ImageView songArt;
     public static TextView nowPlayingSongGui;
     public static TextView nowPlayingAlbumGui;
     public static TextView nowPlayingArtistGui;
+    public static TextView currentDurationGui;
+    public static TextView songDurationGui;
+    public SeekBar seekBar;
+    private Handler handler;
+    private Runnable runnable;
+    private int hours, minutes, seconds, currentDuration;
 
     private Uri defaultAlbumArt;
 
@@ -75,6 +80,9 @@ public class NowPlayingFragment extends Fragment implements Observer {
         nowPlayingSongGui = (TextView) view.findViewById(R.id.song_name);
         nowPlayingArtistGui = (TextView) view.findViewById(R.id.artist_name);
         nowPlayingAlbumGui = (TextView) view.findViewById(R.id.album_name);
+        currentDurationGui = (TextView) view.findViewById(R.id.current_duration);
+        songDurationGui = (TextView) view.findViewById(R.id.song_duration);
+
         songArt = (ImageView) view.findViewById(R.id.song_art);
 
         seekBar = (SeekBar) view.findViewById(R.id.seek_bar);
@@ -87,6 +95,7 @@ public class NowPlayingFragment extends Fragment implements Observer {
         nowPlayingSongGui.setText(currentSong.getName());
         nowPlayingAlbumGui.setText(currentSong.getAlbumName());
         nowPlayingArtistGui.setText(currentSong.getArtistName());
+        songDurationGui.setText(currentSong.getDuration().getMinutes() + ":" + currentSong.getDuration().getSeconds());
         setAlbumArt(currentSong);
 
 
@@ -207,7 +216,20 @@ public class NowPlayingFragment extends Fragment implements Observer {
     }
 
     public void changeSeekbar(){
+        currentDuration = ServiceGateway.getMediaManager().getCurrentPosition();
+        hours = (int) TimeUnit.MILLISECONDS.toHours(currentDuration);
+        minutes = (int) (TimeUnit.MILLISECONDS.toMinutes(currentDuration) -
+                TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(currentDuration)));
+        seconds = (int) (TimeUnit.MILLISECONDS.toSeconds(currentDuration) -
+                TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(currentDuration)));
+
         seekBar.setProgress(ServiceGateway.getMediaManager().getCurrentPosition());
+
+        if(hours != 0){
+            currentDurationGui.setText(hours+":"+minutes+":"+seconds);
+        }else{
+            currentDurationGui.setText(minutes+":"+seconds);
+        }
 
         runnable = new Runnable(){
             @Override
