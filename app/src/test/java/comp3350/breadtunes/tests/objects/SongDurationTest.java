@@ -3,7 +3,7 @@ package comp3350.breadtunes.tests.objects;
 import org.junit.Test;
 
 import comp3350.breadtunes.objects.SongDuration;
-import comp3350.breadtunes.tests.watchers.TestLogger;
+import comp3350.breadtunes.testhelpers.watchers.TestLogger;
 
 import static org.junit.Assert.*;
 

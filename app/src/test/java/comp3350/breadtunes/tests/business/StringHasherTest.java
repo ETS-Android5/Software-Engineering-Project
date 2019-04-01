@@ -4,7 +4,7 @@ import org.junit.Test;
 import static junit.framework.Assert.*;
 
 import comp3350.breadtunes.business.StringHasher;
-import comp3350.breadtunes.tests.watchers.TestLogger;
+import comp3350.breadtunes.testhelpers.watchers.TestLogger;
 
 public class StringHasherTest extends TestLogger {
     @Test
