@@ -26,6 +26,7 @@ import comp3350.breadtunes.R;
 import comp3350.breadtunes.business.MusicPlayerState;
 import comp3350.breadtunes.business.observables.SongObservable;
 import comp3350.breadtunes.objects.Song;
+import comp3350.breadtunes.objects.SongDuration;
 import comp3350.breadtunes.persistence.loaders.AlbumArtLoader;
 import comp3350.breadtunes.services.ObservableService;
 import comp3350.breadtunes.services.ServiceGateway;
@@ -88,15 +89,15 @@ public class NowPlayingFragment extends Fragment implements Observer {
         seekBar = (SeekBar) view.findViewById(R.id.seek_bar);
         handler = new Handler();
 
-
         Song currentSong = ServiceGateway.getMusicPlayerState().getCurrentlyPlayingSong();
+        String duration = currentSong.getDuration().toDurationString();
 
         //populate the fields in the fragment
         nowPlayingSongGui.setText(currentSong.getName());
         nowPlayingAlbumGui.setText(currentSong.getAlbumName());
         nowPlayingArtistGui.setText(currentSong.getArtistName());
-        songDurationGui.setText(currentSong.getDuration().getMinutes() + ":" + currentSong.getDuration().getSeconds());
         setAlbumArt(currentSong);
+        songDurationGui.setText(duration);
 
 
         if(ServiceGateway.getMusicPlayerState().isSongPlaying()){
@@ -224,13 +225,13 @@ public class NowPlayingFragment extends Fragment implements Observer {
         seconds = (int) (TimeUnit.MILLISECONDS.toSeconds(currentDuration) -
                 TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(currentDuration)));
 
+        SongDuration currentSongDuration = ServiceGateway.getMusicPlayerState().getCurrentlyPlayingSong().getDuration();
+        SongDuration currentPosition = new SongDuration(hours, minutes, seconds);
+
         //update seekBar and currentDurationGui
         seekBar.setProgress(ServiceGateway.getMediaManager().getCurrentPosition());
-        if(hours != 0){
-            currentDurationGui.setText(hours+":"+minutes+":"+seconds);
-        }else{
-            currentDurationGui.setText(minutes+":"+seconds);
-        }
+        currentDurationGui.setText(currentPosition.toDurationString());
+        songDurationGui.setText(currentSongDuration.toDurationString());
 
         runnable = new Runnable(){
             @Override
@@ -238,7 +239,7 @@ public class NowPlayingFragment extends Fragment implements Observer {
                 changeSeekbar();
             }
         };
-        handler.postDelayed(runnable, 50);
+        handler.postDelayed(runnable, 1000);
     }
 
 
