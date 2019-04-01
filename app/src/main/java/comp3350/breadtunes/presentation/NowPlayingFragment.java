@@ -78,7 +78,7 @@ public class NowPlayingFragment extends Fragment implements Observer {
     }
 
     public void onViewCreated(View view, Bundle savedInstanceState){
-        nowPlayingSongGui = (TextView) view.findViewById(R.id.song_name);
+        nowPlayingSongGui = (TextView) view.findViewById(R.id.song_name_nowplaying_fragment);
         nowPlayingArtistGui = (TextView) view.findViewById(R.id.artist_name);
         nowPlayingAlbumGui = (TextView) view.findViewById(R.id.album_name);
         currentDurationGui = (TextView) view.findViewById(R.id.current_duration);
