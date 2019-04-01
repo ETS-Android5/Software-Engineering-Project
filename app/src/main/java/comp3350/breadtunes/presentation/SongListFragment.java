@@ -354,13 +354,18 @@ public class SongListFragment extends Fragment implements Observer {
 
     //used to update buttons if the state is changed in another fragment
     public void updateButtons(){
-        if(ServiceGateway.getMusicPlayerState().isSongPlaying()){
-            ImageButton button = (ImageButton) getView().findViewById(R.id.play_pause);
-            button.setImageResource(R.drawable.pause);
-        }else{
-            ImageButton button = (ImageButton) getView().findViewById(R.id.play_pause);
-            button.setImageResource(R.drawable.play);
-        }
+
+       try {
+           if (ServiceGateway.getMusicPlayerState().isSongPlaying()) {
+               ImageButton button = (ImageButton) getView().findViewById(R.id.play_pause);
+               button.setImageResource(R.drawable.pause);
+           } else {
+               ImageButton button = (ImageButton) getView().findViewById(R.id.play_pause);
+               button.setImageResource(R.drawable.play);
+           }
+       }catch (NullPointerException exception){
+           Log.i(TAG, "Avoided null pointer excpetion, tried to update layout when layout was not displayed");
+       }
     }
 
 }
