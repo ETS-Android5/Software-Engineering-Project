@@ -1,6 +1,5 @@
 package comp3350.breadtunes.persistence;
 
-import android.content.Context;
 import android.util.Log;
 
 import java.io.File;
@@ -8,8 +7,6 @@ import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.sql.Statement;
-
-import comp3350.breadtunes.R;
 
 public class DatabaseManager {
     private static DatabaseManager instance;
@@ -27,9 +24,9 @@ public class DatabaseManager {
         return instance;
     }
 
-    public void initializeDatabase(Context appContext) {
+    public void initializeDatabase(File databaseDirectory) {
         try {
-            String databasePath = getDatabasePath(appContext);
+            String databasePath = new File(databaseDirectory, DatabaseInfo.databaseName).toString();
 
             boolean databaseCreated = true;
 
@@ -59,18 +56,11 @@ public class DatabaseManager {
         }
     }
 
-    private String getDatabasePath(Context appContext) {
-        final String databaseAssetPath = appContext.getString(R.string.database_asset_path);
-        File dataDirectory = appContext.getDir(databaseAssetPath, Context.MODE_PRIVATE);
-        String databasePath = new File(dataDirectory, appContext.getString(R.string.database_name)).toString();
-        return databasePath;
-    }
-
     private void createDatabase() throws SQLException {
         dbConnection.setAutoCommit(false);
 
         Statement statement = dbConnection.createStatement();
-        for (String query : DatabaseCreationQueries.createDb) {
+        for (String query : DatabaseInfo.createDbQueries) {
             statement.addBatch(query);
         }
         statement.executeBatch();
