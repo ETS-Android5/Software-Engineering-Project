@@ -267,7 +267,6 @@ public class FindMusicFeatureTest {
         assertFalse(ServiceGateway.getMusicPlayerState().isSongPaused());
         assertEquals(ServiceGateway.getMusicPlayerState().getCurrentlyPlayingSong(), initialSong); //should equal first song, since we looked for
                                                                                                     //second song, played it , and then played previous
-
     }
 
 }
