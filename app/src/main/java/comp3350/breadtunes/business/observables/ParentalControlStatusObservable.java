@@ -1,16 +1,13 @@
 package comp3350.breadtunes.business.observables;
 
-import java.util.Observable;
-
-
-public class ParentalControlStatusObservable extends Observable {
+public class ParentalControlStatusObservable extends BreadTunesObservable<Boolean> {
 
     private boolean parentalControlStatus;
 
     public ParentalControlStatusObservable() {
     }
 
-    public void setParentalControlStatus(boolean status) {
+    public void setValue(Boolean status) {
         this.parentalControlStatus = status;
         setChanged();
         notifyObservers();
@@ -24,7 +21,7 @@ public class ParentalControlStatusObservable extends Observable {
         }
     }
 
-    public boolean getParentalControlStatusBoolean() {
+    public Boolean getValue() {
         return parentalControlStatus;
     }
 }

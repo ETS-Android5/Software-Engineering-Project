@@ -10,7 +10,7 @@ import comp3350.breadtunes.business.CredentialManager;
 import comp3350.breadtunes.business.StringHasher;
 import comp3350.breadtunes.objects.SecureCredentials;
 import comp3350.breadtunes.persistence.interfaces.CredentialPersistence;
-import comp3350.breadtunes.tests.watchers.TestLogger;
+import comp3350.breadtunes.testhelpers.watchers.TestLogger;
 
 import static junit.framework.Assert.*;
 import static org.mockito.Mockito.*;
