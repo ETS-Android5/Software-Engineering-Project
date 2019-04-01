@@ -15,6 +15,7 @@ import androidx.test.rule.GrantPermissionRule;
 import androidx.test.runner.AndroidJUnit4;
 import comp3350.breadtunes.business.MusicPlayerState;
 import comp3350.breadtunes.objects.Song;
+import comp3350.breadtunes.objects.SongDuration;
 import comp3350.breadtunes.presentation.HomeActivity;
 import comp3350.breadtunes.services.ServiceGateway;
 
@@ -61,7 +62,7 @@ public class PlayMusicFeatureTest {
     }
 
     @Test
-    public void playSong(){
+    public void playPauseSong(){
 
         onData(anything()).inAdapterView(withId(R.id.songList)).atPosition(FIRST_SONG).perform(click()); //click on first song
 
@@ -69,6 +70,7 @@ public class PlayMusicFeatureTest {
         assertEquals(initialSong.getName(), ServiceGateway.getMusicPlayerState().getCurrentlyPlayingSong().getName());  //playing first song
         assertTrue(ServiceGateway.getMusicPlayerState().isSongPlaying());
         assertFalse(ServiceGateway.getMusicPlayerState().isSongPaused());
+
 
         //test the pause
         onView(withId(R.id.play_pause)).perform(click());
@@ -119,9 +121,6 @@ public class PlayMusicFeatureTest {
 
     }
 
-
-
-
     @Test
     public void playShuffle(){
 
@@ -133,13 +132,6 @@ public class PlayMusicFeatureTest {
         //go to the now playing fragment
         onView(withId(R.id.song_name)).perform(click());
 
-        try {
-            Thread.sleep(3000);
-        }catch(Exception e){
-
-        }
-
-
         onView(withId(R.id.shuffle_button)).perform(click()); //activate shuffle
         onView(withId(R.id.play_next_button_nowplaying_fragment)).perform(click());
         assertNotEquals(ServiceGateway.getMusicPlayerState().getCurrentlyPlayingSong(), initialSong);
@@ -148,13 +140,116 @@ public class PlayMusicFeatureTest {
 
     }
 
-   
+    @Test
+    public void playRepeat(){
+
+        onData(anything()).inAdapterView(withId(R.id.songList)).atPosition(FIRST_SONG).perform(click());
+
+        assertTrue(ServiceGateway.getMusicPlayerState().isSongPlaying());
+        assertFalse(ServiceGateway.getMusicPlayerState().isSongPaused());
+
+        //go to the now playing fragment
+        onView(withId(R.id.song_name)).perform(click());
+
+        onView(withId(R.id.repeat_button)).perform(click());
+
+        //calculate how much time we must wait to see if the repeat works
+        assertEquals(initialSong, ServiceGateway.getMusicPlayerState().getCurrentlyPlayingSong());
+
+        SongDuration duration = ServiceGateway.getMusicPlayerState().getCurrentlyPlayingSong().getDuration();
+
+        int waitTime = ((duration.getHours() * 60 * 60) + (duration.getMinutes()*60) + (duration.getSeconds())) * 1000;
+
+        try {
+            Thread.sleep(waitTime + 50000);
+            //Thread.sleep(185000);
+        }catch(Exception e){
+
+        }
+
+        //verify that the song repeats
+        assertEquals(initialSong, ServiceGateway.getMusicPlayerState().getCurrentlyPlayingSong());
+        assertTrue(ServiceGateway.getMusicPlayerState().isSongPlaying());
+        assertFalse(ServiceGateway.getMusicPlayerState().isSongPaused());
+
+        if(ServiceGateway.getMusicPlayerState().getShuffleMode())
+            onView(withId(R.id.shuffle_button)).perform(click());
+
+        //verify expected behaviour, when pressing next and shuffle is on, it should play the next song
+        onView(withId(R.id.play_next_button_nowplaying_fragment)).perform(click());
+        assertEquals(secondSong, ServiceGateway.getMusicPlayerState().getCurrentlyPlayingSong());
+        assertTrue(ServiceGateway.getMusicPlayerState().isSongPlaying());
+        assertFalse(ServiceGateway.getMusicPlayerState().isSongPaused());
+    }
+
+    //now test play pause, play next and play previous in the now playing fragment
+    @Test
+    public void playPauseSongNowPlayingFragment(){
+
+        onData(anything()).inAdapterView(withId(R.id.songList)).atPosition(FIRST_SONG).perform(click()); //click on first song
+
+        //test playing
+        assertEquals(initialSong.getName(), ServiceGateway.getMusicPlayerState().getCurrentlyPlayingSong().getName());  //playing first song
+        assertTrue(ServiceGateway.getMusicPlayerState().isSongPlaying());
+        assertFalse(ServiceGateway.getMusicPlayerState().isSongPaused());
+
+        //go to now playing fragment
+        onView(withId(R.id.song_name)).perform(click());
+
+        //test the pause in now playing fragment
+        onView(withId(R.id.play_pause_button)).perform(click());
+        assertFalse(ServiceGateway.getMusicPlayerState().isSongPlaying());
+        assertTrue(ServiceGateway.getMusicPlayerState().isSongPaused());
+        assertTrue(ServiceGateway.getMusicPlayerState().getPausedPosition() > 0);
 
 
-    /*
-    1. Play/Pause music	As a user I want to be able to play/pause music
-2. Play Next/Previous song	As a user I want to be able to play next/previous song
-3. Shuffle songs	As a user I want to be able to shuffle songs
-4. Repeat songs	As a user I want to be able to play a song in repeat
-     */
+        //test resume in now playing fragment
+        onView(withId(R.id.play_pause_button)).perform(click());
+        assertEquals(initialSong, ServiceGateway.getMusicPlayerState().getCurrentlyPlayingSong());  //playing first song
+        assertTrue(ServiceGateway.getMusicPlayerState().isSongPlaying());
+        assertFalse(ServiceGateway.getMusicPlayerState().isSongPaused());
+    }
+
+    @Test
+    public void playNextSongNowPlayingFragment(){
+
+
+        onData(anything()).inAdapterView(withId(R.id.songList)).atPosition(FIRST_SONG).perform(click()); //click first song
+
+        assertTrue(ServiceGateway.getMusicPlayerState().isSongPlaying()); //check music player state reacting correctly
+        assertFalse(ServiceGateway.getMusicPlayerState().isSongPaused());
+
+        //go to now playing fragment
+        onView(withId(R.id.song_name)).perform(click());
+
+        onView(withId(R.id.play_next_button_nowplaying_fragment)).perform(click());
+        assertEquals(ServiceGateway.getMusicPlayerState().getCurrentlyPlayingSong(), secondSong);
+        assertNotEquals(ServiceGateway.getMusicPlayerState().getCurrentlyPlayingSong(), initialSong);
+
+        assertTrue(ServiceGateway.getMusicPlayerState().isSongPlaying());
+        assertFalse(ServiceGateway.getMusicPlayerState().isSongPaused());
+
+    }
+
+    @Test
+    public void playPreviousSongNowPlayingFragment(){
+
+        //song is now playing
+        onData(anything()).inAdapterView(withId(R.id.songList)).atPosition(SECOND_SONG).perform(click()); //playing the second song!!
+
+        assertTrue(ServiceGateway.getMusicPlayerState().isSongPlaying());//check music player state reacting correctly
+        assertFalse(ServiceGateway.getMusicPlayerState().isSongPaused());
+
+        //go to now playing fragment
+        onView(withId(R.id.song_name)).perform(click());
+
+        onView(withId(R.id.play_previous_button_nowplaying_fragment)).perform(click());
+        assertEquals(ServiceGateway.getMusicPlayerState().getCurrentlyPlayingSong(), initialSong);
+        assertNotEquals(ServiceGateway.getMusicPlayerState().getCurrentlyPlayingSong(), secondSong);
+
+        assertTrue(ServiceGateway.getMusicPlayerState().isSongPlaying());
+        assertFalse(ServiceGateway.getMusicPlayerState().isSongPaused());
+
+    }
+
 }
