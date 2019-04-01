@@ -119,6 +119,9 @@ public class PlayMusicFeatureTest {
 
     }
 
+
+
+
     @Test
     public void playShuffle(){
 
@@ -144,6 +147,8 @@ public class PlayMusicFeatureTest {
         assertFalse(ServiceGateway.getMusicPlayerState().isSongPaused());
 
     }
+
+   
 
 
     /*
