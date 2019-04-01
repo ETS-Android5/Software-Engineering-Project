@@ -33,9 +33,10 @@ public class MediaPlayerController{
                 }
 
                 ServiceGateway.getMediaManager().startPlayingSong(context, song.getSongUri());
-                musicPlayerState.setCurrentSong(song);  //update the state of the music player!
                 musicPlayerState.setIsSongPlaying(true);
                 musicPlayerState.setIsSongPaused(false);
+                musicPlayerState.setCurrentSong(song);  //update the state of the music player!
+
                 ServiceGateway.getMediaManager().setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
                     public void onCompletion(MediaPlayer mediaPlayer) {
 

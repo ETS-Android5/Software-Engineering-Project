@@ -116,17 +116,8 @@ public class NowPlayingFragment extends Fragment implements Observer {
             }
         });
 
-
-        //set play button according to the playing mode
-        if(ServiceGateway.getMusicPlayerState().isSongPlaying()){
-            ImageButton button = (ImageButton) getView().findViewById(R.id.play_pause_button);
-            button.setImageResource(R.drawable.pause);
-        }else{
-            ImageButton button = (ImageButton) getView().findViewById(R.id.play_pause_button);
-            button.setImageResource(R.drawable.play);
-        }
-
-        //set the shuffle and repeat buttons to display the correct image
+        // Make sure the button images are all correct
+        updatePlayPauseButtons();
         updateShuffleRepeatButtons();
     }
 
@@ -166,12 +157,10 @@ public class NowPlayingFragment extends Fragment implements Observer {
             //try and catch is necessary, as the fragment will still receive updates when it is not on focus and when searching for
             //layout elements, it will get a null ptr
             try {
-                if (ServiceGateway.getMusicPlayerState().isSongPlaying()) {
-                    ImageButton button = (ImageButton) Objects.requireNonNull(getView()).findViewById(R.id.play_pause_button);
-                    button.setImageResource(R.drawable.pause);
-                }
+                updatePlayPauseButtons();
+                updateShuffleRepeatButtons();
             }catch(Exception e){
-                Log.i(TAG, "Avoided null ptr excpetion when updating UI");
+                Log.i(TAG, "Avoided null ptr exception when updating UI");
             }
         }
     }
@@ -190,6 +179,16 @@ public class NowPlayingFragment extends Fragment implements Observer {
             repeatButton.setImageResource(R.drawable.repeat_on);
         }else{
             repeatButton.setImageResource(R.drawable.repeat);
+        }
+    }
+
+    private void updatePlayPauseButtons() {
+        if(ServiceGateway.getMusicPlayerState().isSongPlaying()){
+            ImageButton button = (ImageButton) getView().findViewById(R.id.play_pause_button);
+            button.setImageResource(R.drawable.pause);
+        }else{
+            ImageButton button = (ImageButton) getView().findViewById(R.id.play_pause_button);
+            button.setImageResource(R.drawable.play);
         }
     }
 
