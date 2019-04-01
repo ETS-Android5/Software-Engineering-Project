@@ -125,6 +125,9 @@ public class NowPlayingFragment extends Fragment implements Observer {
             ImageButton button = (ImageButton) getView().findViewById(R.id.play_pause_button);
             button.setImageResource(R.drawable.play);
         }
+
+        //set the shuffle and repeat buttons to display the correct image
+        updateShuffleRepeatButtons();
     }
 
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
