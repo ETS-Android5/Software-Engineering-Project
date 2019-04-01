@@ -1,24 +1,18 @@
 package comp3350.breadtunes;
-
-import android.app.Service;
 import android.test.suitebuilder.annotation.LargeTest;
 
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 import java.util.List;
-
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.rule.GrantPermissionRule;
 import androidx.test.runner.AndroidJUnit4;
-import comp3350.breadtunes.business.MusicPlayerState;
 import comp3350.breadtunes.objects.Song;
 import comp3350.breadtunes.objects.SongDuration;
 import comp3350.breadtunes.presentation.HomeActivity;
 import comp3350.breadtunes.services.ServiceGateway;
-
 import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
@@ -59,7 +53,7 @@ public class PlayMusicFeatureTest {
         songList = ServiceGateway.getMusicPlayerState().getCurrentSongList();
         assertTrue(songList.size() > 1);
         initialSong = songList.get(FIRST_SONG);
-        secondSong = songList.get(1);
+        secondSong = songList.get(SECOND_SONG);
 
     }
 
