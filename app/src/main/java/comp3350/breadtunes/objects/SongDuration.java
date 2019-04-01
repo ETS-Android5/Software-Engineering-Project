@@ -59,6 +59,33 @@ public class SongDuration implements Serializable {
         return new SongDuration(hours, minutes , seconds);
     }
 
+    public String toDurationString(){
+        String result = "";
+
+        if(this.hours < 1){}
+            // do nothing
+        else if(this.hours < 10){
+            result += "0"+hours+":";
+        }
+        else{
+            result += hours+":";
+        }
+
+        if(this.minutes < 10){
+            result += "0"+minutes;
+        }else{
+            result += ""+minutes;
+        }
+
+        if(seconds < 10){
+            result += ":0"+seconds;
+        }else{
+            result += ":"+seconds;
+        }
+
+        return result;
+    }
+
     @Override
     public String toString() {
         return String.format(toStringFormat, hours, minutes, seconds);
