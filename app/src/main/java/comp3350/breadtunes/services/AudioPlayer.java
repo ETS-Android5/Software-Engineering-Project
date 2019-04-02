@@ -5,6 +5,9 @@ import android.media.AudioManager;
 import android.media.MediaPlayer;
 import android.net.Uri;
 
+import java.util.concurrent.TimeUnit;
+
+import comp3350.breadtunes.objects.SongDuration;
 import comp3350.breadtunes.presentation.interfaces.MediaManager;
 
 public class AudioPlayer implements MediaManager {
@@ -76,6 +79,34 @@ public class AudioPlayer implements MediaManager {
 
     @Override
     public int getDuration(){ return player.getDuration(); }
+
+    @Override
+    public String getCurrentPositionString(){
+        int currentPos = ServiceGateway.getMediaManager().getCurrentPosition();
+        int hours = (int) TimeUnit.MILLISECONDS.toHours(currentPos);
+        int minutes = (int) (TimeUnit.MILLISECONDS.toMinutes(currentPos) -
+                TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(currentPos)));
+        int seconds = (int) (TimeUnit.MILLISECONDS.toSeconds(currentPos) -
+                TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(currentPos)));
+
+        SongDuration currentPosition = new SongDuration(hours, minutes, seconds);
+
+        return currentPosition.toDurationString();
+    }
+
+    @Override
+    public String getDurationString(){
+        int songDuration = ServiceGateway.getMediaManager().getDuration();
+        int hours = (int) TimeUnit.MILLISECONDS.toHours(songDuration);
+        int minutes = (int) (TimeUnit.MILLISECONDS.toMinutes(songDuration) -
+                TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(songDuration)));
+        int seconds = (int) (TimeUnit.MILLISECONDS.toSeconds(songDuration) -
+                TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(songDuration)));
+
+        SongDuration currentSongDuration = new SongDuration(hours, minutes, seconds);
+
+        return currentSongDuration.toDurationString();
+    }
 
     @Override
     public void seekTo(int progress){player.seekTo(progress);}
