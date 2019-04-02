@@ -113,12 +113,6 @@ public class DatabaseManager {
             }
     }
 
-    public String getDatabasePath(Context appContext) {
-        final String databaseAssetPath = appContext.getString(R.string.database_asset_path);
-        File dataDirectory = appContext.getDir(databaseAssetPath, Context.MODE_PRIVATE);
-        return new File(dataDirectory, appContext.getString(R.string.database_name)).toString();
-    }
-
     private void createDatabase() throws SQLException {
         dbConnection.setAutoCommit(false);
 
