@@ -1,169 +1,157 @@
 package comp3350.breadtunes.presentation.MediaController;
 
-import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.media.AudioManager;
 import android.media.MediaPlayer;
 
 import comp3350.breadtunes.business.MusicPlayerState;
 import comp3350.breadtunes.objects.Song;
+import comp3350.breadtunes.services.AppState;
 import comp3350.breadtunes.services.ServiceGateway;
 
 // Class that controls the playing, pausing, and playing next/previous
 public class MediaPlayerController{
-
-    private static MusicPlayerState musicPlayerState;
-    private static MediaPlayerController sInstance;
-    private Context mContext;
-    private boolean mAudioFocusGranted = false;
-    private boolean mAudioIsPlaying = false;
-    private MediaPlayer mPlayer;
-    private AudioManager.OnAudioFocusChangeListener mOnAudioFocusChangeListener;
-    private BroadcastReceiver mIntentReceiver;
-    private boolean mReceiverRegistered = false;
-    Song mSong; //Instance of the song currently playing
-    private static final String CMD_NAME = "command";
-    private static final String CMD_PAUSE = "pause";
-    private static final String CMD_STOP = "pause";
-    private static final String CMD_PLAY = "play";
-
-    // Jellybean
-    private static String SERVICE_CMD = "com.sec.android.app.music.musicservicecommand";
-    private static String PAUSE_SERVICE_CMD = "com.sec.android.app.music.musicservicecommand.pause";
-    private static String PLAY_SERVICE_CMD = "com.sec.android.app.music.musicservicecommand.play";
-
-    // Honeycomb
-    {
-        if (android.os.Build.VERSION.SDK_INT < android.os.Build.VERSION_CODES.JELLY_BEAN) {
-            SERVICE_CMD = "com.android.music.musicservicecommand";
-            PAUSE_SERVICE_CMD = "com.android.music.musicservicecommand.pause";
-            PLAY_SERVICE_CMD = "com.android.music.musicservicecommand.play";
-        }
-    };
+    MusicPlayerState musicPlayerState;
+    private AudioManager.OnAudioFocusChangeListener afChangeListener = null;
 
     public MediaPlayerController(MusicPlayerState musicPlayerState){
         this.musicPlayerState = musicPlayerState;
+        setAfChangeListener();
     }
 
-    public static MediaPlayerController getInstance(Context context) {
-        if (sInstance == null) {
-            sInstance = new MediaPlayerController(context);
-            musicPlayerState = ServiceGateway.getMusicPlayerState();
-        }
-        return sInstance;
+    // Create a change listener, must be associated with audio focus request to work
+    private void setAfChangeListener() {
+        afChangeListener =  focusChange -> {
+            switch (focusChange) {
+                case AudioManager.AUDIOFOCUS_LOSS:
+                    pauseSong();
+                    break;
+                case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
+                    pauseSong();
+                    break;
+                case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT_CAN_DUCK:
+                    pauseSong();
+                    break;
+                case AudioManager.AUDIOFOCUS_GAIN:
+                    resumeSong();
+                    break;
+            }
+        };
     }
 
-    private MediaPlayerController(Context context) {
-        mContext = context;
+    private boolean requestAudioFocus() {
+        int result = AppState.audioManager.requestAudioFocus(afChangeListener,
+                AudioManager.STREAM_MUSIC,
+                AudioManager.AUDIOFOCUS_GAIN);
+
+        return result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED;
     }
 
     //plays a song, returns a string "succesful" or "failed to find resource" so that activity that calls this metjod can display toast message
-    public String playSong (Song song, Context context){
-        String response = "";
-        //mContext = context;
-        if (!mAudioIsPlaying) {
-            if (song.getSongUri() == null) {
-                response = "Could not find location of song";
+    public String playSong(Song song, Context context) {
+        if (!requestAudioFocus()) {
+            return "Audio focus denied";
+        }
+
+        String response;
+
+        if (song.getSongUri() == null){
+            response = "Could not find location of song";
+        }
+        else {
+            if (musicPlayerState.getParentalControlModeOn() && ServiceGateway.getSongFlagger().songIsFlagged(song)) {
+                response = "Parental control does not allow this song to be played";
             } else {
-                if (musicPlayerState.getParentalControlModeOn() && ServiceGateway.getSongFlagger().songIsFlagged(song)) {
-                    response = "Parental control does not allow this song to be played";
-                } else {
 
-                    if (ServiceGateway.getMediaManager() != null && ServiceGateway.getMediaManager().isPlaying()) {
-                        ServiceGateway.getMediaManager().stopPlayingSong();
-                    }
-
-                    ServiceGateway.getMediaManager().startPlayingSong(mContext, song.getSongUri());
-                    mSong = song;
-                    mAudioIsPlaying = true;
-                    musicPlayerState.setCurrentSong(song);  //update the state of the music player!
-                    musicPlayerState.setIsSongPlaying(true);
-                    musicPlayerState.setIsSongPaused(false);
-                    ServiceGateway.getMediaManager().setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
-                        public void onCompletion(MediaPlayer mediaPlayer) {
-
-                            //get reference to next from app state
-                            Song nextSong;
-
-                            if (musicPlayerState.getRepeatMode()) { //if repeat mode is on, the next song is the same song
-                                nextSong = song;
-                            } else {
-                                nextSong = musicPlayerState.getNextSong(); //if repeat mode not on, next song is as usual
-                            }
-
-                            if (nextSong != null) {
-                                playSong(nextSong, mContext);
-                            }
-                        }
-                    });
-
-                    response = "Playing " + song.getName();
+                if (ServiceGateway.getMediaManager() != null && ServiceGateway.getMediaManager().isPlaying()) {
+                    ServiceGateway.getMediaManager().stopPlayingSong();
                 }
+
+                ServiceGateway.getMediaManager().startPlayingSong(context, song.getSongUri());
+                musicPlayerState.setIsSongPlaying(true);
+                musicPlayerState.setIsSongPaused(false);
+                musicPlayerState.setCurrentSong(song);  //update the state of the music player!
+
+                ServiceGateway.getMediaManager().setOnCompletionListener(new MediaPlayer.OnCompletionListener() {
+                    public void onCompletion(MediaPlayer mediaPlayer) {
+
+                        //get reference to next from app state
+                        Song nextSong;
+
+                        if (musicPlayerState.getRepeatMode()) { //if repeat mode is on, the next song is the same song
+                            nextSong = song;
+                        } else {
+                            nextSong = musicPlayerState.getNextSong(); //if repeat mode not on, next song is as usual
+                        }
+
+                        if (nextSong != null) {
+                            playSong(nextSong, context);
+                        }
+                    }
+                });
+
+                response = "Playing " + song.getName();
             }
         }
         return response;
     }
 
 
+
     //pause a song, and return a string so that main activity can display toast message with information
-    public String pauseSong () {
-        String response = "";
+    public String pauseSong(){
+        String response;
         //check first if a song is playing
-        if (mAudioFocusGranted && mAudioIsPlaying) {
-            if (musicPlayerState.isSongPlaying()) {
-                if (ServiceGateway.getMediaManager() != null) { //make sure the media player object is not in idle state
-                    musicPlayerState.setPausedPosition(ServiceGateway.getMediaManager().getCurrentPosition()); // save the timestamp in the state so we can resume where we left off
-                    ServiceGateway.getMediaManager().pausePlayingSong();
+        if(musicPlayerState.isSongPlaying()){
+            if(ServiceGateway.getMediaManager() != null){ //make sure the media player object is not in idle state
+                musicPlayerState.setPausedPosition(ServiceGateway.getMediaManager().getCurrentPosition()); // save the timestamp in the state so we can resume where we left off
+                ServiceGateway.getMediaManager().pausePlayingSong();
 
-                    response = "paused song " + musicPlayerState.getCurrentlyPlayingSong().getName();
-                    musicPlayerState.setIsSongPaused(true); //update the state of the music player
-                    musicPlayerState.setIsSongPlaying(false);
-                    mAudioIsPlaying = false;
-
-                } else {
-                    response = "Can not pause, app state is null";
-                }
-            } else {
-                response = "Can not pause, the song is already paused";
+                response = "paused song " + musicPlayerState.getCurrentlyPlayingSong().getName();
+                musicPlayerState.setIsSongPaused(true); //update the state of the music player
+                musicPlayerState.setIsSongPlaying(false);
+            }else{
+                response = "Can not pause, app state is null";
             }
+        }else{
+            response = "Can not pause, the song is already paused";
         }
         return response;
     }
 
     // play next song button
-    public String playNextSong (Context context){
+    public String playNextSong(Context context) {
         String response;
-        //mContext = context;
-        if (musicPlayerState.getCurrentlyPlayingSong() != null && musicPlayerState.getCurrentSongList() != null) { //make sure there is a song playing
+        if(musicPlayerState.getCurrentlyPlayingSong() != null && musicPlayerState.getCurrentSongList()!= null){ //make sure there is a song playing
 
 
             Song nextSong = musicPlayerState.getNextSong();
 
-            if (nextSong != null) {
-                playSong(nextSong, mContext);
+            if(nextSong != null) {
+                playSong(nextSong, context);
                 response = "playing " + nextSong.getName();
-            } else {
+            }else{
                 response = "no next song";
             }
-        } else {
+        }else{
             response = "no song currently playing";
         }
         return response;
     }
 
     //play previous song button
-    public String playPreviousSong (Context context){
+    public String playPreviousSong(Context context){
         String response;
-        if (musicPlayerState.getCurrentlyPlayingSong() != null && musicPlayerState.getCurrentSongList() != null) { //make sure there is a song playing
+        if(musicPlayerState.getCurrentlyPlayingSong() != null && musicPlayerState.getCurrentSongList()!= null){ //make sure there is a song playing
             Song previousSong = musicPlayerState.getPreviousSong();
 
-            if (previousSong != null) {
-                playSong(previousSong, mContext); //play the new song
+            if(previousSong != null) {
+                playSong(previousSong, context); //play the new song
                 response = "playing " + previousSong.getName();
-            } else {
+            }else{
                 response = "no previous song";
             }
-        } else {
+        }else{
             response = "no song currently playing";
         }
         return response;
@@ -171,10 +159,14 @@ public class MediaPlayerController{
     }
 
     // resume the playing of a song
-    public String resumeSong () {
+    public String resumeSong(){
+        if (!requestAudioFocus()) {
+            return "Audio focus denied";
+        }
+
         String response;
-        try {
-            if (musicPlayerState.isSongPaused()) {
+        try{
+            if(musicPlayerState.isSongPaused()) {
                 ServiceGateway.getMediaManager().resumePlayingSong();
 
                 //update app state!
@@ -182,49 +174,49 @@ public class MediaPlayerController{
                 musicPlayerState.setIsSongPlaying(true);
 
                 response = "resuming song";
-            } else {
+            }else{
                 response = "Can not resume , no song is paused";
             }
-        } catch (Exception e) {
+        }catch(Exception e){
             response = e.toString();
         }
         return response;
     }
 
-    public String setShuffle () {
+    public String setShuffle(){
         String response;
-        if (musicPlayerState.isSongPlaying() || musicPlayerState.isSongPaused()) {
+        if(musicPlayerState.isSongPlaying() || musicPlayerState.isSongPaused()){
 
             boolean shuffleOn = musicPlayerState.getShuffleMode();
-            if (shuffleOn) {
+            if(shuffleOn){
                 musicPlayerState.setShuffleMode(false);
                 response = "set shuffle mode to false";
-            } else {
+            }else{
                 musicPlayerState.setShuffleMode(true);
                 response = "set shuffle mode to true";
             }
-        } else {
+        }else{
             response = "No song playing or paused";
         }
 
         return response;
     }
 
-    public String setRepeat () {
+    public String setRepeat(){
         String response;
-        if (musicPlayerState.isSongPlaying() || musicPlayerState.isSongPaused()) {
+        if(musicPlayerState.isSongPlaying() || musicPlayerState.isSongPaused()){
 
             boolean repeatOn = musicPlayerState.getRepeatMode();
-            if (repeatOn) {
+            if(repeatOn){
                 musicPlayerState.setRepeatMode(false);
                 response = "set repeat mode to false";
-            } else {
+            }else{
                 musicPlayerState.setRepeatMode(true);
                 response = "set repeat mode to true";
             }
-        } else {
+        }else{
             response = "No song playing or paused";
         }
         return response;
     }
-}//media player controller class
+} //media player controller class

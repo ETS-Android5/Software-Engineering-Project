@@ -39,16 +39,14 @@ public class NowPlayingFragment extends Fragment implements Observer {
     public HomeActivity homeActivity;
     private String TAG = "Now Playing Fragment";
 
-    public static ImageView songArt;
-    public static TextView nowPlayingSongGui;
-    public static TextView nowPlayingAlbumGui;
-    public static TextView nowPlayingArtistGui;
-    public static TextView currentDurationGui;
-    public static TextView songDurationGui;
+    public ImageView songArt;
+    public TextView nowPlayingSongGui;
+    public TextView nowPlayingAlbumGui;
+    public TextView nowPlayingArtistGui;
+    public TextView currentDurationGui;
+    public TextView songDurationGui;
     public SeekBar seekBar;
     private Handler handler;
-    private Runnable runnable;
-    private int hours, minutes, seconds, currentDuration;
 
     private Uri defaultAlbumArt;
 
@@ -77,6 +75,7 @@ public class NowPlayingFragment extends Fragment implements Observer {
         return inflater.inflate(R.layout.fragment_now_playing, container, false);
     }
 
+    @Override
     public void onViewCreated(View view, Bundle savedInstanceState){
         nowPlayingSongGui = (TextView) view.findViewById(R.id.song_name_nowplaying_fragment);
         nowPlayingArtistGui = (TextView) view.findViewById(R.id.artist_name);
@@ -89,6 +88,24 @@ public class NowPlayingFragment extends Fragment implements Observer {
         seekBar = (SeekBar) view.findViewById(R.id.seek_bar);
         handler = new Handler();
 
+        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
+            @Override
+            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
+                if(b){
+                    ServiceGateway.getMediaManager().seekTo(i);
+                    seekBar.setMax(ServiceGateway.getMediaManager().getDuration());
+                }
+            }
+
+            public void onStartTrackingTouch(SeekBar seekBar) { }
+            public void onStopTrackingTouch(SeekBar seekBar) { }
+        });
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+
         Song currentSong = ServiceGateway.getMusicPlayerState().getCurrentlyPlayingSong();
         String duration = currentSong.getDuration().toDurationString();
 
@@ -99,32 +116,10 @@ public class NowPlayingFragment extends Fragment implements Observer {
         setAlbumArt(currentSong);
         songDurationGui.setText(duration);
 
-
-        if(ServiceGateway.getMusicPlayerState().isSongPlaying()){
+        if(ServiceGateway.getMusicPlayerState().isSongPlaying() || ServiceGateway.getMusicPlayerState().isSongPaused()){
             seekBar.setMax(ServiceGateway.getMediaManager().getDuration());
             changeSeekbar();
         }
-
-
-        seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
-            @Override
-            public void onProgressChanged(SeekBar seekBar, int i, boolean b) {
-                if(b){
-                    ServiceGateway.getMediaManager().seekTo(i);
-                    seekBar.setMax(ServiceGateway.getMediaManager().getDuration());
-                }
-            }
-
-            @Override
-            public void onStartTrackingTouch(SeekBar seekBar) {
-
-            }
-
-            @Override
-            public void onStopTrackingTouch(SeekBar seekBar) {
-
-            }
-        });
 
         // Make sure the button images are all correct
         updatePlayPauseButtons();
@@ -218,11 +213,11 @@ public class NowPlayingFragment extends Fragment implements Observer {
 
     public void changeSeekbar(){
         //get current position in milliseconds and convert to hours,minutes,seconds
-        currentDuration = ServiceGateway.getMediaManager().getCurrentPosition();
-        hours = (int) TimeUnit.MILLISECONDS.toHours(currentDuration);
-        minutes = (int) (TimeUnit.MILLISECONDS.toMinutes(currentDuration) -
+        int currentDuration = ServiceGateway.getMediaManager().getCurrentPosition();
+        int hours = (int) TimeUnit.MILLISECONDS.toHours(currentDuration);
+        int minutes = (int) (TimeUnit.MILLISECONDS.toMinutes(currentDuration) -
                 TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(currentDuration)));
-        seconds = (int) (TimeUnit.MILLISECONDS.toSeconds(currentDuration) -
+        int seconds = (int) (TimeUnit.MILLISECONDS.toSeconds(currentDuration) -
                 TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(currentDuration)));
 
         SongDuration currentSongDuration = ServiceGateway.getMusicPlayerState().getCurrentlyPlayingSong().getDuration();
@@ -233,14 +228,12 @@ public class NowPlayingFragment extends Fragment implements Observer {
         currentDurationGui.setText(currentPosition.toDurationString());
         songDurationGui.setText(currentSongDuration.toDurationString());
 
-        runnable = new Runnable(){
+        Runnable runnable = new Runnable() {
             @Override
-            public void run(){
+            public void run() {
                 changeSeekbar();
             }
         };
         handler.postDelayed(runnable, 1000);
     }
-
-
 }

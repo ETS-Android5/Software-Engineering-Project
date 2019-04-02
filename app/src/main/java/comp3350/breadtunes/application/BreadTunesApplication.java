@@ -2,6 +2,7 @@ package comp3350.breadtunes.application;
 
 import android.app.Application;
 import android.content.Context;
+import android.media.AudioManager;
 
 import java.io.File;
 
@@ -23,5 +24,8 @@ public class BreadTunesApplication extends Application {
 
         // Set global Context
         AppState.applicationContext = context;
+
+        // Set global audio manager
+        AppState.audioManager = (AudioManager) getApplicationContext().getSystemService(Context.AUDIO_SERVICE);
     }
 }
