@@ -38,7 +38,7 @@ import java.util.Observer;
 
 
 public class HomeActivity extends BaseActivity implements Observer {
-    private static MediaPlayerController mediaPlayerController;  // controls playback operations
+    private MediaPlayerController mediaPlayerController;  // controls playback operations
     public static ArrayList<Song> sList = new ArrayList<>();
     String[] songNamesToDisplay; //song names displayed in the songlist fragment
     private final String TAG = "HomeActivity"; // tag for logs
@@ -88,7 +88,7 @@ public class HomeActivity extends BaseActivity implements Observer {
         getSongsFromPersistance();
 
         // Create media controller
-        //mediaPlayerController = new MediaPlayerController(ServiceGateway.getMusicPlayerState());
+        mediaPlayerController = new MediaPlayerController(ServiceGateway.getMusicPlayerState());
 
         // Create song search helper
         findSong = new LookUpSongs(ServiceGateway.getMusicPlayerState());
@@ -118,7 +118,6 @@ public class HomeActivity extends BaseActivity implements Observer {
         for (int i = 0; i < songNamesToDisplay.length; i++)
             songNamesToDisplay[i] = persistanceSongList.get(i).getName();
     }
-
 
     public void refreshSongList() {
         getSongNameList();
