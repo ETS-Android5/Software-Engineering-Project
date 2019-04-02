@@ -141,7 +141,7 @@
         app:layout_constraintTop_toBottomOf="@+id/artist_name" />
 
     <TextView
-        android:id="@+id/current_duration"
+        android:id="@+id/current_position"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:text="0:00"
