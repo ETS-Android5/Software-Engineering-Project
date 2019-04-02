@@ -75,7 +75,7 @@ public class MusicPlayerState {
     public List<Song> getCurrentSongList(){ return currentSongList;}
     public Song getNextSong(){return nextSong;}
     public Song getPreviousSong(){return previousSong;}
-
+    public Deque<Song> getQueue(){return queue;}
 
     //state modifiers
     public void setIsSongPlaying(boolean songPlaying) { this.songPlaying = songPlaying; }
