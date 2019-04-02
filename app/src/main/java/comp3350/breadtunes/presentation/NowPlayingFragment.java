@@ -20,13 +20,10 @@ import android.widget.TextView;
 import java.util.Objects;
 import java.util.Observable;
 import java.util.Observer;
-import java.util.concurrent.TimeUnit;
 
 import comp3350.breadtunes.R;
-import comp3350.breadtunes.business.MusicPlayerState;
 import comp3350.breadtunes.business.observables.SongObservable;
 import comp3350.breadtunes.objects.Song;
-import comp3350.breadtunes.objects.SongDuration;
 import comp3350.breadtunes.persistence.loaders.AlbumArtLoader;
 import comp3350.breadtunes.services.ObservableService;
 import comp3350.breadtunes.services.ServiceGateway;
@@ -66,7 +63,6 @@ public class NowPlayingFragment extends Fragment implements Observer {
         Log.i(TAG, "user pressed back button!");
     }
 
-
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         // Inflate the layout for this fragment
@@ -76,16 +72,16 @@ public class NowPlayingFragment extends Fragment implements Observer {
     }
 
     @Override
-    public void onViewCreated(View view, Bundle savedInstanceState){
+    public void onViewCreated(View view, Bundle savedInstanceState) {
+        // Get reference to UI elements
         nowPlayingSongGui = (TextView) view.findViewById(R.id.song_name_nowplaying_fragment);
         nowPlayingArtistGui = (TextView) view.findViewById(R.id.artist_name);
         nowPlayingAlbumGui = (TextView) view.findViewById(R.id.album_name);
         currentPositionGui = (TextView) view.findViewById(R.id.current_position);
         songDurationGui = (TextView) view.findViewById(R.id.song_duration);
-
         songArt = (ImageView) view.findViewById(R.id.song_art);
-
         seekBar = (SeekBar) view.findViewById(R.id.seek_bar);
+
         handler = new Handler();
 
         seekBar.setOnSeekBarChangeListener(new SeekBar.OnSeekBarChangeListener() {
@@ -107,24 +103,7 @@ public class NowPlayingFragment extends Fragment implements Observer {
         super.onResume();
 
         Song currentSong = ServiceGateway.getMusicPlayerState().getCurrentlyPlayingSong();
-        //String duration = currentSong.getDuration().toDurationString();
-
-        //populate the fields in the fragment
-        nowPlayingSongGui.setText(currentSong.getName());
-        nowPlayingAlbumGui.setText(currentSong.getAlbumName());
-        nowPlayingArtistGui.setText(currentSong.getArtistName());
-        songDurationGui.setText(ServiceGateway.getMediaManager().getDurationString());
-        setAlbumArt(currentSong);
-        //songDurationGui.setText(duration);
-
-        if(ServiceGateway.getMusicPlayerState().isSongPlaying() || ServiceGateway.getMusicPlayerState().isSongPaused()){
-            seekBar.setMax(ServiceGateway.getMediaManager().getDuration());
-            changeSeekbar();
-        }
-
-        // Make sure the button images are all correct
-        updatePlayPauseButtons();
-        updateShuffleRepeatButtons();
+        updateGuiElementsForSong(currentSong);
     }
 
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -143,33 +122,32 @@ public class NowPlayingFragment extends Fragment implements Observer {
     @Override
     public void update(Observable observable, Object o) {
         if (observable instanceof  SongObservable) {
-
-            SongObservable songObservable = (SongObservable) observable;
-
-            Song song = songObservable.getValue();
-
-            seekBar.setMax(ServiceGateway.getMediaManager().getDuration());
-            changeSeekbar();
-
-            String songName = song.getName();
-            String albumName = song.getAlbumName();
-            String artistName = song.getArtistName();
-
-            nowPlayingSongGui.setText(songName);
-            nowPlayingAlbumGui.setText(albumName);
-            nowPlayingArtistGui.setText(artistName);
-            songDurationGui.setText(ServiceGateway.getMediaManager().getDurationString());
-            setAlbumArt(song);
-
-            //try and catch is necessary, as the fragment will still receive updates when it is not on focus and when searching for
-            //layout elements, it will get a null ptr
+            // update is called even when Fragment is not in focus, so catch null pointer exceptions
+            // in this case.
             try {
-                updatePlayPauseButtons();
-                updateShuffleRepeatButtons();
-            }catch(Exception e){
+                SongObservable songObservable = (SongObservable) observable;
+                updateGuiElementsForSong(songObservable.getValue());
+            }catch(NullPointerException e){
                 Log.i(TAG, "Avoided null ptr exception when updating UI");
             }
         }
+    }
+
+    private void updateGuiElementsForSong(Song currentSong) {
+        // Song information
+        nowPlayingSongGui.setText(currentSong.getName());
+        nowPlayingAlbumGui.setText(currentSong.getAlbumName());
+        nowPlayingArtistGui.setText(currentSong.getArtistName());
+        setAlbumArt(currentSong);
+
+        // Seek bar
+        songDurationGui.setText(ServiceGateway.getMediaManager().getDurationString());
+        seekBar.setMax(ServiceGateway.getMediaManager().getDuration());
+        changeSeekbar();
+
+        // Buttons
+        updatePlayPauseButtons();
+        updateShuffleRepeatButtons();
     }
 
     public void updateShuffleRepeatButtons(){
@@ -189,7 +167,7 @@ public class NowPlayingFragment extends Fragment implements Observer {
         }
     }
 
-    private void updatePlayPauseButtons() {
+    public void updatePlayPauseButtons() {
         if(ServiceGateway.getMusicPlayerState().isSongPlaying()){
             ImageButton button = (ImageButton) getView().findViewById(R.id.play_pause_button);
             button.setImageResource(R.drawable.pause);
@@ -198,7 +176,6 @@ public class NowPlayingFragment extends Fragment implements Observer {
             button.setImageResource(R.drawable.play);
         }
     }
-
 
     private void setAlbumArt(Song song) {
         AlbumArtLoader artLoader = ServiceGateway.getAlbumArtLoader();
