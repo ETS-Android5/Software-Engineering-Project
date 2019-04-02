@@ -14,9 +14,9 @@ public class SongDurationTest extends TestLogger {
         SongDuration duration = new SongDuration(2, 2, 2);
 
         // Assert
-        assertTrue(duration.getHours() == 2);
-        assertTrue(duration.getMinutes() == 2);
-        assertTrue(duration.getSeconds() == 2);
+        assertEquals(2, duration.getHours());
+        assertEquals(2, duration.getMinutes());
+        assertEquals(2, duration.getSeconds());
     }
 
     @Test
@@ -25,9 +25,9 @@ public class SongDurationTest extends TestLogger {
         SongDuration duration = new SongDuration(2, 2);
 
         // Assert
-        assertTrue(duration.getHours() == 0);
-        assertTrue(duration.getMinutes() == 2);
-        assertTrue(duration.getSeconds() == 2);
+        assertEquals(0, duration.getHours());
+        assertEquals(2, duration.getMinutes());
+        assertEquals(2, duration.getSeconds());
     }
 
     @Test
@@ -43,9 +43,9 @@ public class SongDurationTest extends TestLogger {
         int s = duration.getSeconds();
 
         // Assert
-        assertTrue(h == 10);
-        assertTrue(m == 10);
-        assertTrue(s == 10);
+        assertEquals(10, h);
+        assertEquals(10, m);
+        assertEquals(10, s);
     }
 
     @Test
