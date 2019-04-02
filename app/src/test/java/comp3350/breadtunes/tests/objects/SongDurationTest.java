@@ -47,4 +47,13 @@ public class SongDurationTest extends TestLogger {
         assertTrue(m == 10);
         assertTrue(s == 10);
     }
+
+    @Test
+    public void testToDurationString(){
+        SongDuration twoDigitDurations = new SongDuration(10,10,10);
+        SongDuration singleDigitDurations = new SongDuration(1,1,1);
+
+        assertEquals("10:10:10", twoDigitDurations.toDurationString());
+        assertEquals("01:01:01", singleDigitDurations.toDurationString());
+    }
 }
