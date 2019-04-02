@@ -35,6 +35,8 @@ public class MusicPlayerState {
 
     //queue
     private Deque<Song> queue;
+    private Song currentSongBeforeQueueUsed = null;
+    private boolean queueJustFinished = false;
 
     //to get random song
     Random randomNumberGen;
@@ -104,6 +106,13 @@ public class MusicPlayerState {
         if(queue!= null && queue.size() > 0 && newCurrentSong.getName().equals(queue.peek().getName())){
             logger.i(TAG, "song playing equals top of queue");
             queue.remove(); //remove the top of the queue
+
+            // If queue was just emptied, notify
+            if (queue.isEmpty()) {
+                queueJustFinished = true;
+                logger.i(TAG, "Queue is now empty.");
+            }
+
             logger.i(TAG, "removed top of queue");
         }
 
@@ -118,34 +127,33 @@ public class MusicPlayerState {
 
     //update the next song instance variable based on the current playing song
     public void updateNextSong() {
-
         if(queue != null && queue.size() > 0){
-
+            // If songs are queued, next song should come from queue
             Song queueTop = queue.peek();
             if(queueTop != null) {
                 nextSong = queueTop;
-                logger.i(TAG, "Next song is "+nextSong.getName());
+                logger.i(TAG, "Next song is " + nextSong.getName());
             }
-        }else{
-            if (getShuffleMode()) {
-                if (currentSongList != null && currentSong != null) {
-                    int randomNextSongIndex = getRandomSongIndex();
-                    nextSong = getCurrentSongList().get(randomNextSongIndex);
-                }
+        } else if (getShuffleMode() && currentSongList != null && currentSong != null) {
+            // If shuffle is on
+            int randomNextSongIndex = getRandomSongIndex();
+            nextSong = getCurrentSongList().get(randomNextSongIndex);
+        } else if (currentSongList != null && currentSong != null) {
+            int currentSongIndex;
+
+            // If the queue just finished, pick up where the song list left off before queueing
+            if (queueJustFinished) {
+                currentSongIndex = currentSongList.indexOf(currentSongBeforeQueueUsed);
+                queueJustFinished = false;
             } else {
+                currentSongIndex = currentSongList.indexOf(currentSong);
+            }
 
-                //shuffle not on
-                if (currentSongList != null && currentSong != null) { //make sure that the song is being played
-
-                    int currentSongIndex = currentSongList.indexOf(currentSong);
-                    if (currentSongIndex + 1 < currentSongList.size()) {
-                        nextSong = currentSongList.get(++currentSongIndex);//make sure we do not go out of bounds
-                        logger.i(TAG, "Next song is "+nextSong.getName());
-                    } else {
-                        nextSong = null; //no next song to play, we are the end of the list
-                    }
-
-                }
+            if (currentSongIndex + 1 < currentSongList.size()) {
+                nextSong = currentSongList.get(++currentSongIndex);
+                logger.i(TAG, "Next song is " + nextSong.getName());
+            } else {
+                nextSong = null; //no next song to play, we are the end of the list
             }
         }
     }
@@ -227,6 +235,10 @@ public class MusicPlayerState {
 
     //add a song to the top of the queue
     public void addSongToPlayNext(Song s){
+        if (queue.isEmpty()) {
+            currentSongBeforeQueueUsed = currentSong;
+        }
+
         queue.addFirst(s);
         logger.i(TAG, "Added song "+s.getName()+" to play next");
         logger.i(TAG, "song at top of queue is "+queue.peek().getName());
@@ -235,9 +247,14 @@ public class MusicPlayerState {
 
     public void clearQueue(){
         queue.clear();
+        queueJustFinished = true;
     }
 
     public void addToQueue(Song s){
+        if (queue.isEmpty()) {
+            currentSongBeforeQueueUsed = currentSong;
+        }
+
         queue.add(s);
         logger.i(TAG, "Added song "+s.getName()+" to queue");
         logger.i(TAG, "song at top of queue is "+queue.peek().getName());
