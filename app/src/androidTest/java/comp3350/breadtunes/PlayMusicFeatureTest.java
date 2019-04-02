@@ -1,32 +1,28 @@
 package comp3350.breadtunes;
-
-import android.app.Service;
 import android.test.suitebuilder.annotation.LargeTest;
 
 import org.junit.Before;
 import org.junit.Rule;
 import org.junit.Test;
 import org.junit.runner.RunWith;
-
 import java.util.List;
-
 import androidx.test.rule.ActivityTestRule;
 import androidx.test.rule.GrantPermissionRule;
 import androidx.test.runner.AndroidJUnit4;
-import comp3350.breadtunes.business.MusicPlayerState;
 import comp3350.breadtunes.objects.Song;
 import comp3350.breadtunes.objects.SongDuration;
 import comp3350.breadtunes.presentation.HomeActivity;
 import comp3350.breadtunes.services.ServiceGateway;
-
 import static androidx.test.espresso.Espresso.onData;
 import static androidx.test.espresso.Espresso.onView;
 import static androidx.test.espresso.action.ViewActions.click;
+import static androidx.test.espresso.assertion.ViewAssertions.matches;
 import static androidx.test.espresso.matcher.ViewMatchers.withId;
 import static androidx.test.espresso.matcher.ViewMatchers.withText;
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.TestCase.assertTrue;
+import static org.hamcrest.CoreMatchers.containsString;
 import static org.hamcrest.core.IsAnything.anything;
 import static org.junit.Assert.assertNotEquals;
 
@@ -57,7 +53,7 @@ public class PlayMusicFeatureTest {
         songList = ServiceGateway.getMusicPlayerState().getCurrentSongList();
         assertTrue(songList.size() > 1);
         initialSong = songList.get(FIRST_SONG);
-        secondSong = songList.get(1);
+        secondSong = songList.get(SECOND_SONG);
 
     }
 
@@ -71,18 +67,24 @@ public class PlayMusicFeatureTest {
         assertTrue(ServiceGateway.getMusicPlayerState().isSongPlaying());
         assertFalse(ServiceGateway.getMusicPlayerState().isSongPaused());
 
+        //check the gui shows the song playing
+        String songName = initialSong.getName();
+        onView(withId(R.id.song_name)).check(matches(withText(containsString(songName))));
 
         //test the pause
         onView(withId(R.id.play_pause)).perform(click());
         assertFalse(ServiceGateway.getMusicPlayerState().isSongPlaying());
         assertTrue(ServiceGateway.getMusicPlayerState().isSongPaused());
         assertTrue(ServiceGateway.getMusicPlayerState().getPausedPosition() > 0);
+        onView(withId(R.id.song_name)).check(matches(withText(containsString(songName))));
+
 
         //test resume
         onView(withId(R.id.play_pause)).perform(click());
         assertEquals(initialSong, ServiceGateway.getMusicPlayerState().getCurrentlyPlayingSong());  //playing first song
         assertTrue(ServiceGateway.getMusicPlayerState().isSongPlaying());
         assertFalse(ServiceGateway.getMusicPlayerState().isSongPaused());
+        onView(withId(R.id.song_name)).check(matches(withText(containsString(songName))));
     }
 
     @Test
@@ -94,9 +96,13 @@ public class PlayMusicFeatureTest {
         assertTrue(ServiceGateway.getMusicPlayerState().isSongPlaying()); //check music player state reacting correctly
         assertFalse(ServiceGateway.getMusicPlayerState().isSongPaused());
 
-        onView(withId(R.id.play_next_button)).perform(click());
+        onView(withId(R.id.play_next_button)).perform(click()); //play next song
         assertEquals(ServiceGateway.getMusicPlayerState().getCurrentlyPlayingSong(), secondSong);
         assertNotEquals(ServiceGateway.getMusicPlayerState().getCurrentlyPlayingSong(), initialSong);
+
+        //check the gui shows the next song
+        String songName = secondSong.getName();
+        onView(withId(R.id.song_name)).check(matches(withText(containsString(songName))));
 
         assertTrue(ServiceGateway.getMusicPlayerState().isSongPlaying());
         assertFalse(ServiceGateway.getMusicPlayerState().isSongPaused());
@@ -116,6 +122,10 @@ public class PlayMusicFeatureTest {
         assertEquals(ServiceGateway.getMusicPlayerState().getCurrentlyPlayingSong(), initialSong);
         assertNotEquals(ServiceGateway.getMusicPlayerState().getCurrentlyPlayingSong(), secondSong);
 
+        //check the gui shows the next song
+        String songName = initialSong.getName();
+        onView(withId(R.id.song_name)).check(matches(withText(containsString(songName))));
+
         assertTrue(ServiceGateway.getMusicPlayerState().isSongPlaying());
         assertFalse(ServiceGateway.getMusicPlayerState().isSongPaused());
 
@@ -132,11 +142,18 @@ public class PlayMusicFeatureTest {
         //go to the now playing fragment
         onView(withId(R.id.song_name)).perform(click());
 
+        String songName = initialSong.getName();
+        onView(withId(R.id.song_name_nowplaying_fragment)).check(matches(withText(containsString(songName))));
+
         onView(withId(R.id.shuffle_button)).perform(click()); //activate shuffle
         onView(withId(R.id.play_next_button_nowplaying_fragment)).perform(click());
         assertNotEquals(ServiceGateway.getMusicPlayerState().getCurrentlyPlayingSong(), initialSong);
         assertTrue(ServiceGateway.getMusicPlayerState().isSongPlaying());
         assertFalse(ServiceGateway.getMusicPlayerState().isSongPaused());
+
+
+        onView(withId(R.id.song_name_nowplaying_fragment)).check
+                (matches(withText(containsString(ServiceGateway.getMusicPlayerState().getCurrentlyPlayingSong().getName()))));
 
     }
 
@@ -161,8 +178,7 @@ public class PlayMusicFeatureTest {
         int waitTime = ((duration.getHours() * 60 * 60) + (duration.getMinutes()*60) + (duration.getSeconds())) * 1000;
 
         try {
-            Thread.sleep(waitTime + 50000);
-            //Thread.sleep(185000);
+            Thread.sleep(waitTime + 50000); //wait for song to finish
         }catch(Exception e){
 
         }
@@ -171,6 +187,8 @@ public class PlayMusicFeatureTest {
         assertEquals(initialSong, ServiceGateway.getMusicPlayerState().getCurrentlyPlayingSong());
         assertTrue(ServiceGateway.getMusicPlayerState().isSongPlaying());
         assertFalse(ServiceGateway.getMusicPlayerState().isSongPaused());
+        String songName = initialSong.getName();
+        onView(withId(R.id.song_name_nowplaying_fragment)).check(matches(withText(containsString(songName))));
 
         if(ServiceGateway.getMusicPlayerState().getShuffleMode())
             onView(withId(R.id.shuffle_button)).perform(click());
@@ -196,11 +214,15 @@ public class PlayMusicFeatureTest {
         //go to now playing fragment
         onView(withId(R.id.song_name)).perform(click());
 
+        String songName = initialSong.getName();
+        onView(withId(R.id.song_name_nowplaying_fragment)).check(matches(withText(containsString(songName))));
+
         //test the pause in now playing fragment
         onView(withId(R.id.play_pause_button)).perform(click());
         assertFalse(ServiceGateway.getMusicPlayerState().isSongPlaying());
         assertTrue(ServiceGateway.getMusicPlayerState().isSongPaused());
         assertTrue(ServiceGateway.getMusicPlayerState().getPausedPosition() > 0);
+        onView(withId(R.id.song_name_nowplaying_fragment)).check(matches(withText(containsString(songName))));
 
 
         //test resume in now playing fragment
@@ -208,6 +230,7 @@ public class PlayMusicFeatureTest {
         assertEquals(initialSong, ServiceGateway.getMusicPlayerState().getCurrentlyPlayingSong());  //playing first song
         assertTrue(ServiceGateway.getMusicPlayerState().isSongPlaying());
         assertFalse(ServiceGateway.getMusicPlayerState().isSongPaused());
+        onView(withId(R.id.song_name_nowplaying_fragment)).check(matches(withText(containsString(songName))));
     }
 
     @Test
@@ -225,6 +248,9 @@ public class PlayMusicFeatureTest {
         onView(withId(R.id.play_next_button_nowplaying_fragment)).perform(click());
         assertEquals(ServiceGateway.getMusicPlayerState().getCurrentlyPlayingSong(), secondSong);
         assertNotEquals(ServiceGateway.getMusicPlayerState().getCurrentlyPlayingSong(), initialSong);
+
+        String songName = secondSong.getName();
+        onView(withId(R.id.song_name_nowplaying_fragment)).check(matches(withText(containsString(songName))));
 
         assertTrue(ServiceGateway.getMusicPlayerState().isSongPlaying());
         assertFalse(ServiceGateway.getMusicPlayerState().isSongPaused());
@@ -246,6 +272,9 @@ public class PlayMusicFeatureTest {
         onView(withId(R.id.play_previous_button_nowplaying_fragment)).perform(click());
         assertEquals(ServiceGateway.getMusicPlayerState().getCurrentlyPlayingSong(), initialSong);
         assertNotEquals(ServiceGateway.getMusicPlayerState().getCurrentlyPlayingSong(), secondSong);
+
+        String songName = initialSong.getName();
+        onView(withId(R.id.song_name_nowplaying_fragment)).check(matches(withText(containsString(songName))));
 
         assertTrue(ServiceGateway.getMusicPlayerState().isSongPlaying());
         assertFalse(ServiceGateway.getMusicPlayerState().isSongPaused());

@@ -32,9 +32,9 @@ public class DatabaseManager {
         return instance;
     }
 
-    public void initializeDatabase(Context appContext) {
+    public void initializeDatabase(File databaseDirectory) {
         try {
-            databasePath = getDatabasePath(appContext);
+            String databasePath = new File(databaseDirectory, DatabaseInfo.databaseName).toString();
 
             boolean databaseCreated = true;
 
@@ -113,7 +113,7 @@ public class DatabaseManager {
             }
     }
 
-    private String getDatabasePath(Context appContext) {
+    public String getDatabasePath(Context appContext) {
         final String databaseAssetPath = appContext.getString(R.string.database_asset_path);
         File dataDirectory = appContext.getDir(databaseAssetPath, Context.MODE_PRIVATE);
         return new File(dataDirectory, appContext.getString(R.string.database_name)).toString();
@@ -123,7 +123,7 @@ public class DatabaseManager {
         dbConnection.setAutoCommit(false);
 
         Statement statement = dbConnection.createStatement();
-        for (String query : DatabaseCreationQueries.createDb) {
+        for (String query : DatabaseInfo.createDbQueries) {
             statement.addBatch(query);
         }
         statement.executeBatch();

@@ -59,7 +59,7 @@ public class HomeActivity extends BaseActivity implements Observer {
 
     //variables for getting search query and launching search results fragment
     List<Song> sResult;
-    String[] result;
+    public static String[] result;
     LookUpSongs findSong; //loook up service to search for songs on the search bar
 
 

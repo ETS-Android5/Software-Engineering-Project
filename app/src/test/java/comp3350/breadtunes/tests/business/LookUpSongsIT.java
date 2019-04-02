@@ -1,25 +1,20 @@
 package comp3350.breadtunes.tests.business;
 
-import android.app.Instrumentation;
 import android.content.Context;
-import android.test.AndroidTestCase;
-import android.test.IsolatedContext;
-import android.test.ServiceTestCase;
 
 import org.junit.After;
 import org.junit.Before;
 import java.io.File;
-import java.lang.reflect.Method;
 import java.util.List;
 import org.junit.Test;
-import comp3350.breadtunes.R;
+
 import comp3350.breadtunes.application.BreadTunesApplication;
 import comp3350.breadtunes.business.LookUpSongs;
 import comp3350.breadtunes.business.MusicPlayerState;
 import comp3350.breadtunes.objects.Song;
 import comp3350.breadtunes.persistence.hsql.SongPersistenceHSQL;
-import comp3350.breadtunes.presentation.HomeActivity;
 import comp3350.breadtunes.presentation.Logger.Logger;
+import comp3350.breadtunes.services.AppState;
 import comp3350.breadtunes.services.ServiceGateway;
 
 import static org.junit.Assert.assertEquals;
@@ -29,28 +24,19 @@ import static org.junit.Assert.assertTrue;
 public class LookUpSongsIT{
     private MusicPlayerState musicPlayerState;
     private LookUpSongs testTarget;
-    Context context;
 
 
 
     @Before
     public void setup() {
 
-        try {
-            //Method getTestContext = ServiceTestCase.class.getMethod("getTestContext");
-            //context = (Context) getTestContext.invoke(this);
-            //Instrumentation.newApplication();
-            //BreadTunesApplication application = new BreadTunesApplication();
-        }
-        catch(Exception e) {
-            e.printStackTrace();
-        }
+        //BreadTunesApplication application = new BreadTunesApplication();
+        //application.onCreate();
+        String dbAssetPath = ServiceGateway.getDatabaseManager().getDatabasePath(AppState.applicationContext);
 
-        String dbAssetPath = context.getString(R.string.database_asset_path);
         File dataDirectory = new File(dbAssetPath);
         String fakePath = new File(dataDirectory, "MediaDBCopy").toString();
-
-        ServiceGateway.getDatabaseManager().initializeDatabase(context);
+        ServiceGateway.getDatabaseManager().initializeDatabase(dataDirectory);
         ServiceGateway.getDatabaseManager().createAndUseDatabaseCopy(fakePath);
         final SongPersistenceHSQL songPersistence = new SongPersistenceHSQL();
         musicPlayerState = new MusicPlayerState(songPersistence,new Logger());
