@@ -43,7 +43,7 @@ public class NowPlayingFragment extends Fragment implements Observer {
     public TextView nowPlayingSongGui;
     public TextView nowPlayingAlbumGui;
     public TextView nowPlayingArtistGui;
-    public TextView currentDurationGui;
+    public TextView currentPositionGui;
     public TextView songDurationGui;
     public SeekBar seekBar;
     private Handler handler;
@@ -80,7 +80,7 @@ public class NowPlayingFragment extends Fragment implements Observer {
         nowPlayingSongGui = (TextView) view.findViewById(R.id.song_name_nowplaying_fragment);
         nowPlayingArtistGui = (TextView) view.findViewById(R.id.artist_name);
         nowPlayingAlbumGui = (TextView) view.findViewById(R.id.album_name);
-        currentDurationGui = (TextView) view.findViewById(R.id.current_duration);
+        currentPositionGui = (TextView) view.findViewById(R.id.current_position);
         songDurationGui = (TextView) view.findViewById(R.id.song_duration);
 
         songArt = (ImageView) view.findViewById(R.id.song_art);
@@ -107,14 +107,15 @@ public class NowPlayingFragment extends Fragment implements Observer {
         super.onResume();
 
         Song currentSong = ServiceGateway.getMusicPlayerState().getCurrentlyPlayingSong();
-        String duration = currentSong.getDuration().toDurationString();
+        //String duration = currentSong.getDuration().toDurationString();
 
         //populate the fields in the fragment
         nowPlayingSongGui.setText(currentSong.getName());
         nowPlayingAlbumGui.setText(currentSong.getAlbumName());
         nowPlayingArtistGui.setText(currentSong.getArtistName());
+        songDurationGui.setText(ServiceGateway.getMediaManager().getDurationString());
         setAlbumArt(currentSong);
-        songDurationGui.setText(duration);
+        //songDurationGui.setText(duration);
 
         if(ServiceGateway.getMusicPlayerState().isSongPlaying() || ServiceGateway.getMusicPlayerState().isSongPaused()){
             seekBar.setMax(ServiceGateway.getMediaManager().getDuration());
@@ -157,6 +158,7 @@ public class NowPlayingFragment extends Fragment implements Observer {
             nowPlayingSongGui.setText(songName);
             nowPlayingAlbumGui.setText(albumName);
             nowPlayingArtistGui.setText(artistName);
+            songDurationGui.setText(ServiceGateway.getMediaManager().getDurationString());
             setAlbumArt(song);
 
             //try and catch is necessary, as the fragment will still receive updates when it is not on focus and when searching for
@@ -212,21 +214,9 @@ public class NowPlayingFragment extends Fragment implements Observer {
     }
 
     public void changeSeekbar(){
-        //get current position in milliseconds and convert to hours,minutes,seconds
-        int currentDuration = ServiceGateway.getMediaManager().getCurrentPosition();
-        int hours = (int) TimeUnit.MILLISECONDS.toHours(currentDuration);
-        int minutes = (int) (TimeUnit.MILLISECONDS.toMinutes(currentDuration) -
-                TimeUnit.HOURS.toMinutes(TimeUnit.MILLISECONDS.toHours(currentDuration)));
-        int seconds = (int) (TimeUnit.MILLISECONDS.toSeconds(currentDuration) -
-                TimeUnit.MINUTES.toSeconds(TimeUnit.MILLISECONDS.toMinutes(currentDuration)));
-
-        SongDuration currentSongDuration = ServiceGateway.getMusicPlayerState().getCurrentlyPlayingSong().getDuration();
-        SongDuration currentPosition = new SongDuration(hours, minutes, seconds);
-
         //update seekBar and currentDurationGui
         seekBar.setProgress(ServiceGateway.getMediaManager().getCurrentPosition());
-        currentDurationGui.setText(currentPosition.toDurationString());
-        songDurationGui.setText(currentSongDuration.toDurationString());
+        currentPositionGui.setText(ServiceGateway.getMediaManager().getCurrentPositionString());
 
         Runnable runnable = new Runnable() {
             @Override
