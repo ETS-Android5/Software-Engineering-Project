@@ -1,18 +1,16 @@
 package comp3350.breadtunes.tests.business;
 
+import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
 import java.io.File;
 
-import comp3350.breadtunes.business.MusicPlayerState;
 import comp3350.breadtunes.business.SongFlagger;
 import comp3350.breadtunes.objects.Song;
 import comp3350.breadtunes.persistence.hsql.SongPersistenceHSQL;
-import comp3350.breadtunes.persistence.interfaces.SongPersistence;
 import comp3350.breadtunes.presentation.Logger.Logger;
 import comp3350.breadtunes.services.ServiceGateway;
-import comp3350.breadtunes.testhelpers.mocks.MockSongs;
 import comp3350.breadtunes.testhelpers.values.BreadTunesIntegrationTests;
 
 import static junit.framework.Assert.assertFalse;
@@ -20,9 +18,9 @@ import static junit.framework.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 public class SongFlaggerIT {
+
     SongFlagger testTarget;
     Song testSong;
     SongPersistenceHSQL songPersistence;
@@ -39,7 +37,7 @@ public class SongFlaggerIT {
         // Create SongFlagger class
         songPersistence = new SongPersistenceHSQL();
         testTarget = new SongFlagger(songPersistence);
-        testSong = MockSongs.getMockSongList().get(0);//not sure of this
+        testSong = songPersistence.getAll().get(0);
     }
 
     @Test
@@ -59,7 +57,7 @@ public class SongFlaggerIT {
 
     @Test
     public void getSongFlaggedTrueTest() {
-        when(songPersistence.isSongFlagged(testSong)).thenReturn(true);
+        assertTrue(songPersistence.isSongFlagged(testSong));
 
         boolean songIsFlagged = testTarget.songIsFlagged(testSong);
 
@@ -69,11 +67,16 @@ public class SongFlaggerIT {
 
     @Test
     public void getSongFlaggedFalseTest() {
-        when(songPersistence.isSongFlagged(testSong)).thenReturn(false);
+        assertFalse(songPersistence.isSongFlagged(testSong));
 
         boolean songIsFlagged = testTarget.songIsFlagged(testSong);
 
         verify(songPersistence, times(1)).isSongFlagged(testSong);
         assertFalse(songIsFlagged);
+    }
+
+    @After
+    public void tearDown(){
+        ServiceGateway.getDatabaseManager().destroyTempDatabaseAndCloseConnection();
     }
 }

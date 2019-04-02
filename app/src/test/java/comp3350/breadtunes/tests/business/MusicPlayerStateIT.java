@@ -55,7 +55,6 @@ public class MusicPlayerStateIT {
         assertEquals(testTarget.getCurrentSongList().get(0), testTarget.getCurrentlyPlayingSong());
     }
 
-    // *******
     @Test
     public void getCurrentSongList() {
         assertEquals(MockSongs.getMockSongList(), testTarget.getCurrentSongList());

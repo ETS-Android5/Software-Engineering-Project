@@ -4,27 +4,27 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.io.File;
 import java.util.Calendar;
 import java.util.Date;
 
 import comp3350.breadtunes.business.CredentialManager;
 import comp3350.breadtunes.business.StringHasher;
 import comp3350.breadtunes.objects.SecureCredentials;
-import comp3350.breadtunes.persistence.interfaces.CredentialPersistence;
+import comp3350.breadtunes.persistence.hsql.CredentialPersistenceHSQL;
+import comp3350.breadtunes.presentation.Logger.Logger;
 import comp3350.breadtunes.services.ServiceGateway;
+import comp3350.breadtunes.testhelpers.values.BreadTunesIntegrationTests;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
 
 public class CredentialManagerIT {
-    CredentialPersistence mockCredentialPersistence = mock(CredentialPersistence.class);
+    CredentialPersistenceHSQL credentialPersistence;
     CredentialManager testTarget;
+    SecureCredentials mockCredentials;
 
     String testPinHashed = StringHasher.sha256HexHash("0000");
     String testSecurityQuestion = "TEST QUESTION";
@@ -32,17 +32,33 @@ public class CredentialManagerIT {
 
     @Before
     public void setup() {
-        // Create a test date
+        // Make DatabaseManager use a copy of the integration test database
+
+        File realDirectory = new File(BreadTunesIntegrationTests.realDatabasePath);
+        File copyDirectory = new File(BreadTunesIntegrationTests.copyDatabasePath);
+        ServiceGateway.getDatabaseManager().initializeDatabase(realDirectory, mock(Logger.class));
+        ServiceGateway.getDatabaseManager().createAndUseDatabaseCopy(copyDirectory);
+
         Calendar testCalendar = Calendar.getInstance();
         testCalendar.set(2010, 2, 1);
         Date testDate = testCalendar.getTime();
+        mockCredentials = new SecureCredentials(testPinHashed,
+               testSecurityQuestion, testAnswerHashed, testDate);
 
-        SecureCredentials mockCredentials = new SecureCredentials(testPinHashed,
-                testSecurityQuestion, testAnswerHashed, testDate);
+        // Create CredentialManager class
+        credentialPersistence = new CredentialPersistenceHSQL();
+        credentialPersistence.insertNewCredentials(mockCredentials);
+        testTarget = new CredentialManager(credentialPersistence);
 
-        when(mockCredentialPersistence.getMostRecentCredentials()).thenReturn(mockCredentials);
+    }
 
-        testTarget = new CredentialManager(mockCredentialPersistence);
+    @Test
+    public void credentialsNotSetTest() {
+        //when(mockCredentialPersistence.getMostRecentCredentials()).thenReturn(null);
+
+        boolean credentialsSet = testTarget.credentialsHaveBeenSet();
+
+        assertFalse(!credentialsSet);
     }
 
     @Test
@@ -53,20 +69,10 @@ public class CredentialManagerIT {
     }
 
     @Test
-    public void credentialsNotSetTest() {
-        when(mockCredentialPersistence.getMostRecentCredentials()).thenReturn(null);
-
-        boolean credentialsSet = testTarget.credentialsHaveBeenSet();
-
-        assertFalse(credentialsSet);
-    }
-
-    @Test
     public void writeNewCredentialsTest() {
         testTarget.writeNewCredentials("Pin", "Question", "Answer");
 
-        verify(mockCredentialPersistence, times(1))
-                .insertNewCredentials(any(SecureCredentials.class));
+        assertTrue(credentialPersistence.credentialInserted);
     }
 
     @Test
@@ -111,8 +117,8 @@ public class CredentialManagerIT {
 
         testTarget.updatePIN(newPin);
 
-        verify(mockCredentialPersistence, times(1))
-                .updateMostRecentCredentialsPin(newPinHash);
+        assertEquals(newPin,testTarget.getPin());
+
     }
 
     @After

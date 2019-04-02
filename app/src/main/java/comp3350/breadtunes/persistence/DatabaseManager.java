@@ -1,17 +1,11 @@
 package comp3350.breadtunes.persistence;
 
-import android.provider.MediaStore;
-import android.util.Log;
-
-import com.google.common.io.Files;
-
 import org.apache.commons.io.*;
 
 import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
-import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 

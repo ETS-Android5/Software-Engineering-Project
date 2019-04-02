@@ -19,7 +19,7 @@ import comp3350.breadtunes.services.ServiceGateway;
 
 public class CredentialPersistenceHSQL implements CredentialPersistence {
     private DatabaseManager databaseManager;
-
+    public boolean credentialInserted;
     public CredentialPersistenceHSQL() {
         databaseManager = ServiceGateway.getDatabaseManager();
     }
@@ -80,7 +80,7 @@ public class CredentialPersistenceHSQL implements CredentialPersistence {
             statement.setString(2, credentials.getSecurityQuestion());
             statement.setString(3, credentials.getHashedSecurityQuestionAnswer());
             statement.setString(4, helper.dateToString(credentials.getDateUpdated()));
-
+            credentialInserted = true;
             statement.execute();
             statement.close();
 
