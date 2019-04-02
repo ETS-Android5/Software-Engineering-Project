@@ -11,11 +11,12 @@ import comp3350.breadtunes.persistence.hsql.SongPersistenceHSQL;
 import comp3350.breadtunes.presentation.Logger.Logger;
 import comp3350.breadtunes.services.ServiceGateway;
 import comp3350.breadtunes.testhelpers.values.BreadTunesIntegrationTests;
+import comp3350.breadtunes.testhelpers.watchers.TestLogger;
 
 import static org.junit.Assert.*;
 import static org.mockito.Mockito.mock;
 
-public class LookUpSongsIT {
+public class LookUpSongsIT extends TestLogger {
     private LookUpSongs testTarget;
 
     @Before
