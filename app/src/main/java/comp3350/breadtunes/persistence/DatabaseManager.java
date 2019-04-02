@@ -1,23 +1,22 @@
 package comp3350.breadtunes.persistence;
 
-import android.content.Context;
-import android.util.Log;
-
-import com.google.common.io.Files;
+import org.apache.commons.io.*;
 
 import java.io.File;
 import java.io.IOException;
 import java.sql.Connection;
 import java.sql.DriverManager;
+import java.sql.PreparedStatement;
 import java.sql.SQLException;
 import java.sql.Statement;
 
-import comp3350.breadtunes.R;
+import comp3350.breadtunes.presentation.Logger.Logger;
 
 public class DatabaseManager {
-    private File temporaryDatabase = null;
-    private String databasePath = null;
+    private File temporaryDatabaseDirectory = null;
+    private File databaseDirectory = null;
     private static DatabaseManager instance;
+    private Logger logger;
 
     private Connection dbConnection;
 
@@ -32,8 +31,11 @@ public class DatabaseManager {
         return instance;
     }
 
-    public void initializeDatabase(File databaseDirectory) {
+    public void initializeDatabase(File databaseDirectory, Logger logger) {
         try {
+            this.logger = logger;
+            this.databaseDirectory = databaseDirectory;
+
             String databasePath = new File(databaseDirectory, DatabaseInfo.databaseName).toString();
 
             boolean databaseCreated = true;
@@ -51,7 +53,7 @@ public class DatabaseManager {
             String connectionUrl = String.format("jdbc:hsqldb:file:%s", databasePath);
             dbConnection = DriverManager.getConnection(connectionUrl, "SA", "");
 
-            Log.i("HSQLDB", String.format("Database connection took %d milliseconds to create", System.currentTimeMillis() - start));
+            logger.i("HSQLDB", String.format("Database connection took %d milliseconds to create", System.currentTimeMillis() - start));
 
             if (!databaseCreated) {
                 createDatabase();
@@ -70,26 +72,30 @@ public class DatabaseManager {
      *
      * This function should be called AFTER initializeDatabase() has been called.
      *
-     * @param tempDatabasePath Path to folder of the database
+     * @param copyDatabaseDirectory Path to folder of the database copy
      */
-    public void createAndUseDatabaseCopy(String tempDatabasePath) {
-        if (dbConnection == null || databasePath == null) {
+    public void createAndUseDatabaseCopy(File copyDatabaseDirectory) {
+        if (dbConnection == null || databaseDirectory == null) {
             throw new IllegalStateException("Cannot call createAndUseDatabaseCopy before initializing database.");
         }
 
         try {
-            File currentDatabase = new File(databasePath + ".script");
-            temporaryDatabase = new File(tempDatabasePath + ".script");
+            // Shutdown current database
+            dbConnection.prepareStatement("SHUTDOWN").execute();
+            dbConnection.close();
 
-            Files.copy(currentDatabase, temporaryDatabase);
+            // Create database copy
+            temporaryDatabaseDirectory = copyDatabaseDirectory;
+            FileUtils.copyDirectory(databaseDirectory, temporaryDatabaseDirectory);
 
-            // Change connection to temp database
+            // Set connection to temporary database
+            String tempDatabasePath = new File(temporaryDatabaseDirectory, DatabaseInfo.databaseName).toString();
             String connectionUrl = String.format("jdbc:hsqldb:file:%s", tempDatabasePath);
             dbConnection = DriverManager.getConnection(connectionUrl, "SA", "");
 
-        } catch (IOException e) {
-            e.printStackTrace();
         } catch (SQLException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
             e.printStackTrace();
         }
     }
@@ -101,16 +107,18 @@ public class DatabaseManager {
      * This deletes the temporary database if it exists, and closes the connection to the database.
      */
     public void destroyTempDatabaseAndCloseConnection() {
-        if(temporaryDatabase != null) {
-            temporaryDatabase.delete();
+        if (dbConnection != null) try {
+            dbConnection.prepareStatement("SHUTDOWN").execute();
+            dbConnection.close();
+        } catch (SQLException e) {
+            e.printStackTrace();
         }
-            if (dbConnection != null) {
-                try {
-                    dbConnection.close();
-                } catch (SQLException e) {
-                    e.printStackTrace();
-                }
-            }
+
+        if(temporaryDatabaseDirectory != null) try {
+            FileUtils.deleteDirectory(temporaryDatabaseDirectory);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     private void createDatabase() throws SQLException {
@@ -124,7 +132,7 @@ public class DatabaseManager {
 
         dbConnection.setAutoCommit(true);
 
-        Log.i("HSQLDB", "Initialized database tables because database did not exist.");
+        logger.i("HSQLDB", "Initialized database tables because database did not exist.");
     }
 
     public Connection getDbConnection() {
