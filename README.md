@@ -45,11 +45,11 @@ BreadTunes has 3 different types of tests: Unit, Integration, and System tests. 
 
 #### Unit Tests
 
-To run the unit tests, right click the file `AllTests.java` in the folder `src/test/java/comp3350/breadtunes/tests`. Then, click "Run AllTests.java".
+To run the unit tests, right click the file `AllTests.java` in the folder `src/test/java/comp3350/breadtunes/tests`. Then, click "Run AllTests".
 
 #### Integration Tests
 
-To run the integration tests... (will finish writing after we set up integration tests).
+To run the integration tests, right click the file `IntegrationTests.java` in the folder `src/test/java/comp3350/breadtunes/tests`. Then, click "Run IntegrationTests".
 
 #### System Tests
 
