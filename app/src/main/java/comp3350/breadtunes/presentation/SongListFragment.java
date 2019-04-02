@@ -157,6 +157,7 @@ public class SongListFragment extends Fragment implements Observer {
             Song song = songObservable.getValue();
             String songName = song.getName();
             nowPlayingSongGui.setText(songName + "\n" + ServiceGateway.getMusicPlayerState().getPlayMode());
+            updateButtons();
         }else if(observable instanceof PlayModeObservable){
 
             PlayModeObservable playModeObservable = (PlayModeObservable) observable;
