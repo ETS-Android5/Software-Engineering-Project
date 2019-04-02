@@ -41,7 +41,7 @@ BreadTunes was built using Android Studio. Running the code is as simple as clon
 
 ## Running the Tests
 
-BreadTunes has 3 different types of tests: Unit, Integration, and System tests. To run any of the tests, first make sure the project is open in Android Studio.
+BreadTunes has 3 different types of tests: Unit, Integration, and System tests. To run any of the tests, first make sure the project is open in Android Studio. The Unit and Integration tests are written with [JUnit 4](https://junit.org/junit4/) and [Mockito](https://site.mockito.org/). The system tests are written with [Espresso](https://developer.android.com/training/testing/espresso).
 
 #### Unit Tests
 
