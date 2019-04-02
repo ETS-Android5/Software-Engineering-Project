@@ -24,6 +24,7 @@ public class MediaPlayerController{
         afChangeListener =  focusChange -> {
             switch (focusChange) {
                 case AudioManager.AUDIOFOCUS_LOSS:
+                    AppState.audioManager.abandonAudioFocus(afChangeListener);
                     pauseSong();
                     break;
                 case AudioManager.AUDIOFOCUS_LOSS_TRANSIENT:
@@ -40,11 +41,14 @@ public class MediaPlayerController{
     }
 
     private boolean requestAudioFocus() {
+        /*
         int result = AppState.audioManager.requestAudioFocus(afChangeListener,
                 AudioManager.STREAM_MUSIC,
                 AudioManager.AUDIOFOCUS_GAIN);
 
         return result == AudioManager.AUDIOFOCUS_REQUEST_GRANTED;
+        */
+        return true;
     }
 
     //plays a song, returns a string "succesful" or "failed to find resource" so that activity that calls this metjod can display toast message
@@ -99,7 +103,8 @@ public class MediaPlayerController{
 
 
     //pause a song, and return a string so that main activity can display toast message with information
-    public String pauseSong(){
+    public String pauseSong() {
+
         String response;
         //check first if a song is playing
         if(musicPlayerState.isSongPlaying()){
