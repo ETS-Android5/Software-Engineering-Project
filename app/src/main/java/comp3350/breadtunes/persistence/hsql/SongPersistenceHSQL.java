@@ -18,8 +18,6 @@ import comp3350.breadtunes.services.ServiceGateway;
 
 public class SongPersistenceHSQL implements SongPersistence {
     private DatabaseManager databaseManager;
-    public boolean isSongFlag;
-    public boolean inSongFlaggedMethod = false;
     public SongPersistenceHSQL() {
         databaseManager = ServiceGateway.getDatabaseManager();
     }
@@ -132,7 +130,6 @@ public class SongPersistenceHSQL implements SongPersistence {
             final PreparedStatement statement = dbConnection.prepareStatement(query);
             statement.setBoolean(1, isFlagged);
             statement.setInt(2, song.getSongId());
-            isSongFlag = isFlagged;
             statement.execute();
             statement.close();
 
@@ -150,24 +147,20 @@ public class SongPersistenceHSQL implements SongPersistence {
 
         try {
             Connection dbConnection = databaseManager.getDbConnection();
-            String query = "SELECT Flagged FROM Songs WHERE ID=?";
+            String query = "SELECT Flagged FROM SONGS WHERE SONGID=?";
             final PreparedStatement statement = dbConnection.prepareStatement(query);
             statement.setInt(1, song.getSongId());
             final ResultSet resultSet = statement.executeQuery();
-            inSongFlaggedMethod = true;
+
             if (resultSet.next()) {
-                final Song songInDB = getSongFromResultSet(resultSet);
-                return songInDB.getFlaggedStatus();
+                return resultSet.getBoolean("Flagged");
             } else {
-                if (resultSet.next()) {
-                    return resultSet.getBoolean("Flagged");
-                } else
-                    throw new PersistenceException("Failed to find song");
-                }
-            }catch(Exception e){
-                throw new PersistenceException(e.getMessage());
+                throw new PersistenceException("Failed to find song");
             }
+        } catch (Exception e) {
+            throw new PersistenceException(e.getMessage());
         }
+    }
 
     private void insertSongs(List<Song> songs) {
         try {

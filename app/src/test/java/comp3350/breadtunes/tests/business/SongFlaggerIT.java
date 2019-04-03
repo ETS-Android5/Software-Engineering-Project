@@ -12,12 +12,13 @@ import comp3350.breadtunes.persistence.hsql.SongPersistenceHSQL;
 import comp3350.breadtunes.presentation.Logger.Logger;
 import comp3350.breadtunes.services.ServiceGateway;
 import comp3350.breadtunes.testhelpers.values.BreadTunesIntegrationTests;
+import comp3350.breadtunes.testhelpers.watchers.TestLogger;
 
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
-public class SongFlaggerIT {
+public class SongFlaggerIT extends TestLogger {
 
     SongFlagger testTarget;
     Song testSong;
@@ -41,36 +42,31 @@ public class SongFlaggerIT {
     @Test
     public void setSongFlagTrueTest() {
         testTarget.flagSong(testSong, true);
-        assertTrue(songPersistence.isSongFlag);
+        assertTrue(songPersistence.isSongFlagged(testSong));
     }
 
     @Test
     public void setSongFlagFalseTest() {
         testTarget.flagSong(testSong, false);
-        assertFalse(songPersistence.isSongFlag);
+        assertFalse(songPersistence.isSongFlagged(testSong));
     }
 
     @Test
     public void getSongFlaggedTrueTest() {
-        assertTrue(songPersistence.isSongFlagged(testSong));
+        testTarget.flagSong(testSong, true);
+        assertTrue(testTarget.songIsFlagged(testSong));
 
-        boolean songIsFlagged = testTarget.songIsFlagged(testSong);
-        assertTrue(songPersistence.inSongFlaggedMethod);
-        assertTrue(songIsFlagged);
     }
 
     @Test
     public void getSongFlaggedFalseTest() {
-        assertFalse(songPersistence.isSongFlagged(testSong));
-
-        boolean songIsFlagged = testTarget.songIsFlagged(testSong);
-
-        //verify(songPersistence, times(1)).isSongFlagged(testSong);
-        assertFalse(songIsFlagged);
+        testTarget.flagSong(testSong, false);
+        assertFalse(testTarget.songIsFlagged(testSong));
     }
 
     @After
     public void tearDown(){
         ServiceGateway.getDatabaseManager().destroyTempDatabaseAndCloseConnection();
     }
+
 }
