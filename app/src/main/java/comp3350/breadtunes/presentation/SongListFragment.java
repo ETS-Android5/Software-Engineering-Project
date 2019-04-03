@@ -312,7 +312,7 @@ public class SongListFragment extends Fragment implements Observer {
                 .setTitle("Parental Lock")
                 .setMessage("What is your PIN?")
                 .setView(taskEditText)
-                .setPositiveButton("Submit", (dialogPositive, which) -> {
+                .setPositiveButton("SUBMIT", (dialogPositive, which) -> {
                     String pin = String.valueOf(taskEditText.getText());
                     CredentialManager credentialManager = ServiceGateway.getCredentialManager();
                     boolean correctPIN = credentialManager.validatePIN(pin);

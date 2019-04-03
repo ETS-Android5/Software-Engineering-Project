@@ -6,4 +6,5 @@ public interface CredentialPersistence {
     SecureCredentials getMostRecentCredentials();
     void insertNewCredentials(SecureCredentials newCredentials);
     void updateMostRecentCredentialsPin(String hashedPin);
+    void clearCredentials();
 }
