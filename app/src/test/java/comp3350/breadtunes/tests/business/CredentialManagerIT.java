@@ -15,13 +15,14 @@ import comp3350.breadtunes.persistence.hsql.CredentialPersistenceHSQL;
 import comp3350.breadtunes.presentation.Logger.Logger;
 import comp3350.breadtunes.services.ServiceGateway;
 import comp3350.breadtunes.testhelpers.values.BreadTunesIntegrationTests;
+import comp3350.breadtunes.testhelpers.watchers.TestLogger;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
-public class CredentialManagerIT {
+public class CredentialManagerIT extends TestLogger {
     CredentialPersistenceHSQL credentialPersistence;
     CredentialManager testTarget;
     SecureCredentials mockCredentials;

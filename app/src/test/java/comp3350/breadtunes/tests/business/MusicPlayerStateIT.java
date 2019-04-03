@@ -15,6 +15,7 @@ import comp3350.breadtunes.presentation.Logger.Logger;
 import comp3350.breadtunes.services.ServiceGateway;
 import comp3350.breadtunes.testhelpers.mocks.MockSongs;
 import comp3350.breadtunes.testhelpers.values.BreadTunesIntegrationTests;
+import comp3350.breadtunes.testhelpers.watchers.TestLogger;
 
 import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
@@ -22,7 +23,7 @@ import static junit.framework.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
 
 
-public class MusicPlayerStateIT {
+public class MusicPlayerStateIT  extends TestLogger {
 
     Logger mockLogger = mock(Logger.class);
     MusicPlayerState testTarget;
