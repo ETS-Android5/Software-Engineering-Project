@@ -7,13 +7,19 @@ The team was also able to practice the "Slack stand-up meetings" to keep everyon
 do keep track of changes done in master and inspect the changes closely for better understanding of the changes that have been pushed. As what has been reflected on and planned after iteration 2, the overall communication of the
 team has improved a lot and this has definitely helped with the progress of the project.
 
-## Question 2: What would you do differently, if you had the chance to start over? (Raven)
+## Question 2: What would you do differently, if you had the chance to start over?
 
 If the team had the chance to start over, the team would use their time more efficiently. The team would also improve a lot on their communication and have as much in-person meetings
 as possible given the time they have. The team would utilize communication software (in this instance, Slack) more efficiently and make reports every regular intervals so everyone is on track with the
 changes that are being made in the project. The team will not put the project on hold until the last 2 weeks before an iteration is due; the team will start an iteration as soon as they are available to.
 
-## Question 3: How large is the project? (Raven)
+## Question 3: How large is the project?
+
+The main application has a total of 43 classes, 11 of it dedicated to the presentation component, 6 dedicated to the persistence component, 12 dedicated to the persistence component, and the others act as helpers to these
+components. The business class's observables have 11 methods. Excluding the methods in the observables, there are 65 methods that are roughly devoted to the business class. For the presentation component, there are 6 methods
+in the BaseActivity class. There are 9 methods for the presentation layer's MediaPlayerController class. Excluding the BaseActivity and MediaPlayerController class, there are a total of 85 methods that are devoted to the
+presentation component. There are a total of 12 methods in CredentialPersistenceHSQL and SongPersistenceHSQL. For the persistence layer's loaders, there are 7 methods amounting to a total of 19 methods for the persistence component of the application.
+For the group's project velocity for both iteration 1 and 2, the group has committed to a total of 286 hours and has achieved 209 hours out of that.
 
 ## Question 4: Are there any particular design smells, or brilliant design decisions? (Daniel)
 
