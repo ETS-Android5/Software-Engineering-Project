@@ -18,7 +18,6 @@ import comp3350.breadtunes.services.ServiceGateway;
 
 public class SongPersistenceHSQL implements SongPersistence {
     private DatabaseManager databaseManager;
-
     public SongPersistenceHSQL() {
         databaseManager = ServiceGateway.getDatabaseManager();
     }
@@ -131,7 +130,6 @@ public class SongPersistenceHSQL implements SongPersistence {
             final PreparedStatement statement = dbConnection.prepareStatement(query);
             statement.setBoolean(1, isFlagged);
             statement.setInt(2, song.getSongId());
-
             statement.execute();
             statement.close();
 
@@ -142,27 +140,26 @@ public class SongPersistenceHSQL implements SongPersistence {
 
     /**
      * Check if a song is flagged in the database, return true if it is.
-     * the song that will be looked for in the database
-        @param song the song that will be looked up in the database
+     *
+     * @param song the song that will be looked up in the database.
      */
-    public boolean isSongFlagged(Song song){
+    public boolean isSongFlagged(Song song) {
 
-        try{
+        try {
             Connection dbConnection = databaseManager.getDbConnection();
-            String query = "SELECT * FROM Songs WHERE URI=?";
+            String query = "SELECT Flagged FROM SONGS WHERE SONGID=?";
             final PreparedStatement statement = dbConnection.prepareStatement(query);
-            statement.setString(1,song.getSongUri().toString());
+            statement.setInt(1, song.getSongId());
             final ResultSet resultSet = statement.executeQuery();
-            if(resultSet.next()){
-                final Song songInDB = getSongFromResultSet(resultSet);
-                return songInDB.getFlaggedStatus();
-            }else{
+
+            if (resultSet.next()) {
+                return resultSet.getBoolean("Flagged");
+            } else {
                 throw new PersistenceException("Failed to find song");
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             throw new PersistenceException(e.getMessage());
         }
-
     }
 
     private void insertSongs(List<Song> songs) {

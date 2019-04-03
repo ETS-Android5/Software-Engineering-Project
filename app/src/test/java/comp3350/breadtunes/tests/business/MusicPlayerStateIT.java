@@ -8,13 +8,11 @@ import java.io.File;
 import java.util.Arrays;
 import java.util.List;
 
-import comp3350.breadtunes.business.LookUpSongs;
 import comp3350.breadtunes.business.MusicPlayerState;
 import comp3350.breadtunes.objects.Song;
 import comp3350.breadtunes.persistence.hsql.SongPersistenceHSQL;
 import comp3350.breadtunes.presentation.Logger.Logger;
 import comp3350.breadtunes.services.ServiceGateway;
-import comp3350.breadtunes.testhelpers.mocks.MockSongs;
 import comp3350.breadtunes.testhelpers.values.BreadTunesIntegrationTests;
 import comp3350.breadtunes.testhelpers.watchers.TestLogger;
 
