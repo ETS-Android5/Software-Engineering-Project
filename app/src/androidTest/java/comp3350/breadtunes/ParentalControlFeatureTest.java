@@ -60,6 +60,7 @@ public class ParentalControlFeatureTest {
     private final String SUBMIT = "SUBMIT";
     private final String FLAG = "Flag song";
     private final String REMOVE_FLAG = "Remove song flag";
+    private final String FLAGGED_SIGN = " (Flagged)";
 
     @Before
     public void setup(){
@@ -72,9 +73,21 @@ public class ParentalControlFeatureTest {
         secondSong = songList.get(SECOND_SONG);
         thirdSong = songList.get(THIRD_SONG);
 
-        ServiceGateway.getSongFlagger().flagSong(initialSong, false);
-        ServiceGateway.getSongFlagger().flagSong(secondSong, false);
-        ServiceGateway.getSongFlagger().flagSong(thirdSong, false);
+        if(ServiceGateway.getSongFlagger().songIsFlagged(initialSong)){
+            onData(anything()).inAdapterView(withId(R.id.songList)).atPosition(FIRST_SONG).perform(longClick());
+            onView(withText(REMOVE_FLAG)).perform(click());
+        }
+
+        if(ServiceGateway.getSongFlagger().songIsFlagged(secondSong)){
+            onData(anything()).inAdapterView(withId(R.id.songList)).atPosition(SECOND_SONG).perform(longClick());
+            onView(withText(REMOVE_FLAG)).perform(click());
+        }
+
+        if(ServiceGateway.getSongFlagger().songIsFlagged(thirdSong)){
+            onData(anything()).inAdapterView(withId(R.id.songList)).atPosition(THIRD_SONG).perform(longClick());
+            onView(withText(REMOVE_FLAG)).perform(click());
+        }
+
 
         //check that songs for testing have no flags set
         assertFalse(ServiceGateway.getSongFlagger().songIsFlagged(initialSong));
@@ -140,54 +153,20 @@ public class ParentalControlFeatureTest {
             onData(anything()).inAdapterView(withId(R.id.songList)).atPosition(i).check(matches(not(withText(initialSong.getName()))));
 
         }
-
-        //try to search for the flagged song and verify it does not show up in serch results
-        onView(withId(R.id.search)).perform(click());
-        String search = initialSong.getName().substring(0, 2);  //type only the first two words of the name of the song
-        onView(isAssignableFrom(EditText.class)).perform(typeText(search), pressKey(KeyEvent.KEYCODE_ENTER));
-        int numberOfResults = HomeActivity.result.length;
-        for(int i = 0; i < numberOfResults; i++){
-            onData(anything()).inAdapterView(withId(R.id.resultDisplay)).atPosition(i).check(matches(not(withText(initialSong.getName()))));
-        }
-
-        Espresso.pressBack();
-        Espresso.pressBack();
     }
 
     //flag a song, verify it is not playable, then unflag it and verify it returns to the its position in the UI
     @Test
     public void removeFlagFromSong(){
 
-        if(ServiceGateway.getMusicPlayerState().getParentalControlModeOn()){
-            onView(withId(R.id.parental_lock_off)).perform(click());
-            onView(isAssignableFrom(EditText.class)).perform(typeText(PIN)); //type text in
-            onView(withText(SUBMIT)).perform(click());
-        }
-
-        onData(anything()).inAdapterView(withId(R.id.songList)).atPosition(FIRST_SONG).perform(longClick());
+        onData(anything()).inAdapterView(withId(R.id.songList)).atPosition(FIRST_SONG).perform(longClick()); //flag song
         onView(withText(FLAG)).perform(click());
 
-        assertTrue(ServiceGateway.getSongFlagger().songIsFlagged(initialSong));
-
-        onView(withId(R.id.parental_lock_on)).perform(click()); //activate parental control
-        onView(isAssignableFrom(EditText.class)).perform(typeText(PIN));
-        onView(withText(SUBMIT)).perform(click());
-
-        //check that the flagged song is not being displayed anymore
-        for(int i = 0; i < ServiceGateway.getMusicPlayerState().getCurrentSongList().size(); i++){
-            onData(anything()).inAdapterView(withId(R.id.songList)).atPosition(i).check(matches(not(withText(initialSong.getName()))));
-
-        }
-
-        //turn parental control off
-        onView(withId(R.id.parental_lock_off)).perform(click()); //activate parental control
-        onView(isAssignableFrom(EditText.class)).perform(typeText(PIN));
-        onView(withText(SUBMIT)).perform(click());
-
         //unflag the song
-        onData(anything()).inAdapterView(withId(R.id.songList)).atPosition(FIRST_SONG).check(matches((withText(initialSong.getName())))); //verify the song is back after turning parental control off
+        onData(anything()).inAdapterView(withId(R.id.songList)).atPosition(FIRST_SONG).check(matches((withText(initialSong.getName()+FLAGGED_SIGN)))); //verify the song is back after turning parental control off
         onData(anything()).inAdapterView(withId(R.id.songList)).atPosition(FIRST_SONG).perform(longClick());
         onView(withText(REMOVE_FLAG)).perform(click());
+
         assertFalse(ServiceGateway.getSongFlagger().songIsFlagged(initialSong)); //check flaag was removed succesfully
     }
 
@@ -195,6 +174,12 @@ public class ParentalControlFeatureTest {
     public void resetCredentials(){
 
         final String NEW_PIN = "2222";
+
+        if(ServiceGateway.getMusicPlayerState().getParentalControlModeOn()){
+            onView(withId(R.id.parental_lock_off)).perform(click());
+            onView(isAssignableFrom(EditText.class)).perform(typeText(PIN)); //type text in
+            onView(withText(SUBMIT)).perform(click());
+        }
 
         onView(withId(R.id.parental_lock_on)).perform(click());
         onView(withText(RESET_PASSWORD)).perform(click());
@@ -226,7 +211,6 @@ public class ParentalControlFeatureTest {
         ServiceGateway.getSongFlagger().flagSong(initialSong, false);
         ServiceGateway.getSongFlagger().flagSong(secondSong, false);
         ServiceGateway.getSongFlagger().flagSong(thirdSong, false);
-
         ServiceGateway.getCredentialManager().clearCredentials(); //delete the credentials set in this test
 
     }
