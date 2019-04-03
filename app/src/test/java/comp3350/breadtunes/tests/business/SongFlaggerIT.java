@@ -16,8 +16,6 @@ import comp3350.breadtunes.testhelpers.values.BreadTunesIntegrationTests;
 import static junit.framework.Assert.assertFalse;
 import static junit.framework.Assert.assertTrue;
 import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
 
 public class SongFlaggerIT {
 
@@ -36,23 +34,20 @@ public class SongFlaggerIT {
 
         // Create SongFlagger class
         songPersistence = new SongPersistenceHSQL();
-        testTarget = new SongFlagger(songPersistence);
         testSong = songPersistence.getAll().get(0);
+        testTarget = new SongFlagger(songPersistence);
     }
 
     @Test
     public void setSongFlagTrueTest() {
         testTarget.flagSong(testSong, true);
-
-        verify(songPersistence, times(1)).setSongFlagged(testSong, true);
+        assertTrue(songPersistence.isSongFlag);
     }
 
     @Test
     public void setSongFlagFalseTest() {
         testTarget.flagSong(testSong, false);
-
-        verify(songPersistence, times(1)).setSongFlagged(testSong, false);
-
+        assertFalse(songPersistence.isSongFlag);
     }
 
     @Test
@@ -60,8 +55,7 @@ public class SongFlaggerIT {
         assertTrue(songPersistence.isSongFlagged(testSong));
 
         boolean songIsFlagged = testTarget.songIsFlagged(testSong);
-
-        verify(songPersistence, times(1)).isSongFlagged(testSong);
+        assertTrue(songPersistence.inSongFlaggedMethod);
         assertTrue(songIsFlagged);
     }
 
@@ -71,7 +65,7 @@ public class SongFlaggerIT {
 
         boolean songIsFlagged = testTarget.songIsFlagged(testSong);
 
-        verify(songPersistence, times(1)).isSongFlagged(testSong);
+        //verify(songPersistence, times(1)).isSongFlagged(testSong);
         assertFalse(songIsFlagged);
     }
 
