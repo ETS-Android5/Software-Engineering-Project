@@ -16,6 +16,10 @@ public class ObservableService {
         databaseState.addObserver(observer);
     }
 
+    public static void unsubscribeToDatabaseStateChanges(Observer observer) {
+        databaseState.addObserver(observer);
+    }
+
     public static void updateDatabaseState(DatabaseState state) {
         databaseState.setValue(state);
     }
@@ -30,6 +34,10 @@ public class ObservableService {
 
     public static void subscribeToParentalModeStatus(Observer observer) {
         parentalStatus.addObserver(observer);
+    }
+
+    public static void unsubscribeToParentalModeStatus(Observer observer) {
+        parentalStatus.deleteObserver(observer);
     }
 
     public static void updateParentalModeStatus(boolean status) {

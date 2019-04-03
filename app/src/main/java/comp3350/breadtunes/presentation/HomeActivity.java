@@ -128,9 +128,18 @@ public class HomeActivity extends BaseActivity implements Observer {
     public void refreshSongList() {
         getSongNameList();
         ServiceGateway.getMusicPlayerState().setCurrentSongList(sList);
-        songListFragment = new SongListFragment();
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_placeholder, songListFragment).commitAllowingStateLoss();
+
+        if (!songListFragment.isAdded()) {
+            try {
+                fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                songListFragment = new SongListFragment();
+                fragmentTransaction.replace(R.id.fragment_placeholder, songListFragment).commitAllowingStateLoss();
+            } catch (IllegalStateException e) {
+                Log.i(TAG, "Avoided illegal state change after turning parental mode off");
+            }
+        } else {
+            songListFragment.populateSongListView();
+        }
     }
 
     public void refreshSongFlags() {
@@ -172,6 +181,8 @@ public class HomeActivity extends BaseActivity implements Observer {
 
     protected void onDestroy() {
         super.onDestroy();
+        ObservableService.unsubscribeToParentalModeStatus(this);
+        ObservableService.unsubscribeToDatabaseStateChanges(this);
     }
 
 
