@@ -9,6 +9,10 @@ team has improved a lot and this has definitely helped with the progress of the 
 
 ## Question 2: What would you do differently, if you had the chance to start over? (Raven)
 
+If the team had the chance to start over, the team would use their time more efficiently. The team would also improve a lot on their communication and have as much in-person meetings
+as possible given the time they have. The team would utilize communication software (in this instance, Slack) more efficiently and make reports every regular intervals so everyone is on track with the
+changes that are being made in the project. The team will not put the project on hold until the last 2 weeks before an iteration is due; the team will start an iteration as soon as they are available to.
+
 ## Question 3: How large is the project? (Raven)
 
 ## Question 4: Are there any particular design smells, or brilliant design decisions? (Daniel)
