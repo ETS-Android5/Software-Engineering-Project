@@ -178,7 +178,7 @@ public class PlayMusicFeatureTest {
         int waitTime = ((duration.getHours() * 60 * 60) + (duration.getMinutes()*60) + (duration.getSeconds())) * 1000;
 
         try {
-            Thread.sleep(waitTime + 50000); //wait for song to finish
+            Thread.sleep(waitTime + 10000); //wait for song to finish
         }catch(Exception e){
 
         }

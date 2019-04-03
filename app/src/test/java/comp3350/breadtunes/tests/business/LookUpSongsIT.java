@@ -1,46 +1,35 @@
 package comp3350.breadtunes.tests.business;
 
-import android.content.Context;
+import org.junit.*;
 
-import org.junit.After;
-import org.junit.Before;
 import java.io.File;
 import java.util.List;
-import org.junit.Test;
 
-import comp3350.breadtunes.application.BreadTunesApplication;
-import comp3350.breadtunes.business.LookUpSongs;
-import comp3350.breadtunes.business.MusicPlayerState;
+import comp3350.breadtunes.business.*;
 import comp3350.breadtunes.objects.Song;
 import comp3350.breadtunes.persistence.hsql.SongPersistenceHSQL;
 import comp3350.breadtunes.presentation.Logger.Logger;
-import comp3350.breadtunes.services.AppState;
 import comp3350.breadtunes.services.ServiceGateway;
+import comp3350.breadtunes.testhelpers.values.BreadTunesIntegrationTests;
+import comp3350.breadtunes.testhelpers.watchers.TestLogger;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
+import static org.mockito.Mockito.mock;
 
-public class LookUpSongsIT{
-    private MusicPlayerState musicPlayerState;
+public class LookUpSongsIT extends TestLogger {
     private LookUpSongs testTarget;
-
-
 
     @Before
     public void setup() {
+        // Make DatabaseManager use a copy of the integration test database
+        File realDirectory = new File(BreadTunesIntegrationTests.realDatabasePath);
+        File copyDirectory = new File(BreadTunesIntegrationTests.copyDatabasePath);
+        ServiceGateway.getDatabaseManager().initializeDatabase(realDirectory, mock(Logger.class));
+        ServiceGateway.getDatabaseManager().createAndUseDatabaseCopy(copyDirectory);
 
-        //BreadTunesApplication application = new BreadTunesApplication();
-        //application.onCreate();
-        String dbAssetPath = ServiceGateway.getDatabaseManager().getDatabasePath(AppState.applicationContext);
-
-        File dataDirectory = new File(dbAssetPath);
-        String fakePath = new File(dataDirectory, "MediaDBCopy").toString();
-        ServiceGateway.getDatabaseManager().initializeDatabase(dataDirectory);
-        ServiceGateway.getDatabaseManager().createAndUseDatabaseCopy(fakePath);
+        // Create LookUpSongs class
         final SongPersistenceHSQL songPersistence = new SongPersistenceHSQL();
-        musicPlayerState = new MusicPlayerState(songPersistence,new Logger());
-
+        MusicPlayerState musicPlayerState = new MusicPlayerState(songPersistence, mock(Logger.class));
         testTarget = new LookUpSongs(musicPlayerState);
     }
 
@@ -84,7 +73,6 @@ public class LookUpSongsIT{
 
     @After
     public void tearDown(){
-        //destroy temp database and close connection
         ServiceGateway.getDatabaseManager().destroyTempDatabaseAndCloseConnection();
     }
 }

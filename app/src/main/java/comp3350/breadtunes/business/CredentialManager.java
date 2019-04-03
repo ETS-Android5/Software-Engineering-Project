@@ -28,6 +28,14 @@ public class CredentialManager {
         }
     }
 
+    //should have no uses, outside of testsr
+    public void clearCredentials(){
+        if(credentialsHaveBeenSet()){
+            credentialPersistence.clearCredentials();
+        }
+    }
+
+
     /**
      * Inserts a new set of hashed credentials into the database.
      *

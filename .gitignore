@@ -38,3 +38,6 @@ local.properties
 .Trashes
 ehthumbs.db
 Thumbs.db
+
+# Integration test database
+integration_test_database/

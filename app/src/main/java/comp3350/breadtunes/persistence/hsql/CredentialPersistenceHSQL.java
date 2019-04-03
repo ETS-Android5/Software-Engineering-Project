@@ -115,6 +115,20 @@ public class CredentialPersistenceHSQL implements CredentialPersistence {
         }
     }
 
+    //delete the credentials in the database, used for system tests
+    public void clearCredentials() {
+
+        try {
+            Connection dbConnection = databaseManager.getDbConnection();
+            String clearQuery = "DELETE FROM Credentials";
+            final PreparedStatement statement = dbConnection.prepareStatement(clearQuery);
+            statement.execute();
+            statement.close();
+        }catch(SQLException e){
+            throw new PersistenceException(e.getMessage());
+        }
+    }
+
     private SecureCredentials getCredentialsFromResultSet(ResultSet resultSet) throws SQLException {
         DateTimeHelper dateTimeHelper = new DateTimeHelper();
 
@@ -132,4 +146,6 @@ public class CredentialPersistenceHSQL implements CredentialPersistence {
 
         return new SecureCredentials(hashedPin, securityQuestion, securityQuestionAnswer, updatedDate);
     }
+
+
 }

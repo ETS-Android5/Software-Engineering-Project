@@ -33,7 +33,7 @@
         app:layout_constraintTop_toBottomOf="@id/title" />
 
     <TextView
-        android:id="@+id/secret_question"
+        android:id="@+id/secret_question_resetfragment"
         android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:text="Secret Question"
@@ -46,14 +46,14 @@
         app:layout_constraintTop_toBottomOf="@id/instructions" />
 
     <EditText
-        android:id="@+id/secret_question_answer"
+        android:id="@+id/secret_question_answer_resetfragment"
         android:layout_width="fill_parent"
         android:layout_height="0dp"
         android:layout_marginTop="30dp"
         android:ems="10"
         android:inputType="textPersonName"
         app:layout_constraintEnd_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/secret_question" />
+        app:layout_constraintTop_toBottomOf="@id/secret_question_resetfragment" />
 
     <TextView
         android:id="@+id/new_pin_message"
@@ -65,10 +65,10 @@
         android:layout_marginLeft="10dp"
         android:layout_marginTop="30dp"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/secret_question_answer" />
+        app:layout_constraintTop_toBottomOf="@id/secret_question_answer_resetfragment" />
 
     <EditText
-        android:id="@+id/pin_field"
+        android:id="@+id/pin_field_resetfragment"
         android:layout_width="80dp"
         android:layout_height="0dp"
         android:layout_marginTop="30dp"
@@ -78,7 +78,7 @@
         app:layout_constraintTop_toBottomOf="@id/new_pin_message" />
 
     <Button
-        android:id="@+id/submit_button"
+        android:id="@+id/submit_button_resetfragment"
         android:layout_width="wrap_content"
         android:layout_height="0dp"
         android:layout_marginStart="10dp"
@@ -87,7 +87,7 @@
         android:textSize="20dp"
         android:textStyle="bold"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/pin_field" />
+        app:layout_constraintTop_toBottomOf="@id/pin_field_resetfragment" />
 
 
 </android.support.constraint.ConstraintLayout>

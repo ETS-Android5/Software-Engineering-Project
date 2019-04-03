@@ -11,6 +11,8 @@ import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.util.Objects;
+
 import comp3350.breadtunes.R;
 import comp3350.breadtunes.business.CredentialManager;
 import comp3350.breadtunes.services.ServiceGateway;
@@ -45,7 +47,7 @@ public class ResetPINFragment extends Fragment {
     }
 
     public void onViewCreated(View view, Bundle savedInstanceState){
-        secretQuestion = (TextView) getView().findViewById(R.id.secret_question);
+        secretQuestion = (TextView) Objects.requireNonNull(getView()).findViewById(R.id.secret_question_resetfragment);
         CredentialManager credentialManager = ServiceGateway.getCredentialManager();
         secretQuestion.setText(credentialManager.getSecretQuestion());
         registerOnClickSubmit();
@@ -57,7 +59,7 @@ public class ResetPINFragment extends Fragment {
     }
 
     private void registerOnClickSubmit(){
-        submitButton = (Button) getView().findViewById(R.id.submit_button);
+        submitButton = (Button) getView().findViewById(R.id.submit_button_resetfragment);
         submitButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -67,12 +69,12 @@ public class ResetPINFragment extends Fragment {
     }
 
     private void resetCredentials(){
-        final EditText secretQuestionAnswerView = (EditText) getView().findViewById(R.id.secret_question_answer);
+        final EditText secretQuestionAnswerView = (EditText) getView().findViewById(R.id.secret_question_answer_resetfragment);
 
         String secretQuestionAnswer = String.valueOf(secretQuestionAnswerView.getText());
         boolean secretQuestionAnswerOK = (secretQuestionAnswer.length() > 4);
 
-        final EditText secretPinView = (EditText) getView().findViewById(R.id.pin_field);
+        final EditText secretPinView = (EditText) getView().findViewById(R.id.pin_field_resetfragment);
         String PIN = String.valueOf(secretPinView.getText());
         boolean secretPINOk = (PIN.length() > 3);
 
