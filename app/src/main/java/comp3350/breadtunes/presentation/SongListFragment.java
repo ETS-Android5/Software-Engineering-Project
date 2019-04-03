@@ -210,6 +210,7 @@ public class SongListFragment extends Fragment implements Observer {
         activitySongList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 String selectedSongName = (String) adapterView.getItemAtPosition(i);     //get the name of the song being played
+                selectedSongName = selectedSongName.replaceAll(" \\(Flagged\\)$", "");
                 Log.i(TAG, "Clicked on "+selectedSongName);
                 //get the song object associated with the song name that was clicked
                 Song selectedSong = LookUpSongs.getSong(sList, selectedSongName);
