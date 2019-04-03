@@ -143,29 +143,31 @@ public class SongPersistenceHSQL implements SongPersistence {
 
     /**
      * Check if a song is flagged in the database, return true if it is.
-     * the song that will be looked for in the database
-        @param song the song that will be looked up in the database
+     *
+     * @param song the song that will be looked up in the database.
      */
-    public boolean isSongFlagged(Song song){
+    public boolean isSongFlagged(Song song) {
 
-        try{
+        try {
             Connection dbConnection = databaseManager.getDbConnection();
-            String query = "SELECT * FROM Songs WHERE URI=?";
+            String query = "SELECT Flagged FROM Songs WHERE ID=?";
             final PreparedStatement statement = dbConnection.prepareStatement(query);
-            statement.setString(1,song.getSongUri().toString());
+            statement.setInt(1, song.getSongId());
             final ResultSet resultSet = statement.executeQuery();
             inSongFlaggedMethod = true;
-            if(resultSet.next()){
+            if (resultSet.next()) {
                 final Song songInDB = getSongFromResultSet(resultSet);
                 return songInDB.getFlaggedStatus();
-            }else{
-                throw new PersistenceException("Failed to find song");
+            } else {
+                if (resultSet.next()) {
+                    return resultSet.getBoolean("Flagged");
+                } else
+                    throw new PersistenceException("Failed to find song");
+                }
+            }catch(Exception e){
+                throw new PersistenceException(e.getMessage());
             }
-        }catch(Exception e){
-            throw new PersistenceException(e.getMessage());
         }
-
-    }
 
     private void insertSongs(List<Song> songs) {
         try {
