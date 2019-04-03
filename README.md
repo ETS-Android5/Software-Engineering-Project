@@ -53,4 +53,4 @@ To run the integration tests, right click the file `IntegrationTests.java` in th
 
 #### System Tests
 
-To run the system tests... (will finish writing after we set up system tests).
+To run the system tests, right click the file `SystemTests.java` in the folder `src/androidTest/java/comp3350/breadtunes`. Then, click "Run SystemTests".
