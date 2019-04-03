@@ -115,8 +115,14 @@ public class HomeActivity extends BaseActivity implements Observer {
         sList = new ArrayList<>();
         sList.addAll(persistanceSongList);
         songNamesToDisplay = new String[persistanceSongList.size()];
-        for (int i = 0; i < songNamesToDisplay.length; i++)
-            songNamesToDisplay[i] = persistanceSongList.get(i).getName();
+        for (int i = 0; i < songNamesToDisplay.length; i++) {
+            Song song = persistanceSongList.get(i);
+            if (song.getFlaggedStatus()) {
+                songNamesToDisplay[i] = String.format("%s (Flagged)", persistanceSongList.get(i).getName());
+            } else {
+                songNamesToDisplay[i] = persistanceSongList.get(i).getName();
+            }
+        }
     }
 
     public void refreshSongList() {
@@ -125,6 +131,12 @@ public class HomeActivity extends BaseActivity implements Observer {
         songListFragment = new SongListFragment();
         getSupportFragmentManager().beginTransaction()
                 .replace(R.id.fragment_placeholder, songListFragment).commitAllowingStateLoss();
+    }
+
+    public void refreshSongFlags() {
+        getSongsFromPersistance();
+        getSongNameList();
+        ServiceGateway.getMusicPlayerState().setCurrentSongList(sList);
     }
 
     protected void onResume() {
