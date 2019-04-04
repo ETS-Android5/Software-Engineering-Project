@@ -11,7 +11,9 @@ team has improved a lot and this has definitely helped with the progress of the 
 
 If the team had the chance to start over, the team would use their time more efficiently. The team would also improve a lot on their communication and have as much in-person meetings
 as possible given the time they have. The team would utilize communication software (in this instance, Slack) more efficiently and make reports every regular intervals so everyone is on track with the
-changes that are being made in the project. The team will not put the project on hold until the last 2 weeks before an iteration is due; the team will start an iteration as soon as they are available to.
+changes that are being made in the project. The team will not put the project on hold until the last 2 weeks before an iteration is due; the team will start an iteration as soon as they are available to. The team will also
+utilize GitLab to better issue discovered bugs and to better work on existing bugs. Up until the third iteration, the group held discussions about bugs only on Slack and live meetings. Using GitLab will make keeping track of bugs easier and
+more efficient because there are features in GitLab that will be helpful in notifying other team members when one member finds a bug.
 
 ## Question 3: How large is the project?
 
