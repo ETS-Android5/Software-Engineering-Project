@@ -55,8 +55,6 @@ public class CredentialManagerIT extends TestLogger {
 
     @Test
     public void credentialsNotSetTest() {
-        //when(mockCredentialPersistence.getMostRecentCredentials()).thenReturn(null);
-
         boolean credentialsSet = testTarget.credentialsHaveBeenSet();
 
         assertFalse(!credentialsSet);
@@ -64,9 +62,7 @@ public class CredentialManagerIT extends TestLogger {
 
     @Test
     public void credentialsSetTest() {
-        boolean credentialsSet = testTarget.credentialsHaveBeenSet();
-
-        assertTrue(credentialsSet);
+        assertTrue(testTarget.credentialsHaveBeenSet());
     }
 
     @Test
@@ -78,37 +74,27 @@ public class CredentialManagerIT extends TestLogger {
 
     @Test
     public void validatePinOKTest() {
-        boolean pinAccepted = testTarget.validatePIN("0000");
-
-        assertTrue(pinAccepted);
+        assertTrue(testTarget.validatePIN("0000"));
     }
 
     @Test
     public void validatePinFAILTest() {
-        boolean pinAccepted = testTarget.validatePIN("4444");
-
-        assertFalse(pinAccepted);
+        assertFalse(testTarget.validatePIN("4444"));
     }
 
     @Test
     public void validateSecurityAnswerOKTest() {
-        boolean answerAccepted = testTarget.validateSecretQuestionAnswer("ANS");
-
-        assertTrue(answerAccepted);
+        assertTrue(testTarget.validateSecretQuestionAnswer("ANS"));
     }
 
     @Test
     public void validateSecurityAnswerFAILTest() {
-        boolean answerAccepted = testTarget.validateSecretQuestionAnswer("WHAT?");
-
-        assertFalse(answerAccepted);
+        assertFalse(testTarget.validateSecretQuestionAnswer("WHAT?"));
     }
 
     @Test
     public void getSecurityQuestionTest() {
-        String question = testTarget.getSecretQuestion();
-
-        assertEquals(question, "TEST QUESTION");
+        assertEquals("TEST QUESTION", testTarget.getSecretQuestion());
     }
 
     @Test
@@ -118,10 +104,7 @@ public class CredentialManagerIT extends TestLogger {
 
         testTarget.updatePIN(newPin);
 
-        String hashedPin = credentialPersistence.getMostRecentCredentials().getHashedPin();
-
-        assertEquals(hashedPin, newPinHash);
-
+        assertEquals(credentialPersistence.getMostRecentCredentials().getHashedPin(), newPinHash);
     }
 
     @After
