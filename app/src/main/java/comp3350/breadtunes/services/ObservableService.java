@@ -17,7 +17,7 @@ public class ObservableService {
     }
 
     public static void unsubscribeToDatabaseStateChanges(Observer observer) {
-        databaseState.addObserver(observer);
+        databaseState.deleteObserver(observer);
     }
 
     public static void updateDatabaseState(DatabaseState state) {
