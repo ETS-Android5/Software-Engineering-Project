@@ -86,7 +86,7 @@ public class ParentalControlSetupFragment extends Fragment {
         }else{
 
             if(!secretPINOk)
-                Toast.makeText(homeActivity, "PIN must be at least 3 characters long", Toast.LENGTH_LONG).show();
+                Toast.makeText(homeActivity, "PIN must be at least 4 characters long", Toast.LENGTH_LONG).show();
             if(!secretQuestionOK)
                 Toast.makeText(homeActivity, "Secret question must be at least 5 characters long", Toast.LENGTH_LONG).show();
             if(!secretQuestionAnswerOK)
