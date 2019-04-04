@@ -2,4 +2,14 @@
     <string name="app_name">BreadTunes</string>
     <string name="title_activity_now_playing">NowPlayingActivity</string>
     <string name="database_asset_path">db</string>
+
+    <string name="parental_control_setup_title">Credential Setup</string>
+    <string name="parental_control_setup_reason">In order to setup parental mode, a PIN and a secret question must be made.</string>
+    <string name="enter_new_pin_message">Enter a PIN to turn parental controls on or off (at least 4 characters).</string>
+    <string name="pin_field_hint">0000</string>
+    <string name="enter_new_question_message">Enter a security question in case your PIN needs to be recovered (at least 5 characters).</string>
+    <string name="enter_new_answer_message">Enter the answer to your secret question (at least 5 characters).</string>
+    <string name="security_question_hint">What is your dog\'s name?</string>
+    <string name="security_answer_hint">sparky</string>
+    <string name="submit">Submit</string>
 </resources>

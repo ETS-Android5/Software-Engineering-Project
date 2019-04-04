@@ -78,7 +78,7 @@
                 android:layout_marginStart="8dp"
                 android:layout_marginTop="24dp"
                 android:text="UPDATE PIN"
-                android:textSize="20dp"
+                android:textSize="20sp"
                 android:textStyle="bold"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@+id/pin_field_resetfragment"
