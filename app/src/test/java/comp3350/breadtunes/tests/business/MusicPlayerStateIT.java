@@ -73,6 +73,9 @@ public class MusicPlayerStateIT extends TestLogger {
 
         testTarget.setCurrentSong(testTarget.getNextSong()); // get next song in queue
         assertEquals(testSongList.get(1), testTarget.getCurrentlyPlayingSong());
+
+        testTarget.setShuffleMode(true);
+        testTarget.setCurrentSong(testTarget.getNextSong());
     }
 
     @Test

@@ -115,16 +115,37 @@ public class HomeActivity extends BaseActivity implements Observer {
         sList = new ArrayList<>();
         sList.addAll(persistanceSongList);
         songNamesToDisplay = new String[persistanceSongList.size()];
-        for (int i = 0; i < songNamesToDisplay.length; i++)
-            songNamesToDisplay[i] = persistanceSongList.get(i).getName();
+        for (int i = 0; i < songNamesToDisplay.length; i++) {
+            Song song = persistanceSongList.get(i);
+            if (song.getFlaggedStatus()) {
+                songNamesToDisplay[i] = String.format("%s (Flagged)", persistanceSongList.get(i).getName());
+            } else {
+                songNamesToDisplay[i] = persistanceSongList.get(i).getName();
+            }
+        }
     }
 
     public void refreshSongList() {
         getSongNameList();
         ServiceGateway.getMusicPlayerState().setCurrentSongList(sList);
-        songListFragment = new SongListFragment();
-        getSupportFragmentManager().beginTransaction()
-                .replace(R.id.fragment_placeholder, songListFragment).commitAllowingStateLoss();
+
+        if (!songListFragment.isAdded()) {
+            try {
+                fragmentTransaction = getSupportFragmentManager().beginTransaction();
+                songListFragment = new SongListFragment();
+                fragmentTransaction.replace(R.id.fragment_placeholder, songListFragment).commitAllowingStateLoss();
+            } catch (IllegalStateException e) {
+                Log.i(TAG, "Avoided illegal state change after turning parental mode off");
+            }
+        } else {
+            songListFragment.populateSongListView();
+        }
+    }
+
+    public void refreshSongFlags() {
+        getSongsFromPersistance();
+        getSongNameList();
+        ServiceGateway.getMusicPlayerState().setCurrentSongList(sList);
     }
 
     protected void onResume() {
@@ -160,6 +181,8 @@ public class HomeActivity extends BaseActivity implements Observer {
 
     protected void onDestroy() {
         super.onDestroy();
+        ObservableService.unsubscribeToParentalModeStatus(this);
+        ObservableService.unsubscribeToDatabaseStateChanges(this);
     }
 
 

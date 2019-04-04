@@ -8,7 +8,7 @@ import comp3350.breadtunes.services.ServiceGateway;
 
 public class CredentialManager {
     CredentialPersistence credentialPersistence;
-    String Pin;
+
     public CredentialManager(CredentialPersistence credentialPersistence) {
         this.credentialPersistence = credentialPersistence;
     }
@@ -115,12 +115,7 @@ public class CredentialManager {
      * @param newPIN The new pin for the credentials, in plaintext.
      */
     public void updatePIN(String newPIN) {
-        Pin = newPIN;
         String pinHashed = StringHasher.sha256HexHash(newPIN);
         credentialPersistence.updateMostRecentCredentialsPin(pinHashed);
-    }
-
-    public String getPin(){
-        return Pin;
     }
 }

@@ -32,6 +32,7 @@ import comp3350.breadtunes.R;
 import comp3350.breadtunes.business.CredentialManager;
 import comp3350.breadtunes.business.LookUpSongs;
 import comp3350.breadtunes.business.MusicPlayerState;
+import comp3350.breadtunes.business.SongFlagger;
 import comp3350.breadtunes.business.observables.ParentalControlStatusObservable;
 import comp3350.breadtunes.business.observables.PlayModeObservable;
 import comp3350.breadtunes.business.observables.SongObservable;
@@ -43,8 +44,6 @@ import static comp3350.breadtunes.presentation.HomeActivity.sList;
 
 // REFERENCE : https://github.com/codepath/android_guides/wiki/Creating-and-Using-Fragments
 public class SongListFragment extends Fragment implements Observer {
-
-
     public HomeActivity homeActivity;
     ListView activitySongList;
     String[] songNameList;
@@ -52,7 +51,6 @@ public class SongListFragment extends Fragment implements Observer {
     public static TextView parentalControlStatus;
     public static Button nowPlayingSongGui;
     String[] menuItems = new String[4];
-    // make a updateQueue status
 
     public SongListFragment() {
         // Required empty public constructor
@@ -205,12 +203,14 @@ public class SongListFragment extends Fragment implements Observer {
         activitySongList = (ListView) getView().findViewById(R.id.songList);
         activitySongList.setAdapter(adapter);
         registerForContextMenu(activitySongList);
+        adapter.notifyDataSetChanged();
     }
 
     public void registerOnClickForSonglist(){
         activitySongList.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             public void onItemClick(AdapterView<?> adapterView, View view, int i, long l) {
                 String selectedSongName = (String) adapterView.getItemAtPosition(i);     //get the name of the song being played
+                selectedSongName = selectedSongName.replaceAll(" \\(Flagged\\)$", "");
                 Log.i(TAG, "Clicked on "+selectedSongName);
                 //get the song object associated with the song name that was clicked
                 Song selectedSong = LookUpSongs.getSong(sList, selectedSongName);
@@ -240,23 +240,29 @@ public class SongListFragment extends Fragment implements Observer {
         });
     }
 
-    public void onCreateContextMenu(ContextMenu menu, View v,ContextMenu.ContextMenuInfo menuInfo) {
-            MusicPlayerState mps = ServiceGateway.getMusicPlayerState() ;
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        MusicPlayerState mps = ServiceGateway.getMusicPlayerState();
 
-            AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
-            menu.setHeaderTitle(mps.getCurrentSongList().get(info.position).getName());
-            menu.add(Menu.NONE, 0,0, "Add to Queue");
-            menu.add(Menu.NONE, 1,1, "Play Next");
+        AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo) menuInfo;
+        Song selectedSong = mps.getCurrentSongList().get(info.position);
 
-            if(!mps.getParentalControlModeOn()){
+        menu.setHeaderTitle(selectedSong.getName());
+        menu.add(Menu.NONE, 0,0, "Add to Queue");
+        menu.add(Menu.NONE, 1,1, "Play Next");
+
+        menuItems[0] = "Add to Queue";
+        menuItems[1] = "Play Next";
+
+        // Only display parental control items if parental mode is off
+        if(!mps.getParentalControlModeOn()){
+            if (selectedSong.getFlaggedStatus()) {
+                menu.add(Menu.NONE, 2, 2, "Remove song flag");
+                menuItems[2] = "Remove song flag";
+            } else {
                 menu.add(Menu.NONE, 2, 2, "Flag song");
-                menu.add(Menu.NONE, 3, 3, "Remove song flag");
-                menuItems[2] ="Flag song";
-                menuItems[3] = "Remove song flag";
+                menuItems[2] = "Flag song";
             }
-
-            menuItems[0]= "Add to Queue";
-            menuItems[1]= "Play Next";
+        }
     }
 
 
@@ -264,47 +270,33 @@ public class SongListFragment extends Fragment implements Observer {
         MusicPlayerState mps = ServiceGateway.getMusicPlayerState();
 
         AdapterView.AdapterContextMenuInfo info = (AdapterView.AdapterContextMenuInfo)item.getMenuInfo();
-        int menuItemIndex = item.getItemId();
         String listItemName = mps.getCurrentSongList().get(info.position).getName();
 
+        Song selectedSong = LookUpSongs.getSong(sList, listItemName);
+
         switch(item.getItemId()) {
+            // Add to queue
             case 0:
-                mps.addToQueue(LookUpSongs.getSong(sList, listItemName));
+                mps.addToQueue(selectedSong);
                 homeActivity.queueFragSongsDisplay = mps.getQueueSongNames(); //refresh the songs to be displayed
                 return true;
+            // Add to play next
             case 1:
-                mps.addSongToPlayNext(LookUpSongs.getSong(sList, listItemName));
+                mps.addSongToPlayNext(selectedSong);
                 homeActivity.queueFragSongsDisplay = mps.getQueueSongNames();
                 return true;
+            // Flip parental control flag
             case 2:
-                // Add flag if parental control is off
-                if(!mps.getParentalControlModeOn()){
-                    boolean songIsFlagged = ServiceGateway.getSongFlagger().songIsFlagged(LookUpSongs.getSong(sList, listItemName));
-                    if(!songIsFlagged){
-                        ServiceGateway.getSongFlagger().flagSong(LookUpSongs.getSong(sList, listItemName), true);
-                    }else{
-                        Toast.makeText(homeActivity, "Song is already flagged", Toast.LENGTH_SHORT).show();
-                    }
-                }
-                return true;
-            case 3:
-                // Remove flag if parental control is off
-                if(!mps.getParentalControlModeOn()){
-                    boolean songIsFlagged = ServiceGateway.getSongFlagger().songIsFlagged(LookUpSongs.getSong(sList, listItemName));
-                    if(songIsFlagged){
-                        ServiceGateway.getSongFlagger().flagSong(LookUpSongs.getSong(sList, listItemName), false);
-                    }else{
-                        Toast.makeText(homeActivity, "Song has no flag to remove", Toast.LENGTH_SHORT).show();
-                    }
-                }
+                SongFlagger flagger = ServiceGateway.getSongFlagger();
+                boolean songIsFlagged = flagger.songIsFlagged(selectedSong);
+                flagger.flagSong(selectedSong, !songIsFlagged);
+                homeActivity.refreshSongFlags();
+                populateSongListView();
                 return true;
             default:
                 return super.onContextItemSelected(item);
         }
-
     }
-
-
 
     private void showPINInputDialog(boolean turnOn) {
         final EditText taskEditText = new EditText(homeActivity);
