@@ -31,7 +31,6 @@ public class MusicPlayerStateTest extends TestLogger {
         testTarget = new MusicPlayerState(mockSongPersistence, mockLogger);
     }
 
-    // *******
     @Test
     public void getCurrentlyPlayingSongTest() {
         Song testSong = mock(Song.class);
@@ -46,7 +45,6 @@ public class MusicPlayerStateTest extends TestLogger {
         assertEquals(testTarget.getCurrentSongList().get(0), testTarget.getCurrentlyPlayingSong());
     }
 
-    // *******
     @Test
     public void getCurrentSongList() {
         assertEquals(MockSongs.getMockSongList(), testTarget.getCurrentSongList());
@@ -68,6 +66,9 @@ public class MusicPlayerStateTest extends TestLogger {
 
         testTarget.setCurrentSong(testTarget.getNextSong()); // get next song in queue
         assertEquals(MockSongs.getMockSongList().get(1), testTarget.getCurrentlyPlayingSong());
+
+        testTarget.setShuffleMode(true);
+        testTarget.setCurrentSong(testTarget.getNextSong());
     }
 
     @Test
