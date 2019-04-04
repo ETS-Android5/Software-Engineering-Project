@@ -11,7 +11,6 @@
         android:layout_width="wrap_content"
         android:layout_height="32dp"
         android:layout_marginStart="8dp"
-        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:text="Songs"
         android:textAppearance="@style/TextAppearance.AppCompat"
@@ -98,10 +97,9 @@
         android:id="@+id/queueList"
         android:layout_width="match_parent"
         android:layout_height="48dp"
-        android:layout_marginEnd="8dp"
+        android:onClick="onClickViewQueue"
         android:text="Queue"
         android:textSize="17sp"
-        android:onClick="onClickViewQueue"
         app:layout_constraintBottom_toTopOf="@+id/song_name"
         app:layout_constraintEnd_toEndOf="parent" />
 
@@ -109,7 +107,6 @@
         android:id="@+id/song_name"
         android:layout_width="match_parent"
         android:layout_height="60dp"
-        android:layout_marginEnd="8dp"
         android:textSize="17sp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
