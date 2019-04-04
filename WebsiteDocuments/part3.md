@@ -1,6 +1,6 @@
 # Development Postmortem Report
 
-## Question 1: Ensure that you discuss the area you identified for improvement after your iteration 2 retrospective; how did it go? (Raven)
+## Ensure that you discuss the area you identified for improvement after your iteration 2 retrospective; how did it go? (Raven)
 
 An area of improvement that was identified after iteration 2 was increasing the communication with the team. In iteration 3, the team was successful in doing this by having no less than 2 in-person meetings outside class hours.
 The team was also able to practice the "Slack stand-up meetings" to keep everyone updated with their progress and ask for help in the obstacles they encountered. The #repository channel in the team's Slack group was a huge help
@@ -23,11 +23,30 @@ in the BaseActivity class. There are 9 methods for the presentation layer's Medi
 presentation component. There are a total of 12 methods in CredentialPersistenceHSQL and SongPersistenceHSQL. For the persistence layer's loaders, there are 7 methods amounting to a total of 19 methods for the persistence component of the application.
 For the group's project velocity for both iteration 1 and 2, the group has committed to a total of 286 hours and has achieved 209 hours out of that.
 
-## Question 4: Are there any particular design smells, or brilliant design decisions? (Daniel)
+## Application Design: Brilliant Decisions and Remaining Smells
 
-## Question 5: What was the overall architecture of your system? (Daniel)
+One of our brilliant design decisions was the choice to use Java `Observables` for component communication. We have a service that controls subscribing and unsubscribing to various events, which allows subscriptions to events to be done on a per-component basis. This reduces coupling by reducing the amount of communication that happens directly between components. The observables we use are for:
 
-## Question 6: Conclusions (Daniel)
+- Notifying when parental control mode status changes.
+- Notifying status changes for shuffle and repeat mode
+
+One design smell we would like to see fixed in the future is to reduce the numbers of song lists in the app to only one. Several of the fragments use their own copy of the song list, which has made updating the song list when it changes a bit messy.
+
+## System Architecture
+
+
+
+## Future Improvements
+
+Due to issues with the system tests, we were unable to get Audio Focus working. Audio Focus is where our app stops playing music when another app wants to play sound. We did get it working for Iteration 3 but it was causing errors with the system tests, so we eventually had to remove it.
+
+A few other things we would like to see in a future version of our app are:
+
+- A notification bar player for our app so that users can control music playback outside of our app.
+- An album and artist view rather than just a song view.
+- A more modern UI design.
+
+## Conclusions
 
 
 
