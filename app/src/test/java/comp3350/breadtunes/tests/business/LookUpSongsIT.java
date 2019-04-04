@@ -71,6 +71,13 @@ public class LookUpSongsIT extends TestLogger {
         assertTrue(songs.isEmpty());
     }
 
+    @Test
+    public void getSongTest(){
+        List<Song> songs = testTarget.searchSongs("Bloch Prayer");
+        assertEquals(songs.get(0), testTarget.getSong(songs,"Bloch Prayer"));
+        assertEquals(null, testTarget.getSong(songs,"Clair de Lune"));
+    }
+
     @After
     public void tearDown(){
         ServiceGateway.getDatabaseManager().destroyTempDatabaseAndCloseConnection();
