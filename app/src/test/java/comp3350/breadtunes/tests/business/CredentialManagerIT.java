@@ -118,7 +118,9 @@ public class CredentialManagerIT extends TestLogger {
 
         testTarget.updatePIN(newPin);
 
-        assertEquals(newPin,testTarget.getPin());
+        String hashedPin = credentialPersistence.getMostRecentCredentials().getHashedPin();
+
+        assertEquals(hashedPin, newPinHash);
 
     }
 
