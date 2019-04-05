@@ -13,7 +13,7 @@
 
 ## Introduction
 
-**This application was built for COMP3350 (Software Engineering 1) at the University of Manitoba for the Winter 2019 term**. The point of this project was to create an Android application with good coding practices, a 3-layer architecture, and various levels of testing.
+**This application was built for COMP3350 (Software Engineering 1) at the University of Manitoba for the Winter 2019 term**. The point of this project was to create an Android application with good coding practices, a 3-layer architecture, and various levels of testing. We also created a static website with Jekyll showcasing the project's features.
 
 Our group ended up choosing to create a music player for Android devices. The player we built, **BreadTunes**, allows a user to play songs from their device. We also built in the ability to flag songs as inappropriate, so that specific songs can be hidden from the music player. This feature was targeted towards parents, as they can let their children use their phone for music without fear of them listening to explicit or inappropriate songs they don't want their children to listen to.
 
@@ -54,3 +54,12 @@ To run the integration tests, right click the file `IntegrationTests.java` in th
 #### System Tests
 
 To run the system tests, right click the file `SystemTests.java` in the folder `src/androidTest/java/comp3350/breadtunes`. Then, click "Run SystemTests".
+
+# Running the Jekyll Website
+
+The static website we created to present our project is in the `website` folder. To serve the website locally, [Jekyll](<https://jekyllrb.com/>) must be installed. To view the website, follow these steps:
+
+1. From a terminal, descend into the `website` directory: `cd website`
+2. Serve the site with Jekyll: `jekyll serve`
+3. View the site in your favourite browser by entering `localhost:4000` into the address bar
+
