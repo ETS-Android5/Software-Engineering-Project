@@ -8,86 +8,135 @@
         >
 
 
-    <TextView
-        android:id="@+id/title"
-        android:layout_width="595dp"
-        android:layout_height="91dp"
-        android:text="PIN Reset"
-        android:textAlignment="center"
-        android:textSize="40dp"
-        android:textStyle="bold"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        tools:layout_editor_absoluteX="63dp"
+        tools:layout_editor_absoluteY="0dp">
 
-    <TextView
-        android:id="@+id/instructions"
-        android:layout_width="fill_parent"
-        android:layout_height="0dp"
-        android:text="Please answer your secret question."
-        android:textAlignment="textStart"
-        android:textSize="25dp"
-        android:textStyle="bold"
-        android:layout_marginLeft="10dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/title" />
+        <android.support.constraint.ConstraintLayout
+            android:id="@+id/linearLayout3"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical">
 
-    <TextView
-        android:id="@+id/secret_question_resetfragment"
-        android:layout_width="fill_parent"
-        android:layout_height="0dp"
-        android:text="Secret Question"
-        android:textStyle="bold"
-        android:textAlignment="textStart"
-        android:textSize="20dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="30dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/instructions" />
+            <TextView
+                android:id="@+id/new_pin_message"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginEnd="8dp"
+                android:text="Please enter a new PIN"
+                android:textAlignment="textStart"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/secret_question_answer_resetfragment"
+                tools:layout_conversion_absoluteHeight="0dp"
+                tools:layout_conversion_absoluteWidth="402dp" />
 
-    <EditText
-        android:id="@+id/secret_question_answer_resetfragment"
-        android:layout_width="fill_parent"
-        android:layout_height="0dp"
-        android:layout_marginTop="30dp"
-        android:ems="10"
-        android:inputType="textPersonName"
-        app:layout_constraintEnd_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/secret_question_resetfragment" />
+            <TextView
+                android:id="@+id/instructions"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:text="To reset pin, answer your secret question:"
+                android:textAlignment="textStart"
+                android:textColor="@android:color/black"
+                android:textSize="18sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/title"
+                tools:layout_conversion_absoluteHeight="0dp"
+                tools:layout_conversion_absoluteWidth="402dp" />
 
-    <TextView
-        android:id="@+id/new_pin_message"
-        android:layout_width="fill_parent"
-        android:layout_height="0dp"
-        android:text="Please enter your new PIN"
-        android:textAlignment="textStart"
-        android:textSize="20dp"
-        android:layout_marginLeft="10dp"
-        android:layout_marginTop="30dp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/secret_question_answer_resetfragment" />
+            <EditText
+                android:id="@+id/pin_field_resetfragment"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:ems="10"
+                android:inputType="numberPassword"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintHorizontal_bias="0.0"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/new_pin_message"
+                tools:layout_conversion_absoluteHeight="0dp"
+                tools:layout_conversion_absoluteWidth="80dp" />
 
-    <EditText
-        android:id="@+id/pin_field_resetfragment"
-        android:layout_width="80dp"
-        android:layout_height="0dp"
-        android:layout_marginTop="30dp"
-        android:ems="10"
-        android:inputType="numberPassword"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/new_pin_message" />
+            <Button
+                android:id="@+id/submit_button_resetfragment"
+                android:layout_width="wrap_content"
+                android:layout_height="48dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="24dp"
+                android:text="UPDATE PIN"
+                android:textSize="20sp"
+                android:textStyle="bold"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/pin_field_resetfragment"
+                tools:layout_conversion_absoluteHeight="0dp"
+                tools:layout_conversion_absoluteWidth="140dp" />
 
-    <Button
-        android:id="@+id/submit_button_resetfragment"
-        android:layout_width="wrap_content"
-        android:layout_height="0dp"
-        android:layout_marginStart="10dp"
-        android:layout_marginTop="56dp"
-        android:text="UPDATE PIN"
-        android:textSize="20dp"
-        android:textStyle="bold"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/pin_field_resetfragment" />
+            <TextView
+                android:id="@+id/title"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:text="PIN Reset"
+                android:textAlignment="center"
+                android:textColor="@android:color/black"
+                android:textSize="24sp"
+                android:textStyle="bold"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:layout_conversion_absoluteHeight="91dp"
+                tools:layout_conversion_absoluteWidth="595dp" />
+
+            <EditText
+                android:id="@+id/secret_question_answer_resetfragment"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="8dp"
+                android:ems="10"
+                android:inputType="textPersonName"
+                android:textSize="16sp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/secret_question_resetfragment"
+                tools:layout_conversion_absoluteHeight="0dp"
+                tools:layout_conversion_absoluteWidth="411dp" />
+
+            <TextView
+                android:id="@+id/secret_question_resetfragment"
+                android:layout_width="0dp"
+                android:layout_height="27dp"
+                android:layout_marginStart="8dp"
+                android:layout_marginTop="32dp"
+                android:layout_marginEnd="8dp"
+                android:text="Secret Question"
+                android:textAlignment="viewStart"
+                android:textSize="16sp"
+                android:textStyle="bold|italic"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@+id/instructions"
+                tools:layout_conversion_absoluteHeight="0dp"
+                tools:layout_conversion_absoluteWidth="402dp" />
+        </android.support.constraint.ConstraintLayout>
+    </ScrollView>
 
 
 </android.support.constraint.ConstraintLayout>
