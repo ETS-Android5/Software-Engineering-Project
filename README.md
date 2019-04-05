@@ -55,7 +55,7 @@ To run the integration tests, right click the file `IntegrationTests.java` in th
 
 To run the system tests, right click the file `SystemTests.java` in the folder `src/androidTest/java/comp3350/breadtunes`. Then, click "Run SystemTests".
 
-#### Running the Jekyll Website
+## Running the Jekyll Website
 
 The static website we created to present our project is in the `website` folder. To serve the website locally, [Jekyll](<https://jekyllrb.com/>) must be installed. To view the website, follow these steps:
 
