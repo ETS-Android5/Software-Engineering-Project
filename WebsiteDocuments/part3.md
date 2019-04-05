@@ -2,18 +2,12 @@
 
 ## Ensure that you discuss the area you identified for improvement after your iteration 2 retrospective; how did it go? (Raven)
 
-An area of improvement that was identified after iteration 2 was increasing the communication with the team. In iteration 3, the team was successful in doing this by having no less than 2 in-person meetings outside class hours.
-The team was also able to practice the "Slack stand-up meetings" to keep everyone updated with their progress and ask for help in the obstacles they encountered. The #repository channel in the team's Slack group was a huge help
-do keep track of changes done in master and inspect the changes closely for better understanding of the changes that have been pushed. As what has been reflected on and planned after iteration 2, the overall communication of the
-team has improved a lot and this has definitely helped with the progress of the project.
+An area of improvement that was identified after iteration 2 in the retrospective document was increasing the communication with the team. In iteration 3, the team was successful in doing this by having no less than 2 in-person meetings outside class hours.
+The team was also able to practice the "Slack stand-up meetings" to keep everyone updated with their progress and ask for help in the obstacles they encountered. The #repository channel in the team's Slack group was a huge help to keep track of changes done in master and inspect the changes closely for better understanding of the changes that have been pushed. After following the advice in the retrospective document, the overall communication of the team improved a lot and definitely helped with the progress of the project.
 
 ## Question 2: What would you do differently, if you had the chance to start over?
 
-If the team had the chance to start over, the team would use their time more efficiently. The team would also improve a lot on their communication and have as much in-person meetings
-as possible given the time they have. The team would utilize communication software (in this instance, Slack) more efficiently and make reports every regular intervals so everyone is on track with the
-changes that are being made in the project. The team will not put the project on hold until the last 2 weeks before an iteration is due; the team will start an iteration as soon as they are available to. The team will also
-utilize GitLab to better issue discovered bugs and to better work on existing bugs. Up until the third iteration, the group held discussions about bugs only on Slack and live meetings. Using GitLab will make keeping track of bugs easier and
-more efficient because there are features in GitLab that will be helpful in notifying other team members when one member finds a bug.
+If the team had the chance to start over, the team would use their time more efficiently. The team would also improve a lot on their communication and have as much in-person meetings as possible given the time they have. The team would utilize communication software (in this instance, Slack) more efficiently and make reports every regular intervals so everyone is on track with the changes that are being made in the project. The team would not put the project on hold until the last 2 weeks before an iteration is due. The team would also utilize GitLab to better issue discovered bugs and work on existing bugs. Up until the third iteration, the group held discussions about bugs only on Slack and live meetings. Using GitLab will make keeping track of bugs easier and more efficient because there are features in GitLab that will be helpful in notifying other team members when one member finds a bug.
 
 ## How large is the project?
 
@@ -62,7 +56,9 @@ A few other things we would like to see in a future version of our app are:
 
 ## Conclusions
 
+Because this project was everyone's first major Android application they worked on, there are some things we would have done differently to build the system in hindsight. But in the end, this project turned out to be a great learning experience. Everyone on the team got valuable experience with:
 
-
-
-
+- Building Android applications
+- Writing tests of various levels
+- Agile methodology
+- 3-tier architectures
