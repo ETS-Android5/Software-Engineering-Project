@@ -33,16 +33,22 @@ The following bar chart shows the number of classes per application component vi
 
 ## Application Design: Brilliant Decisions & Remaining Smells
 
-One of our brilliant design decisions was the choice to use Java `Observables` for component communication. We have a service that controls subscribing and unsubscribing to various events, which allows subscriptions to events to be done on a per-component basis. This reduces coupling by reducing the amount of communication that happens directly between components. The observables we use are for:
+One of our better design decisions was the choice to use Java `Observables` for component communication. We have a service that controls subscribing and unsubscribing to various events, which allows subscriptions to events to be done on a per-component basis. This reduces coupling by reducing the amount of communication that happens directly between components. The observables we use are for:
 
 - Notifying when parental control mode status changes.
 - Notifying status changes for shuffle and repeat mode.
+- Notifying when the database has updated.
+- Notifying when the song playing changes.
+
+![Observable Service](../Images/observable_service.png)
 
 One design smell we would like to see fixed in the future is to reduce the numbers of song lists in the app to only one. Several of the fragments use their own copy of the song list, which has made updating the song list when it changes a bit messy.
 
 ## System Architecture
 
 We were told to use a 3-layer MVC architecture for this project (Presentation, Logic, Persistence). While we did end up using this architecture, we added another layer that all of the other layers communicate with. This is the _Services_ layer. The _services_ layer is concerned with supplying application-wide singletons, and for handling observables, as mentioned above. A typical use of the _services_ layer would be the presentation layer asking for a persistence object so that it can get all of the songs from the persistence layer. While we could have handled this in the logic layer, the sample project we were given took this approach, and we ended up going along with it.
+
+![System Architecture](../Images/simple_architecture.png)
 
 ## Future Improvements
 
