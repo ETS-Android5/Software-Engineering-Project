@@ -1,20 +1,28 @@
 ---
 layout: page
-title: Video
+title: Videos
 permalink: /video/
 ---
-<p> "this is it"<p>
-<a href="google.com">google</a>
 
-This is the base Jekyll theme. You can find out more info about customizing your Jekyll theme, as well as basic Jekyll usage documentation at [jekyllrb.com](https://jekyllrb.com/)
+# Play your favorite music
 
-You can find the source code for Minima at GitHub:
-[jekyll][jekyll-organization] /
-[minima](https://github.com/jekyll/minima)
+<iframe width="600" height="370" src="https://www.youtube.com/embed/DwwBdICegrI" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
-You can find the source code for Jekyll at GitHub:
-[jekyll][jekyll-organization] /
-[jekyll](https://github.com/jekyll/jekyll)
+<br/>
+
+# Find your music
+<iframe width="600" height="370" src="https://www.youtube.com/embed/PzmU4qworhc" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<br/>
+
+# See your songs' information
+<iframe width="600" height="370" src="https://www.youtube.com/embed/tyRjvNmXXyQ" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
 
 
-[jekyll-organization]: https://github.com/jekyll
+<br/>
+# Create a queue
+<iframe width="600" height="370" src="https://www.youtube.com/embed/gUVdZebhWJM" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+<br/>
+# Enable Parental Control
+<iframe width="600" height="370" src="https://www.youtube.com/embed/iXMU3xT62Ns" frameborder="0" allow="accelerometer; autoplay; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+
+<br/>

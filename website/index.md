@@ -4,8 +4,12 @@
 
 layout: home
 ---
-![image](/asset/images/breadtunes.png)<br/>
-`Bread Tunes Vision Statement`
+
+<div align="center">
+<img src="{{site.baseurl}}/asset/images/breadtunes.png"/>
+</div>
+<br/>
+# Bread Tunes Vision Statement
 Bread Tunes is a music manager and player for Android devices. This music player will be able to play music files in the device's internal and external memory (such as an SD card). People will be able to browse their music library and perform several actions on their music including: finding and playing songs, seeing information about what's playing, creating their own playlists, and adding songs to a queue. Bread Tunes will also feature a Parental Control that enables parents to hide flagged songs from children.
 
 Bread Tunes will have features focused on assisting people in finding their music painlessly. A person's music can be shown by Artist, Album, Track, Genre, or Playlist, depending on how they want to view their music. The music player will feature recently played, most played and recently added playlists, all of which are automatically updated by the application. A search function will also be included so that people can apply their own textual filter to their music.
@@ -24,23 +28,21 @@ The success criteria for Bread Tunes are based on the following:
 
 
 
-`Description of Intended Users`
+# Description of Intended Users
 
 This music player is targeted towards regular people of any age who want a no-frills music player, and to parents who want to share music with their children. Bread Tunes is not focused on satisfying the needs of "pro users" who require equalizers or extensive customization features.
 
 
 
-`Major Functionality`
+# Major Functionality
 
-BreadTunes allows people to play the songs they have on their device. There is also the ability to flag songs as inappropriate, so that specific songs can be hidden from the music player. The song flagging feature was targeted towards parents, as they can let their children use their phone for music without fear of them listening to explicit or inappropriate songs they don't want their children to listen to.
+The following are the general features we implemented:
 
-The built-in queue can be used by long pressing on a song and choosing "Add to Queue" or "Add to Play Next".
-
-Information a
-
-Songs can be flagged by long pressing on a song and choosing "Flag Song".
-
-People can turn parental mode on by clicking on the lock icon at the top of the screen.
+- Playing music from device. There are four test songs in the application if the user does not have any music on their device. Our application also gets all the music stored on the device and allows those songs to be played.
+- Finding songs. We implemented a search function so that people can find specific songs.
+- Displaying music information. There is a "Now Playing" screen where people can see the current song's name, album, artist, as well as album art. On this screen, users can control music playback, too.
+- Queueing music. People can long-click on a song in the list to play it next, or add it to the end of the queue. There is a button on the main page that brings up the current queue.
+- Parental controls. Parents can long-click on songs in the list to flag them. They can then turn on parental mode so that those songs are hidden from the player until the mode is turned off.
 
 
 
