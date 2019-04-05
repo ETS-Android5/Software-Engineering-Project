@@ -6,10 +6,12 @@ layout: home
 ---
 
 <div align="center">
-<img src="{{site.baseurl}}/asset/images/breadtunes.png"/>
+    <img src="{{site.baseurl}}/asset/images/breadtunes.png"/>
 </div>
 <br/>
+
 # Bread Tunes Vision Statement
+
 Bread Tunes is a music manager and player for Android devices. This music player will be able to play music files in the device's internal and external memory (such as an SD card). People will be able to browse their music library and perform several actions on their music including: finding and playing songs, seeing information about what's playing, creating their own playlists, and adding songs to a queue. Bread Tunes will also feature a Parental Control that enables parents to hide flagged songs from children.
 
 Bread Tunes will have features focused on assisting people in finding their music painlessly. A person's music can be shown by Artist, Album, Track, Genre, or Playlist, depending on how they want to view their music. The music player will feature recently played, most played and recently added playlists, all of which are automatically updated by the application. A search function will also be included so that people can apply their own textual filter to their music.
@@ -44,6 +46,32 @@ The following are the general features we implemented:
 - Queueing music. People can long-click on a song in the list to play it next, or add it to the end of the queue. There is a button on the main page that brings up the current queue.
 - Parental controls. Parents can long-click on songs in the list to flag them. They can then turn on parental mode so that those songs are hidden from the player until the mode is turned off.
 
+# Contributors
 
+### Bamibo Isichei (Software Engineering)
+Things learned from the project:
+- Design Patterns
+- Git
+- Jekyll
+- Software architecture
+- Testing
 
+### Daniel Lovegrove (Software Engineering)
+Things learned from the project:
+- System architecture planning & design
+- Android-specific programming (e.g., audio focus, permissions, and Android MediaStore)
+- System testing
 
+### Mario Mendez (Computer Science)
+Things learned from the project:
+- Design patterns
+- Teamwork
+- System testing
+- Android UI
+
+### Raven Carencia (Computer Science)
+Things learned from the project:
+- White box testing
+- Design patterns
+- Git
+- Android UI
