@@ -15,8 +15,7 @@
 # in the templates via {{ site.myvariable }}.
 title: BreadTunes
 email: 
-description: >- # this means to ignore newlines until "baseurl:"
-  A music application that's easy to use with better features that points the application ahead of its counterparts, such as parental control mode, flagging a song etc. and more!
+description: An Android Music Player
 baseurl: "" # the subpath of your site, e.g. /blog
 url: "http://localhost" # the base hostname & protocol for your site, e.g. http://example.com
 twitter_username: 
